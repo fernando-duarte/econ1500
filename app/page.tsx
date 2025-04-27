@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Hero } from "@/components";
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -18,16 +19,19 @@ export default function Home() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-indigo-100 p-8 dark:from-gray-900 dark:to-gray-800">
-      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg dark:bg-gray-800">
-        <div className="mb-8 flex justify-center">
-          <h1 className="text-4xl font-bold text-indigo-700 dark:text-indigo-400">
-            ECON 1500
-          </h1>
-        </div>
-        
+    <div className="flex min-h-screen flex-col items-center bg-gradient-to-b from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+      <Hero>
+        <button
+          onClick={() => document.getElementById('game-form')?.scrollIntoView({ behavior: 'smooth' })}
+          className="rounded-lg bg-indigo-600 px-5 py-3 text-center font-medium text-white shadow-md transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          Get Started
+        </button>
+      </Hero>
+      
+      <div id="game-form" className="w-full max-w-md rounded-xl bg-white p-8 my-12 shadow-lg dark:bg-gray-800">
         <h2 className="mb-6 text-center text-3xl font-bold text-gray-800 dark:text-white">
-          Welcome to the Game
+          Join the Game
         </h2>
         
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">

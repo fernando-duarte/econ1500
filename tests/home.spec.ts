@@ -5,9 +5,11 @@ test.describe('Home page', () => {
     // Navigate to the homepage
     await page.goto('/');
     
-    // Check that the page has the expected title
+    // Check that the page has the expected title in the Hero
     await expect(page.locator('h1')).toHaveText('ECON 1500');
-    await expect(page.locator('h2')).toHaveText('Welcome to the Game');
+    
+    // Check the form section title (changed from "Welcome to the Game" to "Join the Game")
+    await expect(page.locator('h2')).toHaveText('Join the Game');
   });
 
   test('should enable button when name is entered', async ({ page }) => {
