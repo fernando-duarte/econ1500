@@ -49,6 +49,7 @@ This project follows the Next.js App Router architecture with the following dire
 - `lib/`: Business logic, data fetching, and API integrations
 - `utils/`: Helper functions and utility modules
 - `public/`: Static assets (images, fonts, etc.)
+- `docs/`: Project documentation
 
 ### Directory Usage Guidelines
 
@@ -56,3 +57,27 @@ This project follows the Next.js App Router architecture with the following dire
 - **components/**: Reusable UI components (buttons, modals, forms, etc.)
 - **lib/**: Code related to external services, data processing, and application logic
 - **utils/**: Generic helper functions, formatters, validators, etc.
+
+## Project Configuration and Standards
+
+### Code Quality and Formatting
+
+This project uses:
+
+- **ESLint**: For code quality and style enforcement
+- **Prettier**: For consistent code formatting
+- **TypeScript**: For type checking
+
+### Configuration Files
+
+- `eslint.config.mjs`: ESLint configuration
+- `.prettierrc.json`: Prettier configuration
+- `.gitignore`: Specifies files ignored by Git
+- `.prettierignore`: Specifies files ignored by Prettier
+- `.gitattributes`: Configures how Git handles different file types
+
+For more details on the ignore patterns and configuration, see the [Ignore Files Guide](./docs/ignore-files.md).
+
+### Environment Variables
+
+For setting up environment variables, refer to the [Environment Variables Template](./docs/env-template.md).

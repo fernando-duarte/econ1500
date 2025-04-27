@@ -15,7 +15,8 @@ const eslintConfig = [
       // Dependencies
       "node_modules",
       ".pnp",
-      ".pnp.js",
+      ".pnp.*",
+      ".yarn/*",
 
       // Next.js build outputs
       ".next/",
@@ -27,7 +28,13 @@ const eslintConfig = [
       ".eslintcache",
       ".vercel",
       ".turbo",
+      ".cache",
+      ".swc/",
       "*.log",
+      "npm-debug.log*",
+      "yarn-debug.log*",
+      "yarn-error.log*",
+      ".pnpm-debug.log*",
 
       // Config files that don't need linting
       "next-env.d.ts",
@@ -49,12 +56,20 @@ const eslintConfig = [
       ".vscode/",
       "*.swp",
       "*.swo",
+      "*.suo",
+      "*.ntvs*",
+      "*.njsproj",
+      "*.sln",
 
       // Miscellaneous
       ".DS_Store",
+      "Thumbs.db",
       "*.pem",
+      
+      // Environment files
       ".env*",
-      "!.env.example"
+      "!.env.example",
+      "!.env.template"
     ]
   },
   ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
