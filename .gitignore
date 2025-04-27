@@ -13,6 +13,7 @@
 # testing
 /coverage
 /.nyc_output
+/test-results/
 
 # next.js
 /.next/
@@ -68,3 +69,17 @@ next-env.d.ts
 # Cursor files
 .cursor/*
 !.cursor/rules/
+
+# High-resolution source image files
+# Original source files used to create optimized images
+/src-images/
+# Specific source files by naming pattern
+*_source.*
+*_original.*
+*_raw.*
+# Original large PSD/AI/Figma export images
+*.psd
+*.ai
+*.fig
+# Source files in hero directory by pattern
+/public/hero/*_remix_*.png

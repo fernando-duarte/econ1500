@@ -28,6 +28,8 @@ public/
 # Coverage reports
 coverage/
 .nyc_output/
+test-results/
+playwright-report/
 
 # Editor files
 .idea/

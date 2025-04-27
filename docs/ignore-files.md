@@ -27,13 +27,14 @@ The project uses several ignore files to prevent unnecessary files from being tr
 
 3. **Cache and Logs**
 
-   - `.eslintcache`, `.turbo`, `.cache`, `*.log`
+   - `.eslintcache`, `.turbo`, `.cache`, `.swc/`, `*.log`
    - Rationale: Temporary files that are generated during development and not needed for others.
 
 4. **Config Files**
 
    - Some configuration files are ignored by linting/formatting but tracked by Git.
    - Rationale: Often auto-generated or follow specific formats that shouldn't be altered.
+   - Examples: `next-env.d.ts`, `next.config.js`, `next.config.ts`, `tailwind.config.js`, `tailwind.config.mjs`, `postcss.config.mjs`
 
 5. **Environment Files**
 
@@ -41,8 +42,30 @@ The project uses several ignore files to prevent unnecessary files from being tr
    - Rationale: Contain sensitive information like API keys that shouldn't be in the repository.
 
 6. **Editor Files**
+
    - `.idea/`, `.vscode/` (with some exceptions)
    - Rationale: Editor-specific settings that may not be relevant to all developers.
+   - Also includes: `*.suo`, `*.ntvs*`, `*.njsproj`, `*.sln`, `*.sw?`, `*.swp`, `*.swo`
+
+7. **Cursor Files**
+
+   - `.cursor/*` (with exception for rules)
+   - Rationale: Cursor IDE-specific files that shouldn't be shared.
+   - Exception: `!.cursor/rules/` - Shared rules for the Cursor IDE are tracked.
+
+8. **High-resolution Source Image Files**
+
+   - `/src-images/` - Directory containing original source image files
+   - Specific naming patterns used for source files:
+     - `*_source.*` - Files with "\_source" suffix (original versions)
+     - `*_original.*` - Files with "\_original" suffix (unmodified versions)
+     - `*_raw.*` - Files with "\_raw" suffix (unprocessed versions)
+   - Design source files:
+     - `*.psd` - Adobe Photoshop files
+     - `*.ai` - Adobe Illustrator files
+     - `*.fig` - Figma export files
+   - Specific directory patterns:
+     - `/public/hero/*_remix_*.png` - Generated remix PNG files in the hero directory
 
 ## Special Patterns
 
@@ -53,6 +76,10 @@ The `!` prefix indicates exceptions to ignore rules:
 ```
 .env*        # Ignore all .env files
 !.env.example # But include the example template
+!.env.template # And include the template file
+
+.cursor/*    # Ignore all Cursor IDE files
+!.cursor/rules/ # But include the shared rules
 ```
 
 ### Directory vs File Patterns

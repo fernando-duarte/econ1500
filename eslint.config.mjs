@@ -50,6 +50,8 @@ const eslintConfig = [
       // Test coverage reports
       "coverage/",
       ".nyc_output/",
+      "test-results/",
+      "playwright-report/",
 
       // Editor-specific files
       ".idea/",
