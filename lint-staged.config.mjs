@@ -11,6 +11,6 @@ export default {
   // Run ESLint on JS, JSX, TS, and TSX files
   '*.{js,jsx,ts,tsx}': [buildEslintCommand],
   
-  // Add Prettier formatting if you want to format other file types
-  // '*.{json,md}': ['prettier --write']
+  // Add Prettier formatting for other file types
+  '*.{json,md,css}': ['prettier --write']
 }; 
