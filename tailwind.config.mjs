@@ -22,13 +22,10 @@ export default {
         mono: ['var(--font-geist-mono)'],
       },
       spacing: {
-        // Define consistent spacing values
-        xs: '4px',
-        sm: '8px',
-        md: '16px',
-        lg: '24px',
-        xl: '32px',
-        '2xl': '48px',
+        // Define consistent spacing values that match original pixel values
+        // These override Tailwind's default spacing scale
+        'gap-24': '24px',
+        'gap-32': '32px',
       },
       opacity: {
         // Define consistent opacity values
