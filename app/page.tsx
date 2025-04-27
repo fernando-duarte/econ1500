@@ -1,84 +1,60 @@
-import Image from "next/image";
-import { EXTERNAL_URLS } from "../lib/constants";
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-sans sm:p-20">
-      <main className="row-start-2 flex flex-col items-center gap-[32px] sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-center font-mono text-sm/6 sm:text-left">
-          <li className="tracking-tightest mb-2">
-            Get started by editing{" "}
-            <code className="rounded bg-black/[.05] px-1 py-0.5 font-mono font-semibold dark:bg-white/[.06]">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-tightest">Save and see your changes instantly.</li>
-        </ol>
+  const [name, setName] = useState("");
+  const router = useRouter();
 
-        <div className="flex flex-col items-center gap-4 sm:flex-row">
-          <a
-            className="hover:bg-hover-primary-dark dark:hover:bg-hover-primary-light flex h-10 items-center justify-center gap-2 rounded-full border border-solid border-black/20 bg-black px-4 text-sm font-medium text-white transition-colors sm:h-12 sm:w-auto sm:px-5 sm:text-base dark:border-white/20 dark:bg-white dark:text-black"
-            href={EXTERNAL_URLS.VERCEL_DEPLOY}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="hover:bg-hover-light dark:hover:bg-hover-dark flex h-10 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-4 text-sm font-medium transition-colors hover:border-transparent sm:h-12 sm:w-auto sm:px-5 sm:text-base md:w-[158px] dark:border-white/[.145]"
-            href={EXTERNAL_URLS.NEXTJS_DOCS}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (name.trim()) {
+      // In a real app, you might store this in a session, cookie, or state management
+      localStorage.setItem("playerName", name);
+      // Navigate to game page - you would create this page next
+      router.push("/game");
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-indigo-100 p-8 dark:from-gray-900 dark:to-gray-800">
+      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg dark:bg-gray-800">
+        <div className="mb-8 flex justify-center">
+          <h1 className="text-4xl font-bold text-indigo-700 dark:text-indigo-400">
+            ECON 1500
+          </h1>
         </div>
-      </main>
-      <footer className="row-start-3 flex flex-wrap items-center justify-center gap-[24px]">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href={EXTERNAL_URLS.NEXTJS_LEARN}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src="/file.svg" alt="File icon" width={16} height={16} />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href={EXTERNAL_URLS.VERCEL_TEMPLATES}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src="/window.svg" alt="Window icon" width={16} height={16} />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href={EXTERNAL_URLS.NEXTJS_HOME}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src="/globe.svg" alt="Globe icon" width={16} height={16} />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        
+        <h2 className="mb-6 text-center text-3xl font-bold text-gray-800 dark:text-white">
+          Welcome to the Game
+        </h2>
+        
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <div>
+            <label htmlFor="name" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Your Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full rounded-lg border border-gray-300 p-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+              placeholder="Enter your name"
+              required
+            />
+          </div>
+          
+          <button
+            type="submit"
+            className="rounded-lg bg-indigo-600 px-5 py-3 text-center font-medium text-white shadow-md transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
+            disabled={!name.trim()}
+          >
+            Join Game
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
