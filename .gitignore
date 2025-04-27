@@ -64,3 +64,7 @@ next-env.d.ts
 *.njsproj
 *.sln
 *.sw?
+
+# Cursor files
+.cursor/*
+!.cursor/rules/

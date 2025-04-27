@@ -31,9 +31,17 @@ coverage/
 
 # Editor files
 .idea/
-.vscode/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
 *.swp
 *.swo
+
+# Cursor files
+.cursor/*
+!.cursor/rules/
 
 # Misc
 .DS_Store

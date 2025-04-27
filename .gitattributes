@@ -18,6 +18,7 @@
 # Config files
 *.yaml text eol=lf
 *.yml text eol=lf
+*.mdc text eol=lf
 
 # Binary files that should not be modified
 *.png binary
