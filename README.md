@@ -67,6 +67,8 @@ This project uses:
 - **ESLint**: For code quality and style enforcement
 - **Prettier**: For consistent code formatting
 - **TypeScript**: For type checking
+- **Husky**: For Git hooks to ensure code quality on commit
+- **lint-staged**: For running linters on staged files
 
 ### Configuration Files
 
@@ -75,6 +77,7 @@ This project uses:
 - `.gitignore`: Specifies files ignored by Git
 - `.prettierignore`: Specifies files ignored by Prettier
 - `.gitattributes`: Configures how Git handles different file types
+- `.husky/`: Contains Git hooks for pre-commit checks
 
 For more details on the ignore patterns and configuration, see the [Ignore Files Guide](./docs/ignore-files.md).
 
