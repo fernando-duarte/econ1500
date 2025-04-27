@@ -14,14 +14,4 @@ export const EXTERNAL_URLS = {
   NEXTJS_LEARN: `https://nextjs.org/learn?${UTM_PARAMS.CREATE_NEXT_APP}`,
   VERCEL_TEMPLATES: `https://vercel.com/templates?framework=next.js&${UTM_PARAMS.CREATE_NEXT_APP}`,
   NEXTJS_HOME: `https://nextjs.org?${UTM_PARAMS.CREATE_NEXT_APP}`,
-};
-
-// Tailwind spacing values
-export const SPACING = {
-  xs: '4px',
-  sm: '8px',
-  md: '16px',
-  lg: '24px',
-  xl: '32px',
-  '2xl': '48px',
 }; 

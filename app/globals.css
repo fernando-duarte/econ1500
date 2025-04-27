@@ -43,6 +43,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    /* Base colors */
     --background: #0a0a0a;
     --foreground: #ededed;
     --primary: #3b82f6;
@@ -54,6 +55,12 @@
     --accent: #1f1f1f;
     --accent-foreground: #ededed;
     --border: #333333;
+
+    /* Theme colors - dark mode overrides */
+    --hover-light: #f2f2f2; /* unchanged */
+    --hover-dark: #1a1a1a; /* unchanged */
+    --hover-primary-dark: #383838; /* unchanged */
+    --hover-primary-light: #ccc; /* unchanged */
   }
 }
 
