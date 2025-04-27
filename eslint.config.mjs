@@ -87,7 +87,59 @@ const eslintConfig = [
       "no-console": ["warn", { "allow": ["warn", "error"] }], // Warn about console.log in production
       "jsx-a11y/alt-text": "error", // Enforce alt text for accessibility
       "no-duplicate-imports": "error", // Prevent duplicate imports
-      "no-var": "error" // Prevent use of var
+      "no-var": "error", // Prevent use of var
+      
+      // Global max-lines rule as a baseline
+      "max-lines": ["warn", {
+        "max": 200,
+        "skipBlankLines": true,
+        "skipComments": true
+      }]
+    }
+  },
+  // Specific overrides for different file types
+  {
+    files: ["**/*.tsx", "**/*.jsx"],
+    rules: {
+      // Components can be up to 200 lines
+      "max-lines": ["warn", {
+        "max": 200,
+        "skipBlankLines": true,
+        "skipComments": true
+      }]
+    }
+  },
+  {
+    files: ["**/*.ts", "**/*.js"],
+    rules: {
+      // Utility files should be more concise (150 lines)
+      "max-lines": ["warn", {
+        "max": 150,
+        "skipBlankLines": true,
+        "skipComments": true
+      }]
+    }
+  },
+  {
+    files: ["**/test/**", "**/*.test.*", "**/*.spec.*"],
+    rules: {
+      // Test files can be longer (300 lines)
+      "max-lines": ["warn", {
+        "max": 300,
+        "skipBlankLines": true,
+        "skipComments": true
+      }]
+    }
+  },
+  {
+    files: ["**/page.tsx", "**/layout.tsx"],
+    rules: {
+      // Next.js page/layout components can be a bit longer (250 lines)
+      "max-lines": ["warn", {
+        "max": 250,
+        "skipBlankLines": true,
+        "skipComments": true
+      }]
     }
   }
 ];
