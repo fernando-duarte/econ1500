@@ -1,7 +1,8 @@
 @import "tailwindcss";
 
+/* Base theme */
 :root {
-  /* Base colors */
+  /* System colors */
   --background: #ffffff;
   --foreground: #171717;
   --primary: #0070f3;
@@ -14,36 +15,21 @@
   --accent-foreground: #171717;
   --border: #e5e5e5;
 
-  /* Theme colors */
+  /* Custom theme colors */
   --hover-light: #f2f2f2;
   --hover-dark: #1a1a1a;
   --hover-primary-dark: #383838;
   --hover-primary-light: #ccc;
-}
-
-/* Using the theme in a cleaner way that doesn't duplicate values */
-:root {
-  /* Main theme colors - referencing the base colors */
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-border: var(--border);
 
   /* Typography variables */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+/* Dark mode theme */
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Base colors */
+    /* System colors - dark theme */
     --background: #0a0a0a;
     --foreground: #ededed;
     --primary: #3b82f6;
@@ -56,11 +42,7 @@
     --accent-foreground: #ededed;
     --border: #333333;
 
-    /* Theme colors - dark mode overrides */
-    --hover-light: #f2f2f2; /* unchanged */
-    --hover-dark: #1a1a1a; /* unchanged */
-    --hover-primary-dark: #383838; /* unchanged */
-    --hover-primary-light: #ccc; /* unchanged */
+    /* Custom theme colors remain the same in dark mode */
   }
 }
 
