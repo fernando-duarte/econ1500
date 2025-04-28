@@ -18,8 +18,8 @@ export default defineConfig({
 
       // Add coverage configuration
       coverage: {
-        // Enable coverage collection
-        enabled: true,
+        // Enable coverage collection only when not skipped
+        enabled: process.env.PLAYWRIGHT_SKIP_COVERAGE !== 'true',
 
         // Enable global coverage (combines all tests into one report)
         global: true,
