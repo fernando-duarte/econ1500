@@ -144,12 +144,9 @@
     "@stylistic/ts/quotes": [0],
     "@typescript-eslint/lines-around-comment": [0],
     "@typescript-eslint/quotes": [0],
-    "babel/quotes": [0],
     "unicorn/template-indent": [0],
     "vue/html-self-closing": [0],
     "vue/max-len": [0],
-    "@babel/object-curly-spacing": [0],
-    "@babel/semi": [0],
     "@stylistic/array-bracket-newline": [0],
     "@stylistic/array-bracket-spacing": [0],
     "@stylistic/array-element-newline": [0],
@@ -333,8 +330,6 @@
     "@typescript-eslint/space-before-function-paren": [0],
     "@typescript-eslint/space-infix-ops": [0],
     "@typescript-eslint/type-annotation-spacing": [0],
-    "babel/object-curly-spacing": [0],
-    "babel/semi": [0],
     "flowtype/boolean-style": [0],
     "flowtype/delimiter-dangle": [0],
     "flowtype/generic-spacing": [0],
@@ -525,15 +520,7 @@
         "globalReturn": true
       },
       "requireConfigFile": false,
-      "allowImportExportEverywhere": true,
-      "babelOptions": {
-        "presets": {
-          "0": "next/babel"
-        },
-        "caller": {
-          "supportsTopLevelAwait": true
-        }
-      }
+      "allowImportExportEverywhere": true
     },
     "globals": {
       "__dirname": false,
