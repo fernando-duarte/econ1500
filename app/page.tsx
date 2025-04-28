@@ -11,8 +11,8 @@ export default function Home() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim()) {
-      // In a real app, you might store this in a session, cookie, or state management
-      localStorage.setItem("playerName", name);
+      // Trim whitespace before storing in localStorage
+      localStorage.setItem("playerName", name.trim());
       // Navigate to game page - you would create this page next
       router.push("/game");
     }
@@ -28,12 +28,12 @@ export default function Home() {
           Get Started
         </button>
       </Hero>
-      
+
       <div id="game-form" className="w-full max-w-md rounded-xl bg-white p-8 my-12 shadow-lg dark:bg-gray-800">
         <h2 className="mb-6 text-center text-3xl font-bold text-gray-800 dark:text-white">
           Join the Game
         </h2>
-        
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <div>
             <label htmlFor="name" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -49,7 +49,7 @@ export default function Home() {
               required
             />
           </div>
-          
+
           <button
             type="submit"
             className="rounded-lg bg-indigo-600 px-5 py-3 text-center font-medium text-white shadow-md transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"

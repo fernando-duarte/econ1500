@@ -44,7 +44,10 @@ export default function GamePage() {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="rounded-full bg-indigo-100 px-4 py-2 font-medium text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
+          <div
+            data-testid="player-name-display"
+            className="rounded-full bg-indigo-100 px-4 py-2 font-medium text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200"
+          >
             Player: {playerName}
           </div>
           <button
