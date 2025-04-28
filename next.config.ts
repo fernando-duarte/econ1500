@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -46,8 +47,8 @@ const nextConfig: NextConfig = {
   },
   // Turbopack configuration to mirror webpack settings
   turbopack: {
-    // Turbopack has built-in source map support in development
-    // No additional configuration needed for source maps
+    // Default resolve extensions to ensure module resolution works correctly
+    resolveExtensions: ['.tsx', '.ts', '.jsx', '.js', '.json', '.css'],
   },
 };
 
