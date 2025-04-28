@@ -20,6 +20,7 @@
     "test:e2e:debug": "playwright test --debug",
     "test": "PLAYWRIGHT_SKIP_COVERAGE=true playwright test",
     "test:coverage": "playwright test",
+    "test:form-validation": "playwright test form-validation.spec.ts --trace on",
     "coverage:show": "monocart show-report monocart-report/monocart-report.html",
     "coverage:serve": "http-server monocart-report -p 8090 --cors -o /coverage/index.html",
     "coverage:clean": "rimraf ./monocart-report/coverage ./monocart-report/assets ./monocart-report/monocart-report.* ./monocart-report/.last-run.json",
