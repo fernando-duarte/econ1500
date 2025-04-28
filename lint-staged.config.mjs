@@ -7,10 +7,12 @@ const buildEslintCommand = (filenames) =>
     .map((f) => relative(process.cwd(), f))
     .join(' --file ')}`;
 
-export default {
+const config = {
   // Run ESLint on JS, JSX, TS, and TSX files
   '*.{js,jsx,ts,tsx}': [buildEslintCommand],
   
   // Add Prettier formatting for other file types
   '*.{json,md,css}': ['prettier --write']
-}; 
+};
+
+export default config; 

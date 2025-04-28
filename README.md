@@ -70,6 +70,50 @@ This project uses:
 - **Husky**: For Git hooks to ensure code quality on commit
 - **lint-staged**: For running linters on staged files
 
+### Testing and Coverage
+
+This project uses:
+
+- **Playwright**: For end-to-end testing
+- **Monocart Reporter**: For test coverage analysis
+
+#### Running Tests with Coverage
+
+```bash
+# Run all tests with coverage
+npm run test:coverage
+
+# Run specific tests with coverage
+npm run test:coverage -- tests/your-test-file.spec.ts
+
+# Run tests with UI mode
+npm run test:coverage:ui
+```
+
+#### Viewing Coverage Reports
+
+```bash
+# View HTML coverage report in browser
+npm run coverage:show
+```
+
+#### Cleaning Coverage Data
+
+```bash
+# Clean up coverage data and reports
+npm run coverage:clean
+```
+
+#### Coverage Implementation Details
+
+- Coverage is only collected in Chromium browsers (not Firefox or WebKit)
+- Both JavaScript and CSS coverage are collected automatically
+- Custom fixture in `tests/fixtures/coverage.ts` handles the coverage collection
+- To use coverage in your tests, import from the fixtures:
+  ```typescript
+  import { test, expect } from "./fixtures/coverage";
+  ```
+
 ### Configuration Files
 
 - `eslint.config.mjs`: ESLint configuration
