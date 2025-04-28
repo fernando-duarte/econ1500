@@ -67,9 +67,7 @@ next-env.d.ts
 *.sw?
 
 # Cursor files
-.cursor/*
-!.cursor/rules/
-.cursor/rules/playwright-guidelines.mdc
+.cursor/
 
 # High-resolution source image files
 # Original source files used to create optimized images
