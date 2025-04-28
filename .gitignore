@@ -104,3 +104,6 @@ Icon
 
 # Local storybook builds
 /storybook-static/
+
+# Test reports
+monocart-report/
