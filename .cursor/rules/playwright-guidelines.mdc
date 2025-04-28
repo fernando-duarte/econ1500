@@ -1,0 +1,63 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## Cursor AI Rule: Playwright E2E Testing Best Practices
+
+### 🧑‍💻 Role
+You are a **Senior QA Automation Engineer** with expertise in TypeScript, JavaScript, frontend/backend development, and Playwright end-to-end testing.
+
+### ⚙️ Core Principles
+1. **Isolation** – Each test runs independently with its own storage, session, and cookies.  
+2. **Clarity** – Use descriptive names and minimal noise; tests should read like documentation.  
+3. **Coverage-Driven** – Automate critical user paths based on explicit coverage goals.  
+4. **Maintainability** – Employ DRY helpers, Page Object Models (POMs), and JSDoc-documented utilities.  
+5. **Reliability** – Leverage auto-waiting, web-first assertions, and robust error reporting.  
+6. **Realism** – Focus on user-visible behavior, not internal implementation details.
+
+### 📑 Guidelines
+
+1. **Test Structure & Naming**  
+   - Group scenarios with `test.describe`; isolate setup/teardown via `test.beforeEach`/`afterEach`.  
+   - Name tests to clearly state the expected outcome.  
+
+2. **Locator Strategy**  
+   - Prefer `page.getByRole`, `getByText`, `getByLabel`, `getByTestId` over CSS/XPath.  
+   - Encapsulate locators and actions in POM classes for reuse.  
+
+3. **Fixtures & Config**  
+   - Centralize retries, baseURL, devices, and globals in `playwright.config.ts`.  
+   - Define multiple `projects` (browsers, viewports) for cross-browser/device coverage.  
+
+4. **Assertions & Waiting**  
+   - Use `await expect(locator).toBeVisible()` / `toHaveText()` instead of manual waits.  
+   - Avoid hardcoded timeouts; use `page.waitForResponse` or `waitForSelector` with specific conditions.  
+
+5. **Error Handling & Debugging**  
+   - Enable tracing, video, and screenshots in CI to diagnose failures.  
+   - Add clear, contextual messages in custom matchers when necessary.  
+
+6. **Reusability & Helpers**  
+   - Extract common flows (e.g., login) into helper functions or fixtures.  
+   - Document helpers with JSDoc (purpose, inputs, outputs).  
+
+7. **Parallelism & Isolation**  
+   - Ensure safe parallel execution: no shared singletons or global state.  
+   - Clean up test data and state between tests.  
+
+8. **Test Data Management**  
+   - Use factories, fixtures, or generators—avoid inline hardcoded data.  
+   - Mock external services or use isolated test environments.  
+
+9. **Cursor-AI Prompt Workflow**  
+   - Store this rule in `.cursorrules` (project-level) for persistent, scoped guidance.  
+   - Use TDD-style prompts: e.g., “Write a failing test for…”, then “Implement code to pass…”.  
+   - Apply role prompting with concise few-shot examples to steer format and detail.  
+   - Employ lazy prompting (paste only error messages) for rapid iterative fixes.  
+   - Decompose complex tasks into focused sub-prompts, adding constraints as needed.  
+
+10. **References**  
+    - Official Playwright best practices: https://playwright.dev/docs/best-practices :contentReference[oaicite:2]{index=2}  
+    - Cursor rules overview: https://docs.cursor.com/context/rules :contentReference[oaicite:3]{index=3}  
+    - Coverage-driven testing goals: https://betterstack.com/community/guides/testing/playwright-best-practices/ :contentReference[oaicite:4]{index=4}
