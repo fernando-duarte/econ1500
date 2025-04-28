@@ -10,13 +10,13 @@ export default function GamePage() {
   useEffect(() => {
     // Retrieve player name from localStorage
     const storedName = localStorage.getItem("playerName");
-    
+
     // If no name exists, redirect back to login
     if (!storedName) {
       router.push("/");
       return;
     }
-    
+
     setPlayerName(storedName);
   }, [router]);
 
@@ -40,9 +40,9 @@ export default function GamePage() {
           <h1 className="text-3xl font-bold text-indigo-700 dark:text-indigo-400">
             ECON 1500
           </h1>
-          <span className="text-2xl font-bold text-gray-800 dark:text-white">Game Dashboard</span>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Game Dashboard</h2>
         </div>
-        
+
         <div className="flex items-center gap-4">
           <div className="rounded-full bg-indigo-100 px-4 py-2 font-medium text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
             Player: {playerName}
@@ -55,7 +55,7 @@ export default function GamePage() {
           </button>
         </div>
       </header>
-      
+
       <main className="flex flex-1 flex-col items-center justify-center">
         <div className="w-full max-w-4xl rounded-xl bg-white p-8 shadow-lg dark:bg-gray-800">
           <h2 className="mb-6 text-center text-2xl font-bold text-gray-800 dark:text-white">
