@@ -8,7 +8,10 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   
   reporter: [
-    ['html'],
+    // Standard Playwright HTML reporter
+    ['html', { outputFolder: './test-results/playwright-report' }],
+    
+    // Monocart reporter with consolidated paths
     ['monocart-reporter', {
       name: "ECON1500 Test Report with Coverage",
       outputFile: './test-results/monocart-report.html',
@@ -24,17 +27,18 @@ export default defineConfig({
         // Set outputDir to ensure all assets are properly generated
         outputDir: './test-results/coverage',
         
-        // Note: Monocart primarily generates its own HTML report at test-results/coverage/index.html
-        // Other report formats can be configured but may require additional setup
+        // Ensure assets are placed directly in the coverage directory
+        assetsDir: './test-results/coverage/assets',
+        
         reporter: [
           ['v8', {
-            inline: true, // Include all assets inline
-            assetsDir: 'assets' // Specify assets directory
+            inline: true,
+            assetsDir: './test-results/coverage/assets' // Explicitly set assets location
           }],
-          'html',    // Generated at test-results/coverage/index.html
-          'text',    // Console output
-          'lcov',    // For integration with other tools
-          'json'     // For data processing
+          'html',
+          'text',
+          'lcov',
+          'json'
         ],
         
         // Include patterns - based on actual codebase structure

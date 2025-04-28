@@ -19,9 +19,10 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "test:coverage": "playwright test",
-    "test:coverage:ui": "playwright test --ui",
-    "coverage:show": "npx monocart show-report ./test-results/coverage/index.html",
-    "coverage:clean": "rimraf ./test-results/coverage"
+    "coverage:show": "monocart show-report test-results/coverage/index.html",
+    "coverage:clean": "rimraf ./test-results/coverage ./test-results/assets ./test-results/monocart-report.* ./test-results/.last-run.json",
+    "test:clean": "rimraf ./test-results ./playwright-report && npx playwright clear-cache",
+    "test:clean:all": "npm run test:clean && npm run coverage:clean && rimraf ./.nyc_output ./coverage"
   },
   "lint-staged": {
     "config": "lint-staged.config.mjs"
