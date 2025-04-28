@@ -36,6 +36,19 @@ const nextConfig: NextConfig = {
       ],
     },
   ],
+  // Configure webpack for full source maps in development
+  webpack: (config, { dev }) => {
+    // Enable full source maps for development mode
+    if (dev) {
+      config.devtool = 'source-map';
+    }
+    return config;
+  },
+  // Turbopack configuration to mirror webpack settings
+  turbopack: {
+    // Turbopack has built-in source map support in development
+    // No additional configuration needed for source maps
+  },
 };
 
 export default nextConfig;
