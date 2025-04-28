@@ -84,3 +84,23 @@ next-env.d.ts
 *.fig
 # Source files in hero directory by pattern
 /public/hero/*_remix_*.png
+
+# macOS specific
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Husky build outputs
+.husky/_/husky.sh
+
+# Temporary development files
+*.tmp
+*.temp
+.temp/
+
+# Browser history and cache
+.history/
+
+# Local storybook builds
+/storybook-static/
