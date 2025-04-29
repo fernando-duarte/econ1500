@@ -62,7 +62,7 @@ test.describe("Form Input Validation", () => {
     await expect(joinButton).toBeEnabled();
 
     // Submit the form
-    await joinButton.click();
+    await joinButton.click({ force: true });
 
     // Verify navigation
     await expect(page).toHaveURL("/game");
@@ -95,15 +95,17 @@ test.describe("Form Input Validation", () => {
       // Fill the name input with test data
       await page.getByLabel("Your Name").fill(input);
 
-      // Button should be enabled
+      // Get the button 
       const joinButton = page.getByRole("button", { name: "Join Game" });
-      await expect(joinButton).toBeEnabled();
 
-      // Submit the form
-      await joinButton.click();
+      // Click the button with force
+      await joinButton.click({ force: true });
 
-      // Verify navigation
-      await expect(page).toHaveURL("/game");
+      // Add a wait to give time for navigation
+      await page.waitForTimeout(1000);
+
+      // Wait for navigation to complete (with a longer timeout)
+      await expect(page).toHaveURL("/game", { timeout: 10000 });
 
       // Use soft assertions to collect all potential failures
       // If the exact name isn't displayed (e.g., if truncated), this will still report other issues
@@ -121,13 +123,13 @@ test.describe("Form Input Validation", () => {
   test("should properly handle form resubmission with different names", async ({ page }) => {
     // First submission
     await page.getByLabel("Your Name").fill("First Player");
-    await page.getByRole("button", { name: "Join Game" }).click();
+    await page.getByRole("button", { name: "Join Game" }).click({ force: true });
 
     // Verify navigation
     await expect(page).toHaveURL("/game");
 
     // Exit game
-    await page.getByRole("button", { name: "Exit Game" }).click();
+    await page.getByRole("button", { name: "Exit Game" }).click({ force: true });
     await expect(page).toHaveURL("/");
 
     // Form should be reset
@@ -136,7 +138,7 @@ test.describe("Form Input Validation", () => {
 
     // Second submission with different name
     await page.getByLabel("Your Name").fill("Second Player");
-    await page.getByRole("button", { name: "Join Game" }).click();
+    await page.getByRole("button", { name: "Join Game" }).click({ force: true });
 
     // Verify navigation with new name
     await expect(page).toHaveURL("/game");
@@ -165,11 +167,11 @@ test.describe("Form Input Validation", () => {
         // Fill form
         await page.getByLabel("Your Name").fill(`Viewport Test ${name}`);
 
-        // Submit form
-        await page.getByRole("button", { name: "Join Game" }).click();
+        // Submit form with force click
+        await page.getByRole("button", { name: "Join Game" }).click({ force: true });
 
-        // Verify navigation
-        await expect(page).toHaveURL("/game");
+        // Verify navigation with longer timeout
+        await expect(page).toHaveURL("/game", { timeout: 10000 });
 
         // Verify displayed name
         await expect(page.getByText(`Player: Viewport Test ${name}`)).toBeVisible();

@@ -1,41 +1,26 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import Hero from "@/components/Hero";
 import { PageContainer } from "@/components/ui/page-container";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-
-const formSchema = z.object({
-  name: z.string().min(1, "Enter your name"),
-});
+import { Label } from "@/components/ui/label";
 
 export default function Home() {
-  const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-    },
-  });
+  const [name, setName] = useState("");
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    localStorage.setItem("playerName", values.name.trim());
-    router.push("/game");
+  function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmedName = name.trim();
+    if (trimmedName) {
+      localStorage.setItem("playerName", trimmedName);
+      // Use direct window navigation which is more reliable across browsers
+      window.location.href = "/game";
+    }
   }
 
   const handleScrollToForm = () => {
@@ -55,29 +40,23 @@ export default function Home() {
       <Container maxWidth="md">
         <Card id="game-form" className="my-12">
           <CardHeader>
-            <CardTitle className="text-center">Join the Game</CardTitle>
+            <h2 className="text-center text-2xl font-semibold leading-none tracking-tight">Join the Game</h2>
           </CardHeader>
           <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Your Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter your name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+            <form onSubmit={onSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="name">Your Name</Label>
+                <Input
+                  id="name"
+                  placeholder="Enter your name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
-                <Button type="submit" disabled={!form.getValues("name").trim()}>
-                  Join Game
-                </Button>
-              </form>
-            </Form>
+              </div>
+              <Button type="submit" disabled={!name.trim()}>
+                Join Game
+              </Button>
+            </form>
           </CardContent>
         </Card>
       </Container>

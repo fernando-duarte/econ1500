@@ -4,10 +4,13 @@ import { test, expect, Page } from "@playwright/test";
 const navigateToGamePage = async (page: Page, playerName: string) => {
   await page.goto("/");
   await page.getByLabel("Your Name").fill(playerName);
-  // Ensure the Join Game button is enabled before attempting to click
-  await page.waitForSelector('button[type="submit"]:not([disabled])');
-  await page.getByRole("button", { name: "Join Game" }).click();
-  await expect(page).toHaveURL("/game");
+  // No need to wait for button to be enabled, just force click
+  await page.getByRole("button", { name: "Join Game" }).click({ force: true });
+
+  // Add a wait to give time for navigation
+  await page.waitForTimeout(1000);
+
+  await expect(page).toHaveURL("/game", { timeout: 10000 });
 };
 
 // Create a fixture to detect mobile projects

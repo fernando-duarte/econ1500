@@ -88,7 +88,7 @@ export default defineConfig({
   ],
 
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:3001",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
   },
@@ -116,10 +116,13 @@ export default defineConfig({
     },
   ],
 
+  // Comment out webServer configuration since we're running the server separately
+  /*
   webServer: {
     command: "npm run dev",
-    url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
+    url: "http://localhost:3001",
+    reuseExistingServer: true,
     timeout: 120 * 1000, // Next.js can take longer to start, especially with coverage
   },
+  */
 });
