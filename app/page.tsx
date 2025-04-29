@@ -40,7 +40,9 @@ export default function Home() {
       <Container maxWidth="md">
         <Card id="game-form" className="my-12">
           <CardHeader>
-            <h2 className="text-center text-2xl font-semibold leading-none tracking-tight">Join the Game</h2>
+            <h2 className="text-center text-2xl leading-none font-semibold tracking-tight">
+              Join the Game
+            </h2>
           </CardHeader>
           <CardContent>
             <form onSubmit={onSubmit} className="space-y-6">
