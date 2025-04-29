@@ -39,7 +39,7 @@ export default function Home() {
   }
 
   const handleScrollToForm = () => {
-    document.getElementById('game-form')?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById("game-form")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -49,9 +49,7 @@ export default function Home() {
       </div>
 
       <Hero>
-        <Button onClick={handleScrollToForm}>
-          Get Started
-        </Button>
+        <Button onClick={handleScrollToForm}>Get Started</Button>
       </Hero>
 
       <Container maxWidth="md">
@@ -75,10 +73,7 @@ export default function Home() {
                     </FormItem>
                   )}
                 />
-                <Button
-                  type="submit"
-                  disabled={!form.getValues("name").trim()}
-                >
+                <Button type="submit" disabled={!form.getValues("name").trim()}>
                   Join Game
                 </Button>
               </form>

@@ -41,14 +41,14 @@ const nextConfig: NextConfig = {
   webpack: (config, { dev }) => {
     // Enable full source maps for development mode
     if (dev) {
-      config.devtool = 'source-map';
+      config.devtool = "source-map";
     }
     return config;
   },
   // Turbopack configuration to mirror webpack settings
   turbopack: {
     // Default resolve extensions to ensure module resolution works correctly
-    resolveExtensions: ['.tsx', '.ts', '.jsx', '.js', '.json', '.css'],
+    resolveExtensions: [".tsx", ".ts", ".jsx", ".js", ".json", ".css"],
   },
 };
 

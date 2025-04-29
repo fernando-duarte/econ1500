@@ -18,7 +18,9 @@ const Hero: FC<HeroProps> = ({
   className,
 }) => {
   return (
-    <div className={cn("relative h-[50vh] md:h-[60vh] lg:h-[70vh] w-full overflow-hidden", className)}>
+    <div
+      className={cn("relative h-[50vh] w-full overflow-hidden md:h-[60vh] lg:h-[70vh]", className)}
+    >
       {/* Hero Image */}
       <Image
         src="/hero/economy-hero.png"
@@ -30,14 +32,10 @@ const Hero: FC<HeroProps> = ({
       />
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent flex flex-col items-start justify-center p-8 md:p-12 lg:p-16">
+      <div className="absolute inset-0 flex flex-col items-start justify-center bg-gradient-to-r from-black/70 to-transparent p-8 md:p-12 lg:p-16">
         <div className="max-w-2xl">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-            {title}
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-200 mb-8">
-            {subtitle}
-          </p>
+          <h1 className="mb-4 text-4xl font-bold text-white md:text-5xl lg:text-6xl">{title}</h1>
+          <p className="mb-8 text-xl text-gray-200 md:text-2xl">{subtitle}</p>
           {children}
         </div>
       </div>
@@ -45,4 +43,4 @@ const Hero: FC<HeroProps> = ({
   );
 };
 
-export default Hero; 
+export default Hero;

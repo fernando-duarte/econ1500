@@ -1,11 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* Base theme - Light mode */
 :root {
   /* System colors */
-  --background: #f57c00;
+  --background: hsl(0, 0%, 100%);
   /* warm orange */
   --foreground: #3e2723;
   /* dark brown for readability */

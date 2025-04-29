@@ -33,7 +33,7 @@ export default function GamePage() {
   if (!playerName) {
     return (
       <PageContainer className="items-center justify-center">
-        <div className="h-16 w-16 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div>
+        <div className="border-primary h-16 w-16 animate-spin rounded-full border-t-2 border-b-2"></div>
       </PageContainer>
     );
   }
@@ -43,16 +43,14 @@ export default function GamePage() {
       <Container maxWidth="full" className="p-8">
         <header className="mb-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <h1 className="text-3xl font-bold text-primary">
-              ECON 1500
-            </h1>
+            <h1 className="text-primary text-3xl font-bold">ECON 1500</h1>
             <h2 className="text-2xl font-bold">Game Dashboard</h2>
           </div>
 
           <div className="flex items-center gap-4">
             <div
               data-testid="player-name-display"
-              className="rounded-full bg-muted/20 px-4 py-2 font-medium text-foreground"
+              className="bg-muted/20 text-foreground rounded-full px-4 py-2 font-medium"
             >
               Player: {playerName}
             </div>
@@ -69,7 +67,7 @@ export default function GamePage() {
               <CardTitle className="text-center">Game Content Goes Here</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-center text-muted-foreground">
+              <p className="text-muted-foreground text-center">
                 Welcome, {playerName}! This is where the actual game content would be displayed.
               </p>
             </CardContent>
@@ -78,4 +76,4 @@ export default function GamePage() {
       </Container>
     </PageContainer>
   );
-} 
+}
