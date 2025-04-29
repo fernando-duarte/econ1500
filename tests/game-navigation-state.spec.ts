@@ -29,7 +29,7 @@ test.describe('Game Navigation and State Persistence', () => {
         await navigateToGamePage(page, uniquePlayerName);
 
         // Verify game page loaded with player name
-        await expect(page.getByText(`Player: ${uniquePlayerName}`)).toBeVisible();
+        await expect(page.locator('[data-testid="player-name-display"]')).toContainText(`Player: ${uniquePlayerName}`);
 
         // Open a new tab in the same context (shares localStorage)
         const newPage = await context.newPage();
@@ -43,7 +43,7 @@ test.describe('Game Navigation and State Persistence', () => {
 
         // Should be on game page with the player name visible
         await expect(newPage).toHaveURL('/game');
-        await expect(newPage.getByText(`Player: ${uniquePlayerName}`)).toBeVisible();
+        await expect(newPage.locator('[data-testid="player-name-display"]')).toContainText(`Player: ${uniquePlayerName}`);
 
         // Close the new tab
         await newPage.close();
@@ -69,8 +69,8 @@ test.describe('Game Navigation and State Persistence', () => {
         await expect(page.getByRole('heading', { name: 'Game Dashboard' })).toBeVisible();
 
         // Verify the player name is displayed
-        const playerNameElement = page.locator('div:has-text("Player: ' + uniquePlayerName + '")').first();
-        await expect(playerNameElement).toBeVisible();
+        await expect(page.locator('[data-testid="player-name-display"]')).toBeVisible();
+        await expect(page.locator('[data-testid="player-name-display"]')).toContainText(`Player: ${uniquePlayerName}`);
     });
 
     test('should clear session properly when using browser navigation buttons', async ({ page }) => {
@@ -78,7 +78,7 @@ test.describe('Game Navigation and State Persistence', () => {
         await navigateToGamePage(page, uniquePlayerName);
 
         // Verify game page loaded
-        await expect(page.getByText(`Player: ${uniquePlayerName}`)).toBeVisible();
+        await expect(page.locator('[data-testid="player-name-display"]')).toContainText(`Player: ${uniquePlayerName}`);
 
         // Navigate back using browser history
         await page.goBack();
@@ -148,11 +148,8 @@ test.describe('Multiple Browser Sessions', () => {
         await page2.getByRole('button', { name: 'Join Game' }).click();
 
         // Basic verification only
-        const player1Element = page1.locator('div:has-text("Player: ' + player1Name + '")').first();
-        await expect(player1Element).toBeVisible();
-
-        const player2Element = page2.locator('div:has-text("Player: ' + player2Name + '")').first();
-        await expect(player2Element).toBeVisible();
+        await expect(page1.locator('[data-testid="player-name-display"]')).toContainText(`Player: ${player1Name}`);
+        await expect(page2.locator('[data-testid="player-name-display"]')).toContainText(`Player: ${player2Name}`);
 
         // Clean up
         await context1.close();

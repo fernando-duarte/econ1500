@@ -103,7 +103,8 @@ test.describe('Form Input Validation', () => {
 
             // Use soft assertions to collect all potential failures
             // If the exact name isn't displayed (e.g., if truncated), this will still report other issues
-            await expect.soft(page.locator(`div:has-text("Player: ${expected.substring(0, 30)}")`)).toBeVisible();
+            await expect.soft(page.locator('[data-testid="player-name-display"]')).toBeVisible();
+            await expect.soft(page.locator('[data-testid="player-name-display"]')).toContainText(`Player: ${expected.substring(0, 30)}`);
 
             // Verify localStorage
             const storedName = await page.evaluate(() => localStorage.getItem('playerName'));
@@ -133,7 +134,7 @@ test.describe('Form Input Validation', () => {
 
         // Verify navigation with new name
         await expect(page).toHaveURL('/game');
-        await expect(page.getByText('Player: Second Player')).toBeVisible();
+        await expect(page.locator('[data-testid="player-name-display"]')).toContainText('Player: Second Player');
 
         // Verify localStorage has updated value
         const storedName = await page.evaluate(() => localStorage.getItem('playerName'));

@@ -74,6 +74,12 @@ export default defineConfig({
           'internal/**',
           'runtime.ts',
         ],
+
+        // Add ignoreSourceMaps property to ignore specific files
+        ignoreSourceMaps: [
+          'internal/helpers.ts',
+          'runtime.ts'
+        ]
       }
     }]
   ],
