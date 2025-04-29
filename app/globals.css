@@ -1,26 +1,117 @@
 @import "tailwindcss";
 
+/* Base theme - Light mode */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* System colors */
+  --background: hsl(0, 0%, 100%);
+  /* warm orange */
+  --foreground: #3e2723;
+  /* dark brown for readability */
+  --primary: #ffeb3b;
+  /* bright yellow from hammer & sickle */
+  --primary-foreground: #3e2723;
+  /* text on yellow */
+  --secondary: #8caa7e;
+  /* muted green from foliage */
+  --secondary-foreground: #ffffff;
+  /* text on green */
+  --muted: #e65100;
+  /* deep orange for muted elements */
+  --muted-foreground: #ffffff;
+  /* text on deep orange */
+  --accent: #d32f2f;
+  /* flag-red accent */
+  --accent-foreground: #ffffff;
+  /* text on red */
+  --border: #ffb74d;
+  /* light amber border */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Custom theme hovers */
+  --hover-light: #ffb74d;
+  /* lighten on background hover */
+  --hover-dark: #e65100;
+  /* darken on background active */
+  --hover-primary-dark: #fbc02d;
+  /* darker yellow hover */
+  --hover-primary-light: #fff176;
+  /* lighter yellow hover */
+
+  /* Add Shadcn UI required variables */
+  --card: #ffffff;
+  --card-foreground: var(--foreground);
+  --popover: #ffffff;
+  --popover-foreground: var(--foreground);
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --input: var(--border);
+  --ring: var(--primary);
+
+  /* Add radius variable for Shadcn */
+  --radius: 0.75rem;
+
+  /* Typography variables - keep Geist font */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Dark mode theme */
+.dark {
+  /* System colors - dark theme */
+  --background: #212121;
+  /* almost-black canvas */
+  --foreground: #fff8e1;
+  /* soft cream text */
+  --primary: #ffc107;
+  /* amber highlight */
+  --primary-foreground: #212121;
+  /* text on amber */
+  --secondary: #8caa7e;
+  /* same muted green */
+  --secondary-foreground: #212121;
+  /* text on green */
+  --muted: #37474f;
+  /* blue-grey for muted */
+  --muted-foreground: #b0bec5;
+  /* light grey text */
+  --accent: #d32f2f;
+  /* same flag-red accent */
+  --accent-foreground: #fff8e1;
+  /* cream text on red */
+  --border: #616161;
+  /* mid-grey border */
+
+  /* Add Shadcn UI required dark mode variables */
+  --card: #1e1e1e;
+  --card-foreground: var(--foreground);
+  --popover: #1e1e1e;
+  --popover-foreground: var(--foreground);
+  --destructive: #f43f5e;
+  --destructive-foreground: #fff8e1;
+  --input: var(--border);
+  --ring: var(--primary);
+}
+
+@layer utilities {
+  .bg-gradient-page {
+    @apply bg-gradient-to-b from-[var(--background)] to-[color:oklch(from_oklch(var(--background))_calc(l-0.05)_calc(c+0.02)_h)];
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-[var(--border)];
+  }
+
+  body {
+    @apply bg-[var(--background)] text-[var(--foreground)];
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+  }
+}
+
+/* Enable smoother font rendering */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

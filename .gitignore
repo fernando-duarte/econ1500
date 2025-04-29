@@ -12,10 +12,15 @@
 
 # testing
 /coverage
+/coverage-reports/
+/test-results/
+/playwright-report/
+/.nyc_output/
 
 # next.js
 /.next/
 /out/
+/dist/
 
 # production
 /build
@@ -23,15 +28,19 @@
 # misc
 .DS_Store
 *.pem
+Thumbs.db
 
-# debug
+# debug and logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+*.log
 
-# env files (can opt-in for committing if needed)
+# local env files (can opt-in for committing if needed)
 .env*
+!.env.example
+!.env.template
 
 # vercel
 .vercel
@@ -39,3 +48,62 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# cache
+.eslintcache
+.turbo
+.cache
+.swc/
+
+# IDE specific files
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Cursor files
+.cursor/
+
+# High-resolution source image files
+# Original source files used to create optimized images
+/src-images/
+# Specific source files by naming pattern
+*_source.*
+*_original.*
+*_raw.*
+# Original large PSD/AI/Figma export images
+*.psd
+*.ai
+*.fig
+# Source files in hero directory by pattern
+/public/hero/*_remix_*.png
+
+# macOS specific
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Husky build outputs
+.husky/_/husky.sh
+
+# Temporary development files
+*.tmp
+*.temp
+.temp/
+
+# Browser history and cache
+.history/
+
+# Local storybook builds
+/storybook-static/
+
+# Test reports
+monocart-report/

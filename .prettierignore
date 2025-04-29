@@ -1,0 +1,51 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.*
+.yarn/*
+
+# Next.js build output
+.next/
+out/
+build/
+dist/
+
+# Cache and logs
+.eslintcache
+.vercel
+.turbo
+*.log
+
+# Config files
+next-env.d.ts
+next.config.js
+tailwind.config.js
+postcss.config.mjs
+
+# Public assets
+public/
+
+# Coverage reports
+coverage/
+test-results/
+playwright-report/
+
+# Editor files
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.swp
+*.swo
+
+# Cursor files
+.cursor/*
+!.cursor/rules/
+
+# Misc
+.DS_Store
+*.pem
+.env*
+!.env.example 
