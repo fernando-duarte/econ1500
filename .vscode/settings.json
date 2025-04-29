@@ -16,5 +16,8 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
   },
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "css.validate": false,
+  "tailwindCSS.validate": true,
+  "css.lint.unknownAtRules": "ignore"
 }
