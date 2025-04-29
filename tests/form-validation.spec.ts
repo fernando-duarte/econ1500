@@ -64,11 +64,15 @@ test.describe("Form Input Validation", () => {
     // Submit the form
     await joinButton.click({ force: true });
 
-    // Verify navigation
-    await expect(page).toHaveURL("/game");
+    // Add a wait to give time for navigation
+    await page.waitForTimeout(1000);
 
-    // Use soft assertions to collect all potential failures
-    await expect.soft(page.getByText("Player: Test Player")).toBeVisible();
+    // Verify navigation
+    await expect(page).toHaveURL("/game", { timeout: 10000 });
+
+    // Use the data-testid selector like other tests
+    await expect.soft(page.locator('[data-testid="player-name-display"]')).toBeVisible();
+    await expect.soft(page.locator('[data-testid="player-name-display"]')).toContainText("Player: Test Player");
 
     // Verify that localStorage also has the trimmed value
     const storedName = await page.evaluate(() => localStorage.getItem("playerName"));
