@@ -15,7 +15,8 @@
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css}\"",
     "type-check": "tsc --noEmit",
     "analyze": "ANALYZE=true next build",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test --reporter=list",
+    "test:e2e:cov": "playwright test"
   },
   "lint-staged": {
     "config": "lint-staged.config.mjs"
