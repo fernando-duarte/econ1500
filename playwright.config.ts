@@ -22,26 +22,8 @@ export default defineConfig({
     workers: process.env.CI ? 1 : undefined,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: [
-        ['html'], // Keep the default HTML reporter
-        ['monocart-reporter', {
-            name: "E2E Coverage Report (monocart)",
-            outputFile: './monocart-report/index.html', // Output path for the report
-            sourcePath: './' // Project root for source mapping
-            // Consider adding coverage thresholds or other options later if needed
-            // coverage: {
-            //     v8: true, // Ensure V8 coverage data is used (often default for Playwright)
-            //     reports: [
-            //         'v8',
-            //         'codecov',
-            //         'html'
-            //     ],
-            //     // Example thresholds (optional)
-            //     // thresholds: {
-            //     //     global: { statements: 80, branches: 70, functions: 75, lines: 80 },
-            //     //     file: { statements: 70, branches: 60, functions: 65, lines: 70 }
-            //     // }
-            // }
-        }]
+        ['html'], // Default HTML reporter
+        // Monocart reporter will be configured when needed
     ],
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     use: {

@@ -1,73 +1,10 @@
-"use client";
-
-import { useState } from "react";
-import Link from "next/link";
-import Hero from "@/components/Hero";
-import { PageContainer } from "@/components/ui/page-container";
-import { Container } from "@/components/ui/container";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { ThemeSelector } from "@/components/ui/theme-selector";
-import { Label } from "@/components/ui/label";
-
+/**
+ * Homepage - Simple Hello World page
+ */
 export default function Home() {
-  const [name, setName] = useState("");
-
-  function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const trimmedName = name.trim();
-    if (trimmedName) {
-      localStorage.setItem("playerName", trimmedName);
-      // Use direct window navigation which is more reliable across browsers
-      window.location.href = "/game";
-    }
-  }
-
-  const handleScrollToForm = () => {
-    document.getElementById("game-form")?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
-    <PageContainer>
-      <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-        <Link href="/theme-showcase" className="text-sm text-foreground hover:underline">
-          Theme Showcase
-        </Link>
-        <ThemeSelector />
-        <ThemeToggle />
-      </div>
-
-      <Hero>
-        <Button onClick={handleScrollToForm}>Get Started</Button>
-      </Hero>
-
-      <Container maxWidth="md">
-        <Card id="game-form" className="my-12">
-          <CardHeader>
-            <h2 className="text-center text-2xl leading-none font-semibold tracking-tight">
-              Join the Game
-            </h2>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={onSubmit} className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="name">Your Name</Label>
-                <Input
-                  id="name"
-                  placeholder="Enter your name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <Button type="submit" disabled={!name.trim()}>
-                Join Game
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </Container>
-    </PageContainer>
-  );
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <h1 className="text-4xl font-bold">Hello World!</h1>
+    </div>
+  )
 }

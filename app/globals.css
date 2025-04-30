@@ -106,19 +106,6 @@
     --sidebar-ring: oklch(0.551 0.027 264.364);
   }
 
-  /* Data-theme custom themes */
-  [data-theme="blue"] {
-    color-scheme: light;
-  }
-
-  [data-theme="green"] {
-    color-scheme: light;
-  }
-
-  [data-theme="purple"] {
-    color-scheme: light;
-  }
-
   * {
     @apply outline-ring/50 border-[var(--border)];
   }

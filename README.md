@@ -143,54 +143,40 @@ For setting up environment variables, refer to the [Environment Variables Templa
 
 ## Theme System
 
-This project implements a comprehensive theming system with the following features:
+This project uses `next-themes` for handling light and dark mode:
 
-### Theme Features
-
-- **Multiple Predefined Themes**: Default, Dark, Blue, Green, and Purple themes
-- **Complete Aesthetic Package**: Each theme includes colors, fonts, font sizes, and border radius
-- **Custom Google Fonts**: Each theme can load its own set of fonts from Google Fonts
-- **CSS Variables**: All theme properties are exposed as CSS variables for easy use
-- **Tailwind Integration**: Theme variables are integrated with Tailwind CSS
-- **Dark Mode Support**: Integration with next-themes for system-based dark mode
-- **Theme Persistence**: Selected theme is saved to localStorage
-
-### Theme Components
-
-- **Theme Selector**: A dropdown component to switch between themes
-- **Theme Toggle**: A button to toggle between light and dark modes
-- **Theme Showcase**: A page at `/theme-showcase` that displays all theme elements
+- **Light & Dark Mode**: Automatically switches based on system preferences or user selection
+- **CSS Variables**: Theme colors are defined as CSS variables in `app/globals.css`
+- **Tailwind Integration**: Theme colors are accessible through Tailwind classes
+- **Persistence**: Theme preference is saved to localStorage
 
 ### Theme Implementation
 
 The theme system is implemented in the following files:
 
-- `lib/theme-system.tsx`: Core theme functionality, theme definitions, and provider
-- `components/ui/theme-selector.tsx`: Theme dropdown component
-- `components/ui/theme-toggle.tsx`: Dark mode toggle component
-- `app/globals.css`: CSS variables and base styles
-- `tailwind.config.mjs`: Tailwind configuration to use theme variables
-- `app/theme-showcase/page.tsx`: Page demonstrating all theme elements
+- `components/theme-provider.tsx`: Thin wrapper around next-themes
+- `app/globals.css`: CSS variables for light and dark modes
+- `tailwind.config.mjs`: Tailwind configuration that references theme variables
 
 ### Using the Theme System
 
-To use the theme in your components:
+To access theme information in your components:
 
 ```tsx
-// Import the useTheme hook
-import { useTheme } from "@/lib/theme-system";
+"use client";
+
+import { useTheme } from "next-themes";
 
 export function MyComponent() {
-  // Access the current theme
   const { theme, setTheme } = useTheme();
 
   return (
     <div>
-      <h1>Current theme: {theme.label}</h1>
-      <button onClick={() => setTheme("blue")}>Switch to Blue Theme</button>
+      <h1>Current theme: {theme}</h1>
+      <button onClick={() => setTheme("dark")}>Switch to Dark Theme</button>
+      <button onClick={() => setTheme("light")}>Switch to Light Theme</button>
+      <button onClick={() => setTheme("system")}>Use System Preference</button>
     </div>
   );
 }
 ```
-
-To add a new theme, update the `themes` object in `lib/theme-system.tsx`.
