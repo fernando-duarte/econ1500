@@ -6,21 +6,27 @@ export default {
     "./components/ui/**/*.{js,ts,jsx,tsx}",
     "./lib/**/*.{js,ts,jsx,tsx}",
     "./utils/**/*.{js,ts,jsx,tsx}",
+    // Exclude test files to improve build performance
+    "!**/*.{spec,test,stories}.{js,ts,jsx,tsx}",
   ],
   // Enable class-based dark mode
   darkMode: 'class',
-  // Safelist for dynamically generated classes
+  // Safelist for dynamically generated classes - using patterns for better maintainability
   safelist: [
-    'bg-primary',
-    'text-primary',
-    'bg-secondary',
-    'text-secondary',
-    'bg-accent',
-    'text-accent',
+    {
+      pattern: /^(bg|text)-(primary|secondary|accent)$/,
+      variants: ['hover', 'focus'],
+    }
   ],
   // Enable upcoming Tailwind features
   future: {
     hoverOnlyWhenSupported: true,
+    respectDefaultRingColorOpacity: true,
+    disableColorOpacityUtilitiesByDefault: true,
+  },
+  // Disable unused core plugins to reduce bundle size
+  corePlugins: {
+    container: false, // Assuming you're not using container utilities
   },
   theme: {
     // Define explicit screen breakpoints
@@ -31,6 +37,7 @@ export default {
       'lg': '1024px',
       'xl': '1280px',
       '2xl': '1536px',
+      'print': { 'raw': 'print' }, // Add print media query
     },
     extend: {
       colors: {
@@ -74,10 +81,11 @@ export default {
   plugins: [
     // Include official Tailwind plugins
     // Note: You'll need to install these with npm/yarn first
-    // npm install @tailwindcss/typography @tailwindcss/forms
+    // npm install @tailwindcss/typography @tailwindcss/forms @tailwindcss/aspect-ratio
     // or
-    // yarn add @tailwindcss/typography @tailwindcss/forms
+    // yarn add @tailwindcss/typography @tailwindcss/forms @tailwindcss/aspect-ratio
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
+    require('@tailwindcss/aspect-ratio'), // Added for responsive media content
   ],
 }; 
