@@ -7,7 +7,31 @@ export default {
     "./lib/**/*.{js,ts,jsx,tsx}",
     "./utils/**/*.{js,ts,jsx,tsx}",
   ],
+  // Enable class-based dark mode
+  darkMode: 'class',
+  // Safelist for dynamically generated classes
+  safelist: [
+    'bg-primary',
+    'text-primary',
+    'bg-secondary',
+    'text-secondary',
+    'bg-accent',
+    'text-accent',
+  ],
+  // Enable upcoming Tailwind features
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
+    // Define explicit screen breakpoints
+    screens: {
+      'xs': '480px',
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+    },
     extend: {
       colors: {
         'background': 'var(--background)',
@@ -47,5 +71,13 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // Include official Tailwind plugins
+    // Note: You'll need to install these with npm/yarn first
+    // npm install @tailwindcss/typography @tailwindcss/forms
+    // or
+    // yarn add @tailwindcss/typography @tailwindcss/forms
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/forms'),
+  ],
 }; 
