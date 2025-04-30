@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
     // Optimize specific package imports
     optimizePackageImports: ["react-icons"],
   },
+  // Turbopack configuration (moved from experimental to top-level in Next.js 15.3+)
+  turbopack: {
+    // Default resolve extensions to ensure module resolution works correctly
+    resolveExtensions: [".tsx", ".ts", ".jsx", ".js", ".json", ".css"],
+  },
   // Improve server response headers
   headers: async () => [
     {
@@ -52,7 +57,7 @@ const nextConfig: NextConfig = {
         },
         {
           key: "Content-Security-Policy",
-          value: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none';",
+          value: "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://*; frame-ancestors 'none';",
         },
       ],
     },
@@ -64,11 +69,6 @@ const nextConfig: NextConfig = {
       config.devtool = "source-map";
     }
     return config;
-  },
-  // Turbopack configuration to mirror webpack settings
-  turbopack: {
-    // Default resolve extensions to ensure module resolution works correctly
-    resolveExtensions: [".tsx", ".ts", ".jsx", ".js", ".json", ".css"],
   },
   // Improve performance with compression
   compress: true,
