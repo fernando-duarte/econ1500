@@ -1,6 +1,8 @@
 /**
  * Homepage - Simple Hello World page
  */
+'use client';
+
 import Link from 'next/link';
 
 export default function Home() {
@@ -12,10 +14,10 @@ export default function Home() {
       </p>
       <div className="flex gap-4">
         <Link
-          href="/login"
+          href="/game"
           className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
         >
-          Login
+          Play Game
         </Link>
       </div>
     </div>
