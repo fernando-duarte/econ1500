@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
   // Include optimized package imports to improve performance
   experimental: {
     // Optimize specific package imports
-    optimizePackageImports: ["react-icons"],
+    optimizePackageImports: ["react-icons", "lucide-react"],
   },
   // Turbopack configuration (moved from experimental to top-level in Next.js 15.3+)
   turbopack: {
