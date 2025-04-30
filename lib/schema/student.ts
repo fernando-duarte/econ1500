@@ -6,8 +6,6 @@ const STUDENT_ID_PATTERN = /^[sS][0-9]{1,6}$/;
 export const studentSchema = z.object({
     id: z.string().regex(STUDENT_ID_PATTERN, "Invalid student ID format"),
     name: z.string().min(1, "Name is required"),
-    email: z.string().email().optional(),
-    section: z.string().optional(),
 });
 
 export type Student = z.infer<typeof studentSchema>; 
