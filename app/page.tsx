@@ -1,37 +1,23 @@
 /**
  * Homepage - Simple Hello World page
  */
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from 'next/link';
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-8 bg-background p-6">
-      <h1 className="text-4xl font-bold">Hello World!</h1>
-
+    <div className="container mx-auto py-12 px-4">
+      <h1 className="text-4xl font-bold mb-6">ECON1500 Multiplayer Game</h1>
+      <p className="text-lg mb-8">
+        Welcome to the real-time economic simulation game for ECON1500.
+      </p>
       <div className="flex gap-4">
-        <Button>Default Button</Button>
-        <Button variant="outline">Outline Button</Button>
-        <Button variant="secondary">Secondary Button</Button>
-        <Button variant="destructive">Destructive Button</Button>
-      </div>
-
-      <div className="w-full max-w-md">
-        <Card>
-          <CardHeader>
-            <CardTitle>Shadcn UI Card Example</CardTitle>
-            <CardDescription>This card component is added on demand</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p>This project now uses Shadcn UI with an on-demand installation approach.
-              Components are added only when needed, and only the required Radix UI
-              primitives are installed.</p>
-          </CardContent>
-          <CardFooter>
-            <Button size="sm">Learn More</Button>
-          </CardFooter>
-        </Card>
+        <Link
+          href="/login"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
+        >
+          Login
+        </Link>
       </div>
     </div>
-  )
+  );
 }
