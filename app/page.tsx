@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Hero from "@/components/Hero";
 import { PageContainer } from "@/components/ui/page-container";
 import { Container } from "@/components/ui/container";
@@ -8,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { ThemeSelector } from "@/components/ui/theme-selector";
 import { Label } from "@/components/ui/label";
 
 export default function Home() {
@@ -29,7 +31,11 @@ export default function Home() {
 
   return (
     <PageContainer>
-      <div className="absolute top-4 right-4 z-10">
+      <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+        <Link href="/theme-showcase" className="text-sm text-foreground hover:underline">
+          Theme Showcase
+        </Link>
+        <ThemeSelector />
         <ThemeToggle />
       </div>
 

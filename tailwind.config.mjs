@@ -9,34 +9,41 @@ export default {
   ],
   theme: {
     extend: {
-      // Custom theme extensions can be added here
       colors: {
-        // Define semantic color names to use throughout the app
-        'hover-light': 'var(--hover-light)',
-        'hover-dark': 'var(--hover-dark)',
-        'hover-primary-dark': 'var(--hover-primary-dark)',
-        'hover-primary-light': 'var(--hover-primary-light)',
-        // System colors
         'background': 'var(--background)',
         'foreground': 'var(--foreground)',
         'primary': 'var(--primary)',
-        'primary-foreground': 'var(--primary-foreground)',
+        'primary-foreground': 'var(--primaryForeground)',
         'secondary': 'var(--secondary)',
-        'secondary-foreground': 'var(--secondary-foreground)',
+        'secondary-foreground': 'var(--secondaryForeground)',
         'muted': 'var(--muted)',
-        'muted-foreground': 'var(--muted-foreground)',
+        'muted-foreground': 'var(--mutedForeground)',
         'accent': 'var(--accent)',
-        'accent-foreground': 'var(--accent-foreground)',
+        'accent-foreground': 'var(--accentForeground)',
         'border': 'var(--border)',
+        'card': 'var(--card)',
+        'card-foreground': 'var(--cardForeground)',
+        'input': 'var(--input)',
+        'ring': 'var(--ring)',
+        'hover': 'var(--hover)',
+      },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 0.25rem)',
+        sm: 'calc(var(--radius) - 0.5rem)',
       },
       fontFamily: {
-        sans: ['var(--font-geist-sans)'],
-        mono: ['var(--font-geist-mono)'],
+        sans: ['var(--primary-font)'],
+        mono: ['var(--secondary-font)'],
       },
-      // We don't need to define custom spacing utility names anymore
-      // We'll use Tailwind's arbitrary values approach instead
-      letterSpacing: {
-        tightest: '-.01em',
+      fontSize: {
+        'xs': 'var(--font-size-xs)',
+        'sm': 'var(--font-size-sm)',
+        'base': 'var(--font-size-base)',
+        'lg': 'var(--font-size-lg)',
+        'xl': 'var(--font-size-xl)',
+        '2xl': 'var(--font-size-2xl)',
+        '3xl': 'var(--font-size-3xl)',
       },
     },
   },
