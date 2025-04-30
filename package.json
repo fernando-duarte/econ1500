@@ -53,6 +53,7 @@
     "@shadcn/ui": "^0.0.4",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/postcss": "^4",
+    "@tsconfig/next": "^2.0.3",
     "@types/node": "^22.15.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
