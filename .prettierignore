@@ -48,4 +48,7 @@ playwright-report/
 .DS_Store
 *.pem
 .env*
-!.env.example 
+!.env.example
+
+# Backup files
+/backups/ 
