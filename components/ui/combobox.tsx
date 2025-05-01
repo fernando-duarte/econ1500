@@ -39,7 +39,7 @@ type ComboboxProps = {
 
 export function Combobox({
     items,
-    value: _value,
+    value,
     onValueChange,
     placeholder = "Select an option...",
     searchPlaceholder = "Search...",
@@ -50,6 +50,23 @@ export function Combobox({
     disabled = false,
 }: ComboboxProps) {
     const [open, setOpen] = React.useState(false)
+    const [query, setQuery] = React.useState("")
+
+    // Direct filtering approach (just like the debug search)
+    const filteredItems = React.useMemo(() => {
+        if (!query) return items
+
+        const normalized = query.toLowerCase().trim()
+        return items.filter(item =>
+            item.label.toLowerCase().includes(normalized)
+        )
+    }, [items, query])
+
+    // Get the display label for the currently selected value
+    const selectedItem = React.useMemo(() =>
+        items.find(item => item.value === value),
+        [items, value]
+    )
 
     return (
         <div className={className}>
@@ -61,38 +78,48 @@ export function Combobox({
                         aria-expanded={open}
                         className={cn("w-full justify-between", triggerClassName)}
                         disabled={disabled}
+                        onClick={() => setOpen(!open)}
                     >
-                        {_value
-                            ? items.find((item) => item.value === _value)?.label
-                            : placeholder}
+                        {selectedItem ? selectedItem.label : placeholder}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className={cn("p-0", popoverClassName)}>
+                <PopoverContent className={cn("p-0 w-[200px]", popoverClassName)} align="start">
                     <Command>
-                        <CommandInput placeholder={searchPlaceholder} />
+                        <div className="flex h-9 items-center border-b px-3">
+                            <input
+                                className="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
+                                placeholder={searchPlaceholder}
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                            />
+                        </div>
                         <CommandList>
-                            <CommandEmpty>{emptyText}</CommandEmpty>
-                            <CommandGroup>
-                                {items.map((item) => (
-                                    <CommandItem
-                                        key={item.value}
-                                        value={item.value}
-                                        onSelect={(currentValue) => {
-                                            onValueChange(currentValue === _value ? "" : currentValue)
-                                            setOpen(false)
-                                        }}
-                                    >
-                                        <Check
-                                            className={cn(
-                                                "mr-2 h-4 w-4",
-                                                _value === item.value ? "opacity-100" : "opacity-0"
-                                            )}
-                                        />
-                                        {item.label}
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
+                            {filteredItems.length === 0 ? (
+                                <CommandEmpty>{emptyText}</CommandEmpty>
+                            ) : (
+                                <CommandGroup>
+                                    {filteredItems.map((item) => (
+                                        <CommandItem
+                                            key={item.value}
+                                            onSelect={() => {
+                                                onValueChange(item.value)
+                                                setQuery("")
+                                                setOpen(false)
+                                            }}
+                                            className="cursor-pointer"
+                                        >
+                                            <Check
+                                                className={cn(
+                                                    "mr-2 h-4 w-4",
+                                                    value === item.value ? "opacity-100" : "opacity-0"
+                                                )}
+                                            />
+                                            {item.label}
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            )}
                         </CommandList>
                     </Command>
                 </PopoverContent>
@@ -198,7 +225,7 @@ export function MultiCombobox({
                                             }}
                                             className="text-muted-foreground hover:text-foreground rounded-sm"
                                         >
-                                            <X className="h-3 w-3" />
+                                            <ChevronsUpDown className="h-3 w-3" />
                                             <span className="sr-only">Remove {label}</span>
                                         </button>
                                     </div>

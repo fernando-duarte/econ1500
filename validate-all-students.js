@@ -1,15 +1,16 @@
-/**
- * Student roster data for ECON1500
- * Provides student data for login and selection
- */
+// Comprehensive validation script for students.ts
+const { z } = require("zod");
 
-import { z } from 'zod';
-import { studentSchema } from './schema/student';
+// Define the schema directly from lib/schema/student.ts
+const STUDENT_ID_PATTERN = /^[sS][0-9]{1,6}$/;
 
-export type Student = z.infer<typeof studentSchema>;
+const studentSchema = z.object({
+    id: z.string().regex(STUDENT_ID_PATTERN, "Invalid student ID format"),
+    name: z.string().min(1, "Name is required"),
+});
 
-// Unvalidated raw student data
-const rawStudents: unknown[] = [
+// Get the complete raw student data from lib/students.ts
+const rawStudents = [
     { id: 's1', name: 'Aidan Wang' },
     { id: 's2', name: 'Alek Karagozyan' },
     { id: 's3', name: 'Alexander Ong' },
@@ -92,8 +93,72 @@ const rawStudents: unknown[] = [
     { id: 's80', name: 'Zorian Facey' }
 ];
 
-// Parse and filter so that only valid students remain
-export const students: Student[] = rawStudents
-    .map(s => studentSchema.safeParse(s))
-    .filter((r): r is z.SafeParseSuccess<Student> => r.success)
-    .map(r => r.data);
+// Validate and check each student
+console.log(`Total students: ${rawStudents.length}`);
+
+// Individual validation
+const individualResults = rawStudents.map((student, index) => {
+    const result = studentSchema.safeParse(student);
+    return {
+        index,
+        id: student.id,
+        name: student.name,
+        valid: result.success,
+        errors: result.success ? null : result.error.errors
+    };
+});
+
+const validStudents = individualResults.filter(r => r.valid);
+const invalidStudents = individualResults.filter(r => !r.valid);
+
+console.log(`\n✅ Valid students: ${validStudents.length}`);
+console.log(`❌ Invalid students: ${invalidStudents.length}`);
+
+if (invalidStudents.length > 0) {
+    console.log('\nInvalid student entries:');
+    invalidStudents.forEach(invalid => {
+        console.log(`- Student #${invalid.index} (${invalid.id}: ${invalid.name})`);
+        console.log('  Errors:');
+        invalid.errors.forEach(err => {
+            console.log(`  - ${err.path.join('.')}: ${err.message}`);
+        });
+    });
+}
+
+// Check for duplicated IDs
+const idCounts = {};
+rawStudents.forEach(student => {
+    idCounts[student.id] = (idCounts[student.id] || 0) + 1;
+});
+
+const duplicateIds = Object.entries(idCounts)
+    .filter(([_, count]) => count > 1)
+    .map(([id]) => id);
+
+console.log(`\nDuplicate IDs: ${duplicateIds.length > 0 ? duplicateIds.join(', ') : 'None'}`);
+
+// Check for duplicated names (case-insensitive)
+const nameCounts = {};
+rawStudents.forEach(student => {
+    const lowerName = student.name.toLowerCase();
+    nameCounts[lowerName] = (nameCounts[lowerName] || 0) + 1;
+});
+
+const duplicateNames = Object.entries(nameCounts)
+    .filter(([_, count]) => count > 1)
+    .map(([name]) => name);
+
+console.log(`Duplicate names: ${duplicateNames.length > 0 ? duplicateNames.join(', ') : 'None'}`);
+
+// Validation summary
+console.log('\n===== VALIDATION SUMMARY =====');
+console.log(`Schema validation: ${invalidStudents.length === 0 ? '✅ PASS' : '❌ FAIL'}`);
+console.log(`Duplicate ID check: ${duplicateIds.length === 0 ? '✅ PASS' : '❌ FAIL'}`);
+console.log(`Duplicate name check: ${duplicateNames.length === 0 ? '✅ PASS' : '❌ FAIL'}`);
+
+// Final result
+if (invalidStudents.length === 0 && duplicateIds.length === 0) {
+    console.log('\n✅ ALL STUDENTS PASS VALIDATION');
+} else {
+    console.log('\n❌ VALIDATION FAILED - See issues above');
+} 
