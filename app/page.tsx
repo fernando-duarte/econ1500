@@ -28,6 +28,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
+import { Combobox } from '@/components/ui/combobox';
+import { students } from '@/lib/students';
 
 // Form validation schema
 const formSchema = z.object({
@@ -43,6 +45,13 @@ type ApiError = { error: string };
 export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [selectedStudent, setSelectedStudent] = useState('');
+
+  // Convert students array to format needed by Combobox
+  const studentOptions = students.map(student => ({
+    value: student.id,
+    label: student.name
+  }));
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(formSchema),
@@ -89,38 +98,62 @@ export default function LoginPage() {
             </Alert>
           )}
 
-          <Form {...form}>
-            <form
-              id="login-form"
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-6"
-              noValidate
-              aria-label="Login form"
-              aria-busy={isSubmitting}
-            >
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel htmlFor="username-input">Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        id="username-input"
-                        placeholder="Enter your name"
-                        disabled={isSubmitting}
-                        autoComplete="username"
-                        autoFocus
-                        className="transition-colors"
-                      />
-                    </FormControl>
-                    <FormMessage role="alert" />
-                  </FormItem>
-                )}
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <FormLabel>Select your name</FormLabel>
+              <Combobox
+                items={studentOptions}
+                value={selectedStudent}
+                onValueChange={setSelectedStudent}
+                placeholder="Search for your name..."
+                searchPlaceholder="Type to search..."
+                emptyText="No student found"
+                className="w-full"
               />
-            </form>
-          </Form>
+            </div>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or enter manually</span>
+              </div>
+            </div>
+
+            <Form {...form}>
+              <form
+                id="login-form"
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+                noValidate
+                aria-label="Login form"
+                aria-busy={isSubmitting}
+              >
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel htmlFor="username-input">Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          id="username-input"
+                          placeholder="Enter your name"
+                          disabled={isSubmitting}
+                          autoComplete="username"
+                          autoFocus
+                          className="transition-colors"
+                        />
+                      </FormControl>
+                      <FormMessage role="alert" />
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
+          </div>
         </CardContent>
 
         <CardFooter>
