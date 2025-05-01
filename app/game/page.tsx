@@ -7,8 +7,9 @@ import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardContent, CardTitle, CardFooter } from '@/components/ui/card';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Loader2 } from 'lucide-react';
 
 export default function GamePage() {
     const router = useRouter();
@@ -56,7 +57,7 @@ export default function GamePage() {
                         Game Interface
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="flex flex-col items-center">
+                <CardContent>
                     {logoutError && (
                         <Alert
                             variant="destructive"
@@ -67,6 +68,8 @@ export default function GamePage() {
                             <AlertDescription>{logoutError}</AlertDescription>
                         </Alert>
                     )}
+                </CardContent>
+                <CardFooter className="flex justify-center">
                     <Button
                         variant="destructive"
                         onClick={handleLogout}
@@ -74,9 +77,16 @@ export default function GamePage() {
                         className="w-32"
                         aria-busy={isLoggingOut}
                     >
-                        {isLoggingOut ? 'Logging out...' : 'Logout'}
+                        {isLoggingOut ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
+                                <span>Logging out...</span>
+                            </>
+                        ) : (
+                            'Logout'
+                        )}
                     </Button>
-                </CardContent>
+                </CardFooter>
             </Card>
         </main>
     );
