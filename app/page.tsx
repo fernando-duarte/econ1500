@@ -100,7 +100,9 @@ export default function LoginPage() {
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <FormLabel>Select your name</FormLabel>
+              <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                Select your name
+              </label>
               <Combobox
                 items={studentOptions}
                 value={selectedStudent}
