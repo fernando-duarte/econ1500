@@ -39,7 +39,7 @@ type ComboboxProps = {
 
 export function Combobox({
     items,
-    value,
+    value: _value,
     onValueChange,
     placeholder = "Select an option...",
     searchPlaceholder = "Search...",
@@ -62,8 +62,8 @@ export function Combobox({
                         className={cn("w-full justify-between", triggerClassName)}
                         disabled={disabled}
                     >
-                        {value
-                            ? items.find((item) => item.value === value)?.label
+                        {_value
+                            ? items.find((item) => item.value === _value)?.label
                             : placeholder}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
@@ -79,14 +79,14 @@ export function Combobox({
                                         key={item.value}
                                         value={item.value}
                                         onSelect={(currentValue) => {
-                                            onValueChange(currentValue === value ? "" : currentValue)
+                                            onValueChange(currentValue === _value ? "" : currentValue)
                                             setOpen(false)
                                         }}
                                     >
                                         <Check
                                             className={cn(
                                                 "mr-2 h-4 w-4",
-                                                value === item.value ? "opacity-100" : "opacity-0"
+                                                _value === item.value ? "opacity-100" : "opacity-0"
                                             )}
                                         />
                                         {item.label}
@@ -117,7 +117,7 @@ type MultiComboboxProps = {
 
 export function MultiCombobox({
     items,
-    values,
+    values: _values,
     onValuesChange,
     placeholder = "Select options...",
     searchPlaceholder = "Search...",
@@ -132,27 +132,27 @@ export function MultiCombobox({
     const [inputValue, setInputValue] = React.useState("")
 
     const selectedLabels = React.useMemo(() => {
-        return values
+        return _values
             .map((value) => items.find((item) => item.value === value)?.label)
             .filter(Boolean) as string[]
-    }, [values, items])
+    }, [_values, items])
 
     const handleSelect = React.useCallback(
         (currentValue: string) => {
-            if (values.includes(currentValue)) {
-                onValuesChange(values.filter((v) => v !== currentValue))
+            if (_values.includes(currentValue)) {
+                onValuesChange(_values.filter((v) => v !== currentValue))
             } else {
-                if (maxValues !== undefined && values.length >= maxValues) {
+                if (maxValues !== undefined && _values.length >= maxValues) {
                     return
                 }
-                onValuesChange([...values, currentValue])
+                onValuesChange([..._values, currentValue])
             }
         },
-        [values, onValuesChange, maxValues]
+        [_values, onValuesChange, maxValues]
     )
 
     const handleRemoveValue = (value: string) => {
-        onValuesChange(values.filter((v) => v !== value))
+        onValuesChange(_values.filter((v) => v !== value))
     }
 
     const filteredItems = React.useMemo(() => {
@@ -173,7 +173,7 @@ export function MultiCombobox({
                         aria-expanded={open}
                         className={cn(
                             "w-full justify-between min-h-9",
-                            values.length > 0 ? "h-auto" : "",
+                            _values.length > 0 ? "h-auto" : "",
                             triggerClassName
                         )}
                         disabled={disabled}
@@ -191,7 +191,7 @@ export function MultiCombobox({
                                             type="button"
                                             onClick={(e) => {
                                                 e.stopPropagation()
-                                                const valueToRemove = values[i]
+                                                const valueToRemove = _values[i]
                                                 if (valueToRemove) {
                                                     handleRemoveValue(valueToRemove)
                                                 }
@@ -230,7 +230,7 @@ export function MultiCombobox({
                                             <Check
                                                 className={cn(
                                                     "mr-2 h-4 w-4",
-                                                    values.includes(item.value) ? "opacity-100" : "opacity-0"
+                                                    _values.includes(item.value) ? "opacity-100" : "opacity-0"
                                                 )}
                                             />
                                             {item.label}
