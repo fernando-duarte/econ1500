@@ -14,7 +14,6 @@ if (missingEnvVars.length > 0) {
 
 // Get environment variables with fallback values
 // const loginRedirect = process.env.NEXT_PUBLIC_LOGIN_REDIRECT || '/';
-const logoutRedirect = process.env.NEXT_PUBLIC_LOGOUT_REDIRECT || '/';
 
 export function middleware(request: NextRequest) {
     // Get the pathname of the request
@@ -23,9 +22,16 @@ export function middleware(request: NextRequest) {
     // Get the token from the cookies
     const token = request.cookies.get('session-token')?.value || '';
 
-    // Redirect logic for protected routes
+    // If user is already logged in and tries to access the root (login) page,
+    // redirect them to the game
+    if (path === '/' && token) {
+        return NextResponse.redirect(new URL('/game', request.url));
+    }
+
+    // If user is not logged in and tries to access protected routes,
+    // redirect them to the root (login) page
     if (path !== '/' && !token) {
-        return NextResponse.redirect(new URL(logoutRedirect, request.url));
+        return NextResponse.redirect(new URL('/', request.url));
     }
 
     return NextResponse.next();
