@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ReactQueryClientProvider } from '@/components/providers/ReactQueryClientProvider';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
+import { Container } from '@/components/ui/container';
+import { cn } from '@/lib/utils';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,12 +20,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={cn(
+        inter.className,
+        "min-h-screen bg-background font-sans antialiased"
+      )}>
         <ReactQueryClientProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <main className="min-h-screen bg-background">
+            <Container as="main" className="flex min-h-screen flex-col">
               {children}
-            </main>
+            </Container>
           </ThemeProvider>
         </ReactQueryClientProvider>
       </body>
