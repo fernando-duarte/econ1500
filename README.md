@@ -88,19 +88,11 @@ npm run test:coverage -- tests/your-test-file.spec.ts
 
 # Run tests with UI mode
 npm run test:coverage:ui
-
-# Run form validation tests with tracing enabled
-npm run test:form-validation
 ```
 
 #### Test Suite Overview
 
-The test suite includes:
-
-- **Home Page Tests**: Tests for the initial landing page functionality
-- **Game Navigation Tests**: Tests for navigating between pages and state persistence
-- **Game Exit Tests**: Tests for exiting the game and session cleanup
-- **Form Validation Tests**: Comprehensive tests for input validation, accessibility, and responsive behavior
+The test suite includes end-to-end tests for validating application functionality.
 
 #### Viewing Coverage Reports
 
@@ -120,11 +112,6 @@ npm run coverage:clean
 
 - Coverage is only collected in Chromium browsers (not Firefox or WebKit)
 - Both JavaScript and CSS coverage are collected automatically
-- Custom fixture in `tests/fixtures/coverage.ts` handles the coverage collection
-- To use coverage in your tests, import from the fixtures:
-  ```typescript
-  import { test, expect } from "./fixtures/coverage";
-  ```
 
 ### Configuration Files
 
@@ -140,57 +127,3 @@ For more details on the ignore patterns and configuration, see the [Ignore Files
 ### Environment Variables
 
 For setting up environment variables, refer to the [Environment Variables Template](./docs/env-template.md).
-
-## Theme System
-
-This project implements a comprehensive theming system with the following features:
-
-### Theme Features
-
-- **Multiple Predefined Themes**: Default, Dark, Blue, Green, and Purple themes
-- **Complete Aesthetic Package**: Each theme includes colors, fonts, font sizes, and border radius
-- **Custom Google Fonts**: Each theme can load its own set of fonts from Google Fonts
-- **CSS Variables**: All theme properties are exposed as CSS variables for easy use
-- **Tailwind Integration**: Theme variables are integrated with Tailwind CSS
-- **Dark Mode Support**: Integration with next-themes for system-based dark mode
-- **Theme Persistence**: Selected theme is saved to localStorage
-
-### Theme Components
-
-- **Theme Selector**: A dropdown component to switch between themes
-- **Theme Toggle**: A button to toggle between light and dark modes
-- **Theme Showcase**: A page at `/theme-showcase` that displays all theme elements
-
-### Theme Implementation
-
-The theme system is implemented in the following files:
-
-- `lib/theme-system.tsx`: Core theme functionality, theme definitions, and provider
-- `components/ui/theme-selector.tsx`: Theme dropdown component
-- `components/ui/theme-toggle.tsx`: Dark mode toggle component
-- `app/globals.css`: CSS variables and base styles
-- `tailwind.config.mjs`: Tailwind configuration to use theme variables
-- `app/theme-showcase/page.tsx`: Page demonstrating all theme elements
-
-### Using the Theme System
-
-To use the theme in your components:
-
-```tsx
-// Import the useTheme hook
-import { useTheme } from "@/lib/theme-system";
-
-export function MyComponent() {
-  // Access the current theme
-  const { theme, setTheme } = useTheme();
-
-  return (
-    <div>
-      <h1>Current theme: {theme.label}</h1>
-      <button onClick={() => setTheme("blue")}>Switch to Blue Theme</button>
-    </div>
-  );
-}
-```
-
-To add a new theme, update the `themes` object in `lib/theme-system.tsx`.

@@ -19,30 +19,15 @@ export default defineConfig({
     /* Retry on CI only */
     retries: process.env.CI ? 2 : 0,
     /* Opt out of parallel tests on CI. */
-    workers: process.env.CI ? 1 : undefined,
+    workers: process.env.CI ? 1 : 2,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: [
-        ['html'], // Keep the default HTML reporter
-        ['monocart-reporter', {
-            name: "E2E Coverage Report (monocart)",
-            outputFile: './monocart-report/index.html', // Output path for the report
-            sourcePath: './' // Project root for source mapping
-            // Consider adding coverage thresholds or other options later if needed
-            // coverage: {
-            //     v8: true, // Ensure V8 coverage data is used (often default for Playwright)
-            //     reports: [
-            //         'v8',
-            //         'codecov',
-            //         'html'
-            //     ],
-            //     // Example thresholds (optional)
-            //     // thresholds: {
-            //     //     global: { statements: 80, branches: 70, functions: 75, lines: 80 },
-            //     //     file: { statements: 70, branches: 60, functions: 65, lines: 70 }
-            //     // }
-            // }
-        }]
+        ['html'], // Default HTML reporter
+        ['line'], // More compact for CI logs
+        // Monocart reporter will be configured when needed
     ],
+    /* Folder for test artifacts such as screenshots, videos, traces, etc. */
+    outputDir: 'test-results',
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     use: {
         /* Base URL to use in actions like `await page.goto('/')`. */
@@ -52,22 +37,25 @@ export default defineConfig({
         trace: 'on-first-retry',
     },
 
+    /* Configuration for expect assertions */
+    expect: {
+        timeout: 5000,
+    },
+
     /* Configure projects for major browsers */
     projects: [
         {
             name: 'chromium',
             use: { ...devices['Desktop Chrome'] },
         },
-
-        // {
-        //   name: 'firefox',
-        //   use: { ...devices['Desktop Firefox'] },
-        // },
-
-        // {
-        //   name: 'webkit',
-        //   use: { ...devices['Desktop Safari'] },
-        // },
+        {
+            name: 'firefox',
+            use: { ...devices['Desktop Firefox'] },
+        },
+        {
+            name: 'webkit',
+            use: { ...devices['Desktop Safari'] },
+        },
 
         /* Test against mobile viewports. */
         // {

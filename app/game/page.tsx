@@ -1,79 +1,97 @@
-"use client";
+/**
+ * Game page
+ */
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { PageContainer } from "@/components/ui/page-container";
-import { Container } from "@/components/ui/container";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useCallback, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardContent, CardTitle, CardFooter } from '@/components/ui/card';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Loader2 } from 'lucide-react';
+import { MainNavigation } from '@/components/ui/main-navigation';
 
 export default function GamePage() {
-  const [playerName, setPlayerName] = useState<string>("");
-  const router = useRouter();
+    const router = useRouter();
+    const queryClient = useQueryClient();
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const [logoutError, setLogoutError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Retrieve player name from localStorage
-    const storedName = localStorage.getItem("playerName");
+    const handleLogout = useCallback(async () => {
+        setLogoutError(null);
+        setIsLoggingOut(true);
 
-    // If no name exists, redirect back to login
-    if (!storedName) {
-      router.push("/");
-      return;
-    }
+        try {
+            const response = await fetch('/api/auth/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'same-origin',
+                cache: 'no-store',
+            });
 
-    setPlayerName(storedName);
-  }, [router]);
+            if (!response.ok) {
+                throw new Error('Logout failed');
+            }
 
-  const handleExitGame = () => {
-    localStorage.removeItem("playerName");
-    router.push("/");
-  };
+            // Clear all queries from the cache
+            await queryClient.clear();
 
-  if (!playerName) {
+            // Navigate to home and refresh router cache
+            router.replace('/');
+            router.refresh();
+        } catch (err: unknown) {
+            console.error('Logout failed:', err);
+            setLogoutError(err instanceof Error ? err.message : String(err));
+        } finally {
+            setIsLoggingOut(false);
+        }
+    }, [router, queryClient]);
+
     return (
-      <PageContainer className="items-center justify-center">
-        <div className="border-primary h-16 w-16 animate-spin rounded-full border-t-2 border-b-2"></div>
-      </PageContainer>
-    );
-  }
-
-  return (
-    <PageContainer>
-      <Container maxWidth="full" className="p-8">
-        <header className="mb-8 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h1 className="text-primary text-3xl font-bold">ECON 1500</h1>
-            <h2 className="text-2xl font-bold">Game Dashboard</h2>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div
-              data-testid="player-name-display"
-              className="bg-muted/20 text-foreground rounded-full px-4 py-2 font-medium"
+        <main className="container flex flex-col items-center justify-center min-h-screen py-12 px-4">
+            <a
+                href="#game-interface"
+                className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-background focus:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             >
-              Player: {playerName}
-            </div>
-            <ThemeToggle />
-            <Button variant="destructive" onClick={handleExitGame}>
-              Exit Game
-            </Button>
-          </div>
-        </header>
+                Skip to game interface
+            </a>
 
-        <main className="flex flex-1 flex-col items-center justify-center">
-          <Card className="w-full max-w-4xl">
-            <CardHeader>
-              <CardTitle className="text-center">Game Content Goes Here</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground text-center">
-                Welcome, {playerName}! This is where the actual game content would be displayed.
-              </p>
-            </CardContent>
-          </Card>
+            <MainNavigation />
+
+            <Card id="game-interface" className="w-full max-w-md shadow-lg focus-within:outline-none" tabIndex={-1}>
+                <CardHeader className="space-y-1">
+                    <CardTitle className="text-2xl font-bold text-center">
+                        Game Interface
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    {logoutError && (
+                        <Alert
+                            variant="destructive"
+                            role="alert"
+                            className="mb-4"
+                        >
+                            <AlertTitle>Logout Failed</AlertTitle>
+                            <AlertDescription>{logoutError}</AlertDescription>
+                        </Alert>
+                    )}
+                </CardContent>
+                <CardFooter className="flex justify-center">
+                    <Button
+                        variant="destructive"
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
+                        className="w-32 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        aria-busy={isLoggingOut}
+                    >
+                        {isLoggingOut && <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />}
+                        Logout
+                    </Button>
+                </CardFooter>
+            </Card>
         </main>
-      </Container>
-    </PageContainer>
-  );
-}
+    );
+} 
