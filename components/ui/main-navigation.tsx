@@ -3,7 +3,6 @@ import Link from "next/link";
 import {
     NavigationMenu,
     NavigationMenuItem,
-    NavigationMenuLink,
     NavigationMenuList,
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
@@ -13,24 +12,18 @@ export function MainNavigation() {
         <NavigationMenu className="mb-8">
             <NavigationMenuList>
                 <NavigationMenuItem>
-                    <Link href="/" legacyBehavior passHref>
-                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                            Home
-                        </NavigationMenuLink>
+                    <Link href="/" className={navigationMenuTriggerStyle()}>
+                        Home
                     </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                    <Link href="/game" legacyBehavior passHref>
-                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                            Game
-                        </NavigationMenuLink>
+                    <Link href="/game" className={navigationMenuTriggerStyle()}>
+                        Game
                     </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                    <Link href="/examples" legacyBehavior passHref>
-                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                            Examples
-                        </NavigationMenuLink>
+                    <Link href="/examples" className={navigationMenuTriggerStyle()}>
+                        Examples
                     </Link>
                 </NavigationMenuItem>
             </NavigationMenuList>
