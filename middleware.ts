@@ -29,9 +29,11 @@ export function middleware(request: NextRequest) {
     }
 
     // If user is not logged in and tries to access protected routes,
-    // redirect them to the root (login) page
+    // redirect them to the root (login) page with returnUrl
     if (path !== '/' && !token) {
-        return NextResponse.redirect(new URL('/', request.url));
+        const url = new URL('/', request.url);
+        url.searchParams.set('returnUrl', path);
+        return NextResponse.redirect(url);
     }
 
     return NextResponse.next();

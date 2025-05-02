@@ -11,6 +11,7 @@ import { Card, CardHeader, CardContent, CardTitle, CardFooter } from '@/componen
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Loader2 } from 'lucide-react';
 import { MainNavigation } from '@/components/ui/main-navigation';
+import { UserInfo } from '@/components/ui/UserInfo';
 
 export default function GamePage() {
     const router = useRouter();
@@ -35,6 +36,10 @@ export default function GamePage() {
             if (!response.ok) {
                 throw new Error('Logout failed');
             }
+
+            // Clear localStorage
+            localStorage.removeItem('lastUsername');
+            localStorage.removeItem('tokenExpiry');
 
             // Clear all queries from the cache
             await queryClient.clear();
@@ -66,6 +71,9 @@ export default function GamePage() {
                     <CardTitle className="text-2xl font-bold text-center">
                         Game Interface
                     </CardTitle>
+                    <div className="flex justify-center">
+                        <UserInfo />
+                    </div>
                 </CardHeader>
                 <CardContent>
                     {logoutError && (
