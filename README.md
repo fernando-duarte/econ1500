@@ -88,19 +88,11 @@ npm run test:coverage -- tests/your-test-file.spec.ts
 
 # Run tests with UI mode
 npm run test:coverage:ui
-
-# Run form validation tests with tracing enabled
-npm run test:form-validation
 ```
 
 #### Test Suite Overview
 
-The test suite includes:
-
-- **Home Page Tests**: Tests for the initial landing page functionality
-- **Game Navigation Tests**: Tests for navigating between pages and state persistence
-- **Game Exit Tests**: Tests for exiting the game and session cleanup
-- **Form Validation Tests**: Comprehensive tests for input validation, accessibility, and responsive behavior
+The test suite includes end-to-end tests for validating application functionality.
 
 #### Viewing Coverage Reports
 
@@ -120,11 +112,6 @@ npm run coverage:clean
 
 - Coverage is only collected in Chromium browsers (not Firefox or WebKit)
 - Both JavaScript and CSS coverage are collected automatically
-- Custom fixture in `tests/fixtures/coverage.ts` handles the coverage collection
-- To use coverage in your tests, import from the fixtures:
-  ```typescript
-  import { test, expect } from "./fixtures/coverage";
-  ```
 
 ### Configuration Files
 

@@ -66,11 +66,14 @@ const eslintConfig = [
       ".DS_Store",
       "Thumbs.db",
       "*.pem",
-      
+
       // Environment files
       ".env*",
       "!.env.example",
-      "!.env.template"
+      "!.env.template",
+
+      // Backup files
+      "backups/"
     ]
   },
   ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
@@ -78,9 +81,14 @@ const eslintConfig = [
     rules: {
       // Common rules you might want to customize
       "react/no-unescaped-entities": "off",
-      "@next/next/no-img-element": "off", 
-      "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
-      
+      "@next/next/no-img-element": "off",
+      "no-unused-vars": "off", // Turn off base rule as it can report incorrect errors
+      "@typescript-eslint/no-unused-vars": ["error", {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "ignoreRestSiblings": true
+      }],
+
       // Additional recommended rules
       "react/react-in-jsx-scope": "off", // Not needed in Next.js
       "react/prop-types": "off", // Not needed with TypeScript
@@ -89,7 +97,7 @@ const eslintConfig = [
       "jsx-a11y/alt-text": "error", // Enforce alt text for accessibility
       "no-duplicate-imports": "error", // Prevent duplicate imports
       "no-var": "error", // Prevent use of var
-      
+
       // Global max-lines rule as a baseline
       "max-lines": ["warn", {
         "max": 200,

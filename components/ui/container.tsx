@@ -1,33 +1,25 @@
-import { cn } from "@/lib/utils";
-import { ReactNode } from "react";
+import * as React from "react"
+import { cn } from "@/lib/utils"
 
-interface ContainerProps {
-  children: ReactNode;
-  maxWidth?: "sm" | "md" | "lg" | "xl" | "2xl" | "full" | "none";
-  centered?: boolean;
-  className?: string;
+interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
+    as?: React.ElementType
 }
 
 export function Container({
-  children,
-  maxWidth = "xl",
-  centered = true,
-  className,
-  ...props
+    className,
+    as: Component = "div",
+    children,
+    ...props
 }: ContainerProps) {
-  const widths = {
-    sm: "max-w-sm",
-    md: "max-w-md",
-    lg: "max-w-lg",
-    xl: "max-w-xl",
-    "2xl": "max-w-2xl",
-    full: "max-w-full",
-    none: "",
-  };
-
-  return (
-    <div className={cn("w-full", widths[maxWidth], centered && "mx-auto", className)} {...props}>
-      {children}
-    </div>
-  );
-}
+    return (
+        <Component
+            className={cn(
+                "mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8",
+                className
+            )}
+            {...props}
+        >
+            {children}
+        </Component>
+    )
+} 

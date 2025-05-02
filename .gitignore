@@ -107,3 +107,6 @@ Icon
 
 # Test reports
 monocart-report/
+
+# Backup files
+/backups/
