@@ -110,3 +110,5 @@ monocart-report/
 
 # Backup files
 /backups/
+
+playwright/.auth
