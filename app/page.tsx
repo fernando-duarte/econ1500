@@ -189,8 +189,8 @@ export default function LoginPage() {
             type="submit"
             form="login-form"
             className="w-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            disabled={isSubmitting}
-            aria-disabled={isSubmitting}
+            disabled={isSubmitting || !form.watch('username')}
+            aria-disabled={isSubmitting || !form.watch('username')}
           >
             {isSubmitting ? (
               <>
