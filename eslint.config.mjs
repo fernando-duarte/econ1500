@@ -82,7 +82,12 @@ const eslintConfig = [
       // Common rules you might want to customize
       "react/no-unescaped-entities": "off",
       "@next/next/no-img-element": "off",
-      "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+      "no-unused-vars": "off", // Turn off base rule as it can report incorrect errors
+      "@typescript-eslint/no-unused-vars": ["error", {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "ignoreRestSiblings": true
+      }],
 
       // Additional recommended rules
       "react/react-in-jsx-scope": "off", // Not needed in Next.js

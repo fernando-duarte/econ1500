@@ -1,7 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { Combobox, MultiCombobox } from "./combobox"
+import { Combobox } from "./combobox"
+import { MultiCombobox } from "./multi-combobox"
 
 export function ComboboxDemo() {
     const [value, setValue] = React.useState("")

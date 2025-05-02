@@ -77,14 +77,8 @@ export default function GamePage() {
                         className="w-32"
                         aria-busy={isLoggingOut}
                     >
-                        {isLoggingOut ? (
-                            <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
-                                <span>Logging out...</span>
-                            </>
-                        ) : (
-                            'Logout'
-                        )}
+                        {isLoggingOut && <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />}
+                        Logout
                     </Button>
                 </CardFooter>
             </Card>

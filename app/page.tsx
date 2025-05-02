@@ -58,6 +58,7 @@ export default function LoginPage() {
     defaultValues: { username: '' },
   });
   const { isSubmitting } = form.formState;
+  const { setValue } = form;
 
   useEffect(() => {
     const saved = localStorage.getItem('lastUsername');
@@ -75,7 +76,7 @@ export default function LoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error((data as ApiError).error || 'Login failed');
       localStorage.setItem('lastUsername', values.username);
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 250));
       router.push('/game');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred');
@@ -106,7 +107,12 @@ export default function LoginPage() {
               <Combobox
                 items={studentOptions}
                 value={selectedStudent}
-                onValueChange={setSelectedStudent}
+                onValueChange={(value) => {
+                  setSelectedStudent(value);
+                  // Populate the username input with the selected student's label
+                  const found = studentOptions.find(item => item.value === value);
+                  setValue('username', found?.label ?? '');
+                }}
                 placeholder="Search for your name..."
                 searchPlaceholder="Type to search..."
                 emptyText="No student found"

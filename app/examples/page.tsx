@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Combobox, MultiCombobox, ComboboxItem } from '@/components/ui/combobox';
+import { Combobox, ComboboxItem } from '@/components/ui/combobox';
+import { MultiCombobox } from '@/components/ui/multi-combobox';
 import { ComboboxDemo, MultiComboboxDemo } from '@/components/ui/combobox-demo';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
