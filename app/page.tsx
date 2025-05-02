@@ -85,7 +85,13 @@ export default function LoginPage() {
 
   return (
     <div className="container mx-auto flex min-h-screen flex-col items-center justify-center px-4">
-      <Card className="w-full max-w-md">
+      <a
+        href="#login-form"
+        className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-background focus:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+      >
+        Skip to login form
+      </a>
+      <Card className="w-full max-w-md focus-within:outline-none">
         <CardHeader className="space-y-2 text-center pb-6">
           <CardTitle>ECON1500</CardTitle>
           <CardDescription>The China Growth Game</CardDescription>
@@ -116,7 +122,7 @@ export default function LoginPage() {
                 placeholder="Search for your name..."
                 searchPlaceholder="Type to search..."
                 emptyText="No student found"
-                className="w-full"
+                className="w-full focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
               />
             </div>
 
@@ -152,7 +158,7 @@ export default function LoginPage() {
                           disabled={isSubmitting}
                           autoComplete="username"
                           autoFocus
-                          className="transition-colors"
+                          className="transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                         />
                       </FormControl>
                       <FormMessage role="alert" />
@@ -168,7 +174,7 @@ export default function LoginPage() {
           <Button
             type="submit"
             form="login-form"
-            className="w-full"
+            className="w-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             disabled={isSubmitting}
             aria-disabled={isSubmitting}
           >

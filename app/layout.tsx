@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="focus:outline-none" suppressHydrationWarning>
       <body className={cn(
         inter.className,
         "min-h-screen bg-background font-sans antialiased"
