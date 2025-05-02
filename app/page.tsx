@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
-import { Loader2 } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
 import { Combobox } from '@/components/ui/combobox';
 import { students } from '@/lib/students';
 
@@ -151,15 +151,29 @@ export default function LoginPage() {
                     <FormItem>
                       <FormLabel htmlFor="username-input">Name</FormLabel>
                       <FormControl>
-                        <Input
-                          {...field}
-                          id="username-input"
-                          placeholder="Enter your name"
-                          disabled={isSubmitting}
-                          autoComplete="username"
-                          autoFocus
-                          className="transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                        />
+                        <div className="relative">
+                          <Input
+                            {...field}
+                            id="username-input"
+                            placeholder="Enter your name"
+                            disabled={isSubmitting}
+                            autoComplete="username"
+                            autoFocus
+                            className="transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 pr-8"
+                          />
+                          {field.value && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0 rounded-full hover:bg-accent/10"
+                              onClick={() => form.setValue('username', '')}
+                              aria-label="Clear name"
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
                       </FormControl>
                       <FormMessage role="alert" />
                     </FormItem>
