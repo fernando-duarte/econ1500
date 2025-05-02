@@ -17,7 +17,8 @@
     "analyze": "ANALYZE=true next build",
     "test:e2e": "playwright test --reporter=list",
     "test:e2e:cov": "playwright test",
-    "clean:test": "rimraf test-results playwright-report monocart-report/coverage/**/*.* monocart-report/*.{html,json}"
+    "clean:test": "rimraf test-results playwright-report monocart-report/coverage/**/*.* monocart-report/*.{html,json}",
+    "postinstall": "npx playwright install --with-deps"
   },
   "lint-staged": {
     "config": "lint-staged.config.mjs"
