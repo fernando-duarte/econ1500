@@ -72,3 +72,66 @@ This document outlines a comprehensive end-to-end testing strategy for the ECON1
 - Test the application in major browsers (Chrome, Firefox, Safari, Edge)
 - Verify that all functionality works consistently across browsers
 - Confirm that the application appearance is consistent between browsers
+
+## Best Practices for E2E Testing with shadcn/ui
+
+### 1. Use Semantic Locators
+
+- Target components by their semantic roles and accessible attributes instead of class names or CSS selectors
+- Use `getByRole`, `getByLabel`, and `getByText` in Playwright to find elements
+- Example: `page.getByRole("button", { name: "Submit" })` instead of `.class-selector`
+
+### 2. Test Component Behavior, Not Implementation
+
+- Focus on testing user-visible behavior rather than internal implementation details
+- Test interactions from a user's perspective (clicks, form filling, navigation)
+- Verify expected outcomes rather than internal state changes
+
+### 3. Leverage ARIA Attributes
+
+- shadcn/ui components have built-in accessibility via Radix UI primitives
+- Use these attributes in your tests to locate elements reliably
+- Example: For a dropdown, use `getByRole("combobox")` to find the select element
+
+### 4. Test Common User Flows
+
+- Form submissions (with validation)
+- Button interactions (disabled states, loading states)
+- Dropdown/select interactions (opening, selecting options)
+- Modal/dialog interactions (opening, closing, form submission)
+
+### 5. Test Accessibility
+
+- Verify keyboard navigation works properly (tab order, focus states)
+- Test screen reader compatibility by checking ARIA roles and attributes
+- Verify that error messages are properly associated with form fields
+
+### 6. Test Component States
+
+- Test both default and interactive states (hover, focus, active)
+- Test loading states and error states
+- For form components, test validation states (error, success)
+
+### 7. Set Up Isolated Test Environments
+
+- Use Playwright's context isolation to avoid test interdependencies
+- Reset application state between tests
+- Mock API responses for predictable test behavior
+
+### 8. Simulate User Interactions Accurately
+
+- Use proper events (click, type, press) instead of directly setting values
+- Wait for animations to complete where necessary (shadcn/ui has transitions)
+- Use `await expect(element).toBeVisible()` before interacting with elements
+
+### 9. Test Dark Mode Compatibility
+
+- Test components in both light and dark mode
+- Verify color contrast meets accessibility standards in both modes
+- Check that state indicators (focus, hover) work properly in both modes
+
+### 10. Create Reusable Test Helpers
+
+- Create helper functions for common operations like login, form filling
+- Use Playwright's custom fixtures for repeatable setup
+- Consider page object models for complex interfaces
