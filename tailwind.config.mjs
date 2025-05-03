@@ -1,4 +1,8 @@
 /** @type {import('tailwindcss').Config} */
+import typography from '@tailwindcss/typography';
+import forms from '@tailwindcss/forms';
+import aspectRatio from '@tailwindcss/aspect-ratio';
+
 export default {
   content: [
     "./app/**/*.{js,ts,jsx,tsx}",
@@ -80,12 +84,8 @@ export default {
   },
   plugins: [
     // Include official Tailwind plugins
-    // Note: You'll need to install these with npm/yarn first
-    // npm install @tailwindcss/typography @tailwindcss/forms @tailwindcss/aspect-ratio
-    // or
-    // yarn add @tailwindcss/typography @tailwindcss/forms @tailwindcss/aspect-ratio
-    require('@tailwindcss/typography'),
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/aspect-ratio'), // Added for responsive media content
+    typography,
+    forms,
+    aspectRatio, // Added for responsive media content
   ],
 }; 

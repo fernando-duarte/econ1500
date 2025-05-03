@@ -170,7 +170,7 @@ Each round $r=0,\dots,9$ covers years $1980+5r$ to $1984+5r$.
     $$\tilde e_t = 7.00 \times \frac{\bar R_t}{100}$$
 
   - **Backfill** for \(t<1994\), let \(t*1=1995\):  
-    $$\tilde e_t = e^{\text{nom}}\_t \times \frac{\tilde e*{t*1}}{e^{\text{nom}}*{t_1}}$$
+     $$\tilde e_t = e^{\text{nom}}\_t \times \frac{\tilde e*{t*1}}{e^{\text{nom}}*{t_1}}$$
   where $e^{\text{nom}}_t$ is the observed realized nominal exchange rate.
 
   # Economics-Themed Team Names for Classroom Game

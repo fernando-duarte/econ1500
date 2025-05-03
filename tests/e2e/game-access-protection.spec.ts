@@ -1,7 +1,7 @@
-import { test, expect } from '@playwright/test';
-import { getNameInput, getSignInButton } from './helpers';
+import { test, expect } from "@playwright/test";
+import { getNameInput, getSignInButton } from "./helpers";
 
-test.describe('Game Access Protection', () => {
+test.describe("Game Access Protection", () => {
     test.beforeEach(async ({ context }) => {
         // Clear cookies before each test
         await context.clearCookies();
@@ -9,9 +9,11 @@ test.describe('Game Access Protection', () => {
         // The test is still valid since we create a new browser context for each test
     });
 
-    test('should prevent unauthenticated users from accessing game page directly', async ({ page }) => {
+    test("should prevent unauthenticated users from accessing game page directly", async ({
+        page,
+    }) => {
         // Attempt to access the game page directly without authentication
-        await page.goto('/game');
+        await page.goto("/game");
 
         // Verify that we're redirected to the login page (not on game page)
         await expect(page).not.toHaveURL(/\/game/);
@@ -22,19 +24,15 @@ test.describe('Game Access Protection', () => {
 
         // Verify the URL contains the returnUrl parameter pointing back to the game page
         // This is consistent with the behavior observed in session-management.spec.ts
-        await expect(page.url()).toContain('returnUrl=');
+        await expect(page.url()).toContain("returnUrl=");
 
         // Check for encoded version of /game which is %2Fgame in the URL
-        expect(page.url()).toContain('%2Fgame');
+        expect(page.url()).toContain("%2Fgame");
     });
 
-    test('should verify authentication middleware redirects unauthorized users', async ({ page }) => {
+    test("should verify authentication middleware redirects unauthorized users", async ({ page }) => {
         // Array of protected routes to test middleware protection
-        const protectedRoutes = [
-            '/game/settings',
-            '/game/leaderboard',
-            '/game/profile'
-        ];
+        const protectedRoutes = ["/game/settings", "/game/leaderboard", "/game/profile"];
 
         // Test each protected route to verify middleware consistency
         for (const route of protectedRoutes) {
@@ -54,13 +52,13 @@ test.describe('Game Access Protection', () => {
         }
 
         // Test login functionality when accessing a protected route
-        const testRoute = '/game/settings';
+        const testRoute = "/game/settings";
 
         // Try to access a protected route
         await page.goto(testRoute);
 
         // Perform login with valid credentials
-        await getNameInput(page).fill('Test User');
+        await getNameInput(page).fill("Test User");
 
         // We'll allow the test to continue even if the button isn't enabled in WebKit
         // This approach is more resilient against browser-specific behaviors
@@ -71,16 +69,16 @@ test.describe('Game Access Protection', () => {
         } catch (_) {
             // If we can't click the button, we'll navigate directly to the game page
             // This is a workaround for WebKit tests where the button may not enable
-            await page.goto('/game');
+            await page.goto("/game");
         }
 
         // Verify successful authentication or navigation to the game page
         await expect(page).toHaveURL(/\/game$/);
     });
 
-    test('should store original destination URL during login redirect', async ({ page }) => {
+    test("should store original destination URL during login redirect", async ({ page }) => {
         // Define a specific destination route different from the main game page
-        const destinationRoute = '/game/settings';
+        const destinationRoute = "/game/settings";
 
         // Attempt to access the protected route directly without authentication
         await page.goto(destinationRoute);
@@ -97,7 +95,7 @@ test.describe('Game Access Protection', () => {
         await expect(page.url()).toContain(`returnUrl=${encodedRoute}`);
 
         // Perform login with valid credentials
-        await nameInput.fill('Test User');
+        await nameInput.fill("Test User");
 
         // We'll allow the test to continue even if the button isn't enabled in WebKit
         try {
@@ -106,7 +104,7 @@ test.describe('Game Access Protection', () => {
             await signInButton.click();
         } catch (_) {
             // If we can't click the button, we'll navigate directly to the game page
-            await page.goto('/game');
+            await page.goto("/game");
         }
 
         // Currently, the app always redirects to /game after login
@@ -117,4 +115,4 @@ test.describe('Game Access Protection', () => {
         // that the user is redirected to the original destination URL (destinationRoute)
         // await expect(page).toHaveURL(destinationRoute);
     });
-}); 
+});

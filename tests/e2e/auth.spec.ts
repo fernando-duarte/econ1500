@@ -1,78 +1,95 @@
-import { test, expect } from '@playwright/test';
-import { getNameInput, getSignInButton, getCombobox, getStudentOption } from './helpers';
+import { test, expect } from "@playwright/test";
+import {
+  getNameInput,
+  getSignInButton,
+  clearAppState,
+  selectStudentFromDropdown,
+  fillAndSubmitLoginForm,
+  expectErrorMessage,
+  verifySuccessfulSubmission,
+  checkLocalStorage,
+  checkSessionCookie,
+  waitForPageLoad,
+  errorMessages
+} from "./helpers";
 
-const authFile = 'playwright/.auth/user.json';
+const authFile = "playwright/.auth/user.json";
 
-test.describe('User Authentication Flow', () => {
-    test.beforeEach(async ({ page, context }) => {
-        // Navigate to root and clear any prior state
-        await page.goto('/');
-        await context.clearCookies();
-        await page.evaluate(() => localStorage.clear());
+// Tests that can run in parallel
+test.describe.configure({ mode: 'parallel' });
+
+test.describe("User Authentication Flow", () => {
+  test.beforeEach(async ({ page, context }) => {
+    // Navigate to root and clear any prior state
+    await page.goto("/");
+    await clearAppState(page, context);
+    await waitForPageLoad(page);
+  });
+
+  test("should allow users to log in with valid name", async ({ page, context }) => {
+    await test.step("Fill and submit login form", async () => {
+      const testStudent = "Aidan Wang";
+      await fillAndSubmitLoginForm(page, testStudent);
     });
 
-    test('should allow users to log in with valid name', async ({ page, context }) => {
-        const nameInput = getNameInput(page);
-        await expect(nameInput).toBeVisible();
-        const testStudent = 'Aidan Wang';
+    await test.step("Verify successful authentication", async () => {
+      await verifySuccessfulSubmission(page);
 
-        await nameInput.fill(testStudent);
-        await getSignInButton(page).click();
-        await expect(page).toHaveURL(/\/game/);
+      const testStudent = "Aidan Wang";
+      await expect(checkLocalStorage(page, "lastUsername", testStudent)).resolves.toBe(true);
+      await expect(checkSessionCookie(context)).resolves.toBe(true);
 
-        const stored = await page.evaluate(() => localStorage.getItem('lastUsername'));
-        expect(stored).toBe(testStudent);
+      // Persist storage state for downstream tests
+      await context.storageState({ path: authFile });
+    });
+  });
 
-        const cookies = await context.cookies();
-        expect(cookies.some(c => c.name === 'session-token')).toBeTruthy();
-
-        // Persist storage state for downstream tests
-        await context.storageState({ path: authFile });
+  test("should display error when using invalid name format", async ({ page }) => {
+    await test.step("Submit form with invalid data", async () => {
+      const invalidName = "Invalid@Name#";
+      await fillAndSubmitLoginForm(page, invalidName);
     });
 
-    test('should display error when using invalid name format', async ({ page }) => {
-        const nameInput = getNameInput(page);
-        const submit = getSignInButton(page);
+    await test.step("Verify error message", async () => {
+      await expectErrorMessage(page, errorMessages.invalidFormat);
+      await expect(page).not.toHaveURL(/\/game/);
+    });
+  });
 
-        await nameInput.fill('Invalid@Name#');
-        await submit.click();
-
-        await expect(
-            page.getByText(
-                'Name can only contain letters, numbers, spaces, hyphens, and underscores'
-            )
-        ).toBeVisible();
-        await expect(page).not.toHaveURL(/\/game/);
+  test("should handle form submission with Enter key", async ({ page }) => {
+    await test.step("Fill form and press Enter", async () => {
+      const nameInput = getNameInput(page);
+      const studentName = "Emily Mueller";
+      await nameInput.fill(studentName);
+      await nameInput.press("Enter");
     });
 
-    test('should handle form submission with Enter key', async ({ page }) => {
-        const nameInput = getNameInput(page);
-        await nameInput.fill('Emily Mueller');
-        // Pressing Enter on the input will trigger form submission
-        await nameInput.press('Enter');
+    await test.step("Verify successful navigation", async () => {
+      await verifySuccessfulSubmission(page);
+    });
+  });
 
-        await expect(page).toHaveURL(/\/game/);
+  test("should allow selecting a student from dropdown", async ({ page }) => {
+    await test.step("Select student from dropdown", async () => {
+      const studentName = "Hans Xu";
+      await selectStudentFromDropdown(page, studentName);
     });
 
-    test('should allow selecting a student from dropdown', async ({ page }) => {
-        // Open the combobox and select 'Hans Xu'
-        const combo = getCombobox(page);
-        await combo.click();
-        const option = getStudentOption(page, 'Hans Xu');
-        await expect(option).toBeVisible();
-        await option.click();
-
-        await getSignInButton(page).click();
-        await expect(page).toHaveURL(/\/game/);
+    await test.step("Submit form and verify navigation", async () => {
+      await getSignInButton(page).click();
+      await verifySuccessfulSubmission(page);
     });
+  });
 
-    test('should maintain authentication across sessions', async ({ browser }) => {
-        const context = await browser.newContext({ storageState: authFile });
-        const page = await context.newPage();
+  test("should maintain authentication across sessions", async ({ browser }) => {
+    await test.step("Create a new context with auth state", async () => {
+      const context = await browser.newContext({ storageState: authFile });
+      const page = await context.newPage();
 
-        await page.goto('/game');
-        await expect(page).toHaveURL(/\/game/);
+      await page.goto("/game");
+      await verifySuccessfulSubmission(page);
 
-        await context.close();
+      await context.close();
     });
+  });
 });

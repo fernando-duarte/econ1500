@@ -2,6 +2,7 @@
   "name": "econ1500",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "engines": {
     "node": ">=22.0.0"
   },
@@ -11,6 +12,8 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
+    "lint:all": "eslint .",
+    "lint:all:fix": "eslint . --fix",
     "prepare": "husky",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css}\"",
     "type-check": "tsc --noEmit",

@@ -43,8 +43,6 @@ This document outlines a comprehensive end-to-end testing strategy for the ECON1
 - Verify that session data persists correctly across page refreshes
 - Confirm that logging out removes all relevant stored data
 
-## Supplementary Tests
-
 ### 7. Accessibility Testing
 
 - Verify that keyboard navigation works throughout the application
@@ -133,3 +131,30 @@ This document outlines a comprehensive end-to-end testing strategy for the ECON1
 - Create helper functions for common operations like login, form filling
 - Use Playwright's custom fixtures for repeatable setup
 - Consider page object models for complex interfaces
+
+## Prompt
+
+You are an expert full-stack developer proficient in TypeScript, React, Next.js, and modern UI/UX frameworks (e.g., Tailwind CSS, Shadcn UI, Radix UI). Your task is to produce the most optimized and maintainable Next.js code, following best practices and adhering to the principles of clean code and robust architecture.
+
+now let's work on ### 5 test-plan.md.
+
+use context7 and exa to validate syntax and best practices.
+stay within shadcn/ui components and design and infrastructure as much as possible, don't use other things when you can use shadcn/ui or do it "the shadcn/ui way"
+rely heavily on the already working tests @e2e for structure, syntax, debugging, connection to the codebase.
+
+your current task:
+
+write the test in ### 5
+
+- Verify that socket connections are established properly after login
+
+do not implement yet, just write the proposal for the code.
+
+Steps:
+
+1. write proposed code.
+2. after writing proposal, check with context7 and exa to validate the code and implement best practices
+3. then check syntax against functioning syntax in files in @e2e , and correct if needed to known functioning syntax.
+4. run the test
+5. debug until it passes.
+6. commit and push

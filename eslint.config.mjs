@@ -51,6 +51,8 @@ const eslintConfig = [
       "coverage/",
       "test-results/",
       "playwright-report/",
+      "monocart-report/assets/**",
+      "monocart-report/coverage/**",
 
       // Editor-specific files
       ".idea/",
@@ -86,6 +88,7 @@ const eslintConfig = [
       "@typescript-eslint/no-unused-vars": ["error", {
         "argsIgnorePattern": "^_",
         "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_",
         "ignoreRestSiblings": true
       }],
 
@@ -149,6 +152,13 @@ const eslintConfig = [
         "skipBlankLines": true,
         "skipComments": true
       }]
+    }
+  },
+  {
+    // Allow console.log in utility scripts
+    files: ["**/check-validation.js", "**/validate-all-students.js", "**/scripts/**/*.js"],
+    rules: {
+      "no-console": "off"
     }
   }
 ];
