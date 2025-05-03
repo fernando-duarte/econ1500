@@ -20,6 +20,9 @@
     "analyze": "ANALYZE=true next build",
     "test:e2e": "playwright test --reporter=list",
     "test:e2e:cov": "playwright test",
+    "test:e2e:non-interactive": "playwright test --reporter=json > test-results.json",
+    "test:e2e:run": "node scripts/non-interactive-test.js",
+    "test:file": "node scripts/non-interactive-test.js",
     "clean:test": "rimraf test-results playwright-report monocart-report/coverage/**/*.* monocart-report/*.{html,json}",
     "postinstall": "npx playwright install --with-deps"
   },

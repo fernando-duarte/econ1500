@@ -30,7 +30,12 @@ export function UserInfo() {
   if (!username) return null;
 
   return (
-    <div data-testid="user-info" className="flex items-center gap-2 text-sm font-medium">
+    <div
+      id="user-info"
+      data-testid="user-info"
+      className="user-info flex items-center gap-2 text-sm font-medium"
+      aria-label="User information"
+    >
       Logged in as: <span className="font-bold">{username}</span>
     </div>
   );

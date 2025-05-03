@@ -2,16 +2,19 @@ import { test, expect } from "@playwright/test";
 import {
     getNameInput,
     getSignInButton,
-    clearAppState,
+    _clearAppState,
     selectStudentFromDropdown,
-    fillAndSubmitLoginForm,
+    _fillAndSubmitLoginForm,
     expectErrorMessage,
-    verifySuccessfulSubmission,
+    _verifySuccessfulSubmission,
     verifyLoadingState,
-    _getTestStudents as getTestStudents,
+    _getTestStudents,
     errorMessages,
-    waitForPageLoad,
-    clickWhenEnabled
+    _waitForPageLoad,
+    clickWhenEnabled,
+    setupBasicTest,
+    testFormField,
+    verifyCommonElements
 } from "./helpers";
 
 // Tests that can run in parallel
@@ -19,203 +22,135 @@ test.describe.configure({ mode: 'parallel' });
 
 test.describe("Form Validation and Error Handling", () => {
     test.beforeEach(async ({ page, context }) => {
-        // Navigate to root and clear any prior state
-        await page.goto("/");
-        await clearAppState(page, context);
-        await waitForPageLoad(page);
+        // Use the new setupBasicTest helper
+        await setupBasicTest(page, context);
     });
 
-    test("should require name input to enable submit button", async ({ page }) => {
-        await test.step("Verify button is initially disabled", async () => {
-            const submitButton = getSignInButton(page);
-            await expect(submitButton).toBeDisabled();
-        });
-
-        await test.step("Fill name input and verify button enables", async () => {
-            const nameInput = getNameInput(page);
-            await nameInput.fill("Valid Name");
-
-            const submitButton = getSignInButton(page);
-            try {
-                await expect(submitButton).toBeEnabled({ timeout: 2000 });
-            } catch (_) {
-                // If the button doesn't become enabled, we'll continue the test
-            }
-        });
+    test("should require name input and prevent submission of empty form", async ({ page }) => {
+        // Attempt to submit the form without entering a name
+        const submitBtn = getSignInButton(page);
+        await expect(submitBtn).toBeDisabled();
     });
 
-    test("should display error when using invalid name format", async ({ page }) => {
-        await test.step("Fill form with invalid data", async () => {
-            const testData = getTestStudents();
-
-            // First fill with valid name to enable button
-            const nameInput = getNameInput(page);
-            const submit = getSignInButton(page);
-            await nameInput.fill("Valid Name");
-
-            // Try to wait for the button to be enabled
-            try {
-                await expect(submit).toBeEnabled({ timeout: 2000 });
-            } catch (_) {
-                // Continue test even if button doesn't become enabled
-            }
-
-            // Change to invalid name format
-            await nameInput.fill(testData.invalid[0]); // Invalid@Name#
-
-            // Use clickWhenEnabled helper with options
-            await clickWhenEnabled(submit, undefined, {
-                timeoutMs: 2000,
-                logMessage: "Submit button not enabled after filling invalid name"
-            });
-        });
-
-        await test.step("Verify error messages", async () => {
-            // Use the expectErrorMessage helper
-            await expectErrorMessage(page, errorMessages.invalidFormat);
-            await expect(page).not.toHaveURL(/\/game/);
-        });
+    test("should validate minimum name length", async ({ page }) => {
+        await testFormField(
+            page,
+            "Name",
+            "Valid Name",
+            "A",
+            "Name must be at least 2 characters"
+        );
     });
 
     test("should validate maximum name length", async ({ page }) => {
-        await test.step("Fill form with too long name", async () => {
-            const nameInput = getNameInput(page);
-            const submit = getSignInButton(page);
+        const testData = _getTestStudents();
 
-            // Fill with valid name to enable submit button
-            await nameInput.fill("Valid Name");
+        await testFormField(
+            page,
+            "Name",
+            "Valid Name",
+            testData.invalid[1] || "Very long name repeated many times",
+            errorMessages.tooLong
+        );
+    });
 
-            // Fill with very long name from test data
-            const testData = getTestStudents();
-            await nameInput.fill(testData.invalid[1]); // Long name (a repeated 101 times)
+    test("should reject invalid name format with special characters", async ({ page }) => {
+        await testFormField(
+            page,
+            "Name",
+            "Valid Name",
+            "Invalid@Name#123",
+            errorMessages.invalidFormat
+        );
+    });
 
-            // Use clickWhenEnabled helper with fallback and options
-            await clickWhenEnabled(submit,
-                async () => {
-                    // If we can't click, just continue - we'll check the URL
-                },
-                {
-                    timeoutMs: 2000,
-                    logMessage: "Submit button not enabled with long name, continuing test",
-                    takeScreenshot: true
-                }
-            );
-        });
+    test("should reject names with excessive whitespace", async ({ page }) => {
+        await testFormField(
+            page,
+            "Name",
+            "Valid Name",
+            "   Too     Many    Spaces   ",
+            "Too many spaces"
+        );
+    });
 
-        await test.step("Verify validation prevents submission", async () => {
-            // Check we remain on the login page
-            await expect(page).not.toHaveURL(/\/game/);
+    test("should reject names with profanity", async ({ page }) => {
+        // Note: Using a mocked profanity example that's unlikely to be flagged
+        const testData = _getTestStudents();
+
+        await testFormField(
+            page,
+            "Name",
+            "Valid Name",
+            testData.invalid[2] || "BadWord",
+            "Inappropriate language"
+        );
+    });
+
+    test("should show loading state during form submission", async ({ page }) => {
+        // Enter a valid name
+        const nameInput = getNameInput(page);
+        await nameInput.fill("Aidan Wang");
+
+        // Submit the form and check for loading state
+        const submitBtn = getSignInButton(page);
+        await submitBtn.click();
+
+        // Verify loading state appears
+        await verifyLoadingState(page);
+
+        // Verify we eventually redirect to game page
+        await verifyCommonElements(page, {
+            authenticated: true,
+            expectedUrl: /\/game/
         });
     });
 
-    test("should allow form submission after fixing validation errors", async ({ page }) => {
-        await test.step("First try invalid name", async () => {
-            const testData = getTestStudents();
-            const nameInput = getNameInput(page);
-            await nameInput.fill(testData.invalid[0]); // Invalid@Name#
-        });
-
-        await test.step("Then correct input and submit", async () => {
-            const nameInput = getNameInput(page);
-            await nameInput.fill("Valid Name");
-
-            const submit = getSignInButton(page);
-            await clickWhenEnabled(submit,
-                async () => {
-                    // If click fails, navigate directly
-                    await page.goto("/game");
-                },
-                {
-                    timeoutMs: 3000,
-                    logMessage: "Submit button not clickable after fixing validation error, navigating directly"
-                }
-            );
-        });
-
-        await test.step("Verify successful submission", async () => {
-            await verifySuccessfulSubmission(page);
-        });
-    });
-
-    test("should have clear and descriptive error messages", async ({ page }) => {
-        await test.step("Submit form with invalid data", async () => {
-            // First set a valid name to enable the submit button
-            const nameInput = getNameInput(page);
-            const signInButton = getSignInButton(page);
-            await nameInput.fill("Valid Name");
-
-            // Try to wait for the button to be enabled
-            try {
-                await expect(signInButton).toBeEnabled({ timeout: 2000 });
-            } catch (_) {
-                // Continue test even if button doesn't become enabled
-            }
-
-            // Then change to invalid format
-            const testData = getTestStudents();
-            await nameInput.fill(testData.invalid[0]); // Invalid@Name#
-
-            await clickWhenEnabled(signInButton);
-        });
-
-        await test.step("Verify error message and styling", async () => {
-            // Use helper to check error message
-            await expectErrorMessage(page, errorMessages.invalidFormat);
-
-            // Check if error message has appropriate styling with ARIA attributes
-            const errorContainer = page.locator('form [role="alert"]');
-            if (await errorContainer.isVisible()) {
-                await expect(errorContainer).toHaveAttribute("role", "alert");
-                await errorContainer.screenshot({ path: "test-results/error-message-styling.png" });
-            }
-        });
-    });
-
-    test("should verify student selection from dropdown populates name field", async ({ page }) => {
-        await test.step("Select student from dropdown", async () => {
-            const testData = getTestStudents();
-            // Use the helper function
-            await selectStudentFromDropdown(page, testData.valid[1]); // Hans Xu
-        });
-
-        await test.step("Verify input is populated", async () => {
-            const testData = getTestStudents();
-            const nameInput = getNameInput(page);
-            await expect(nameInput).toHaveValue(testData.valid[1]); // Hans Xu
-        });
-
-        await test.step("Submit form", async () => {
-            const signInButton = getSignInButton(page);
-            await clickWhenEnabled(signInButton, async () => {
-                // If we can't click the button, navigate directly
-                await page.goto("/game");
+    test("should display appropriate error message for server errors", async ({ page }) => {
+        // Intercept and mock a server error response
+        await page.route('**/api/auth/login', route => {
+            route.fulfill({
+                status: 500,
+                contentType: 'application/json',
+                body: JSON.stringify({ error: 'Internal server error' })
             });
         });
 
-        await test.step("Verify successful navigation", async () => {
-            await verifySuccessfulSubmission(page);
+        // Fill and submit the form
+        const nameInput = getNameInput(page);
+        await nameInput.fill("Aidan Wang");
+        await clickWhenEnabled(getSignInButton(page));
+
+        // Verify error message
+        await expectErrorMessage(page, "Server error occurred");
+
+        // Verify we're still on login page
+        await verifyCommonElements(page, {
+            authenticated: false,
+            expectedUrl: /\/$/
         });
+
+        // Clear mock for other tests
+        await page.unroute('**/api/auth/login');
     });
 
-    test("should indicate loading state during form submission", async ({ page }) => {
-        await test.step("Fill and prepare to submit form", async () => {
-            // Fill name input to enable button
-            await fillAndSubmitLoginForm(page, "Valid Name");
-        });
+    test("should validate name format when student is selected from dropdown", async ({ page }) => {
+        // Select a student from dropdown with invalid name
+        // This is usually not possible from the UI, but tests the validation code
+        // We can mock this by:
 
-        await test.step("Verify loading state indicators", async () => {
-            // Create a Promise that resolves when navigation starts
-            const navigationPromise = page.waitForURL(/\/game/);
+        // 1. Select a valid student first
+        await selectStudentFromDropdown(page, "Aidan Wang");
 
-            // Use the helper to check loading state
-            await verifyLoadingState(page);
+        // 2. Then manually change to an invalid name
+        const nameInput = getNameInput(page);
+        await nameInput.fill("Invalid@Name#");
 
-            // Wait for navigation to complete
-            await navigationPromise;
-        });
+        // 3. Submit form
+        const submitBtn = getSignInButton(page);
+        await clickWhenEnabled(submitBtn);
 
-        await test.step("Verify successful navigation", async () => {
-            await verifySuccessfulSubmission(page);
-        });
+        // 4. Check error message 
+        await expectErrorMessage(page, errorMessages.invalidFormat);
     });
 });

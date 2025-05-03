@@ -2,7 +2,11 @@ import { NextResponse } from "next/server";
 
 export async function POST() {
   try {
-    const res = NextResponse.json({ success: true });
+    // Create response with redirect information
+    const res = NextResponse.json({
+      success: true,
+      redirect: "/"
+    });
 
     // Clear the session token cookie
     res.cookies.set({
@@ -12,6 +16,14 @@ export async function POST() {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
+      path: "/",
+    });
+
+    // Ensure cookie is actually removed by setting expired date
+    res.cookies.set({
+      name: "session-token",
+      value: "",
+      expires: new Date(0),
       path: "/",
     });
 

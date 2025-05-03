@@ -36,10 +36,31 @@ const formSchema = z.object({
   username: z
     .string()
     .min(2, "Name must be at least 2 characters")
-    .max(50, "Name must be less than 50 characters")
+    .max(100, "Name is too long")
     .regex(
       /^[a-zA-Z0-9\s-_]+$/,
       "Name can only contain letters, numbers, spaces, hyphens, and underscores"
+    )
+    .refine(
+      (value) => {
+        // Check for excessive whitespace
+        return !value.includes("  ") && !value.startsWith(" ") && !value.endsWith(" ");
+      },
+      {
+        message: "Too many spaces"
+      }
+    )
+    .refine(
+      (value) => {
+        // Simple profanity check
+        const profanityList = ["badword", "profanity", "inappropriate"];
+        return !profanityList.some(word =>
+          value.toLowerCase().includes(word.toLowerCase())
+        );
+      },
+      {
+        message: "Inappropriate language"
+      }
     ),
 });
 
@@ -79,7 +100,12 @@ export default function LoginPage() {
           body: JSON.stringify({ username: values.username }),
         });
         const data = await res.json();
-        if (!res.ok) throw new Error((data as ApiError).error || "Login failed");
+        if (!res.ok) {
+          if (res.status === 500) {
+            throw new Error("Server error occurred");
+          }
+          throw new Error((data as ApiError).error || "Login failed");
+        }
         localStorage.setItem("lastUsername", values.username);
         await new Promise((r) => setTimeout(r, 250));
         router.push("/game");

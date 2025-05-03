@@ -95,6 +95,7 @@ export default function GamePage() {
             disabled={isLoggingOut}
             className="focus-visible:ring-ring w-32 focus-visible:ring-2 focus-visible:ring-offset-2"
             aria-busy={isLoggingOut}
+            data-testid="logout-button"
           >
             {isLoggingOut && <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />}
             Logout

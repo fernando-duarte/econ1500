@@ -50,7 +50,10 @@ export function Combobox({
   const filteredItems = React.useMemo(() => {
     if (!query) return items;
     const normalized = query.toLowerCase().trim();
-    return items.filter((item) => item.label.toLowerCase().includes(normalized));
+    return items.filter((item) => {
+      const normalizedLabel = item.label.toLowerCase();
+      return normalizedLabel.includes(normalized);
+    });
   }, [items, query]);
 
   const selectedItem = React.useMemo(
