@@ -52,16 +52,11 @@ test.describe("Session Management", () => {
   });
 
   test("should update login state after logging out", async ({ page, context }) => {
-    // First authenticate the user - simplified approach
-    const nameInput = getNameInput(page);
-    await nameInput.fill("Aidan Wang");
-    await getSignInButton(page).click();
+    // First authenticate the user using helper
+    await _authenticateAndVerify(page, context, "Aidan Wang");
 
-    // Verify navigation to game page
-    await expect(page).toHaveURL(/\/game/, { timeout: 5000 });
-
-    // Find and click the logout button using a more general selector
-    const logoutButton = page.locator('button:has-text("Logout"), [data-testid="logout-button"]');
+    // Find and click the logout button using the helper
+    const logoutButton = _getLogoutButton(page);
     await expect(logoutButton).toBeVisible({ timeout: 5000 });
     await logoutButton.click();
 

@@ -4,7 +4,8 @@ import {
     testProtectedRoute,
     _authenticateAndVerify,
     getNameInput,
-    getSignInButton
+    getSignInButton,
+    retryButtonClick
 } from "./helpers";
 
 test.describe("Game Access Protection", () => {
@@ -37,41 +38,9 @@ test.describe("Game Access Protection", () => {
         }
     });
 
-    test("should allow authenticated users to access game page", async ({ page }) => {
-        // Simplified authentication approach that doesn't rely on helpers
-        await page.goto("/");
-        const nameInput = page.getByRole("textbox", { name: "Name" });
-        await nameInput.fill("Aidan Wang");
-
-        // Get the sign-in button and try clicking it
-        const signInButton = page.getByRole("button", { name: "Sign in" });
-
-        // Fill the form
-        await nameInput.press("Tab");
-
-        // Make sure the form is valid
-        await page.waitForTimeout(500);  // Small delay to ensure form validation completes
-
-        // Try to click the button if it's enabled
-        try {
-            // Check if button is enabled
-            if (await signInButton.isEnabled()) {
-                await signInButton.click();
-            } else {
-                // If button isn't enabled, submit the form directly
-                await page.evaluate(() => {
-                    const form = document.getElementById("login-form");
-                    if (form) form.dispatchEvent(new Event("submit"));
-                });
-            }
-        } catch (e) {
-            console.error("Error during form submission:", e);
-            // Fallback: navigate directly
-            await page.goto("/game");
-        }
-
-        // Verify we're on the game page
-        await expect(page).toHaveURL(/\/game/, { timeout: 5000 });
+    test("should allow authenticated users to access game page", async ({ page, context }) => {
+        // Use the helper for authentication
+        await _authenticateAndVerify(page, context, "Aidan Wang");
 
         // Verify direct access after authentication works
         await page.goto("/game/settings");
@@ -88,15 +57,12 @@ test.describe("Game Access Protection", () => {
         // Perform login with valid credentials
         await getNameInput(page).fill("Test User");
 
-        // We'll allow the test to continue even if the button isn't enabled in WebKit
-        try {
-            const signInButton = getSignInButton(page);
-            await expect(signInButton).toBeEnabled({ timeout: 2000 });
-            await signInButton.click();
-        } catch (_) {
-            // If we can't click the button, we'll navigate directly to the game page
-            await page.goto("/game");
-        }
+        // Use retryButtonClick instead of try/catch
+        await retryButtonClick(getSignInButton(page), {
+            fallbackAction: async () => {
+                await page.goto("/game");
+            }
+        });
 
         // Currently, the app always redirects to /game after login
         // rather than the original destination URL

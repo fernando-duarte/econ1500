@@ -1,5 +1,8 @@
 /**
- * Game page
+ * Game Page
+ *
+ * Main game interface that displays after successful authentication.
+ * Provides user information and logout functionality.
  */
 "use client";
 

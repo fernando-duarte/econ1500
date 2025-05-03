@@ -1,5 +1,8 @@
 /**
  * Login Page
+ *
+ * Main entry point for the application. Handles user authentication
+ * through name input or student selection from a dropdown.
  */
 "use client";
 

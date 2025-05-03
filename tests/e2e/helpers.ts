@@ -5,6 +5,7 @@ const authFile = "playwright/.auth/user.json";
 // Element Selectors
 /**
  * Get the name input field
+ * 
  * @param page - Playwright page object
  * @returns Locator for the name input field
  */
@@ -12,6 +13,7 @@ export const getNameInput = (page: Page) => page.getByRole("textbox", { name: "N
 
 /**
  * Get the sign in button
+ * 
  * @param page - Playwright page object
  * @returns Locator for the sign in button
  */
@@ -28,6 +30,7 @@ export const _getLogoutButton = (page: Page) =>
 
 /**
  * Get the combobox element
+ * 
  * @param page - Playwright page object
  * @returns Locator for the combobox
  */
@@ -35,6 +38,7 @@ export const getCombobox = (page: Page) => page.getByRole("combobox");
 
 /**
  * Get a student option by name from the dropdown
+ * 
  * @param page - Playwright page object
  * @param studentName - Name of the student to select
  * @returns Locator for the student option
@@ -44,6 +48,7 @@ export const getStudentOption = (page: Page, studentName: string) =>
 
 /**
  * Get an error message by text
+ * 
  * @param page - Playwright page object
  * @param text - Text of the error message
  * @returns Locator for the error message
@@ -75,6 +80,7 @@ export const _clearAppState = async (page: Page, context: BrowserContext): Promi
 
 /**
  * Check if localStorage contains expected value for a key
+ * 
  * @param page - Playwright page object
  * @param key - localStorage key to check
  * @param expectedValue - Expected value
@@ -91,6 +97,7 @@ export const checkLocalStorage = async (
 
 /**
  * Check if session cookie exists
+ * 
  * @param context - Playwright browser context
  * @returns boolean indicating if session cookie exists
  */
@@ -158,6 +165,7 @@ export const selectStudentFromDropdown = async (page: Page, studentName: string)
 
 /**
  * Search for a student in the dropdown
+ * 
  * @param page - Playwright page object
  * @param searchText - Text to search for
  */
@@ -234,6 +242,7 @@ export const _authenticateAndVerify = async (
 // Validation Helpers
 /**
  * Expect an error message to be visible
+ * 
  * @param page - Playwright page object
  * @param errorText - Text of the error message
  */
@@ -243,6 +252,7 @@ export const expectErrorMessage = async (page: Page, errorText: string): Promise
 
 /**
  * Expect redirection to login page
+ * 
  * @param page - Playwright page object
  */
 export const expectRedirectToLogin = async (page: Page): Promise<void> => {
@@ -282,6 +292,7 @@ export const _verifySuccessfulSubmission = async (page: Page): Promise<void> => 
 
 /**
  * Verify loading state during form submission
+ * 
  * @param page - Playwright page object
  */
 export const verifyLoadingState = async (page: Page): Promise<void> => {
@@ -304,6 +315,7 @@ export const verifyLoadingState = async (page: Page): Promise<void> => {
 // Test Data Helpers
 /**
  * Get test student data
+ * 
  * @returns Object with valid and invalid student names
  */
 export const _getTestStudents = (): { valid: [string, ...string[]], invalid: [string, ...string[]] } => ({
@@ -392,11 +404,11 @@ export const clickWhenEnabled = async (
 
 /**
  * Attempt to click an element with fallback action if it fails
- * 
+ *
  * @param locator - Playwright locator to click
  * @param fallbackAction - Optional fallback function to call if click fails
  * @returns Promise that resolves when click or fallback succeeds
- * 
+ *
  * @deprecated Use clickWhenEnabled instead for more configurable retry behavior
  */
 export const attemptClick = async (
@@ -408,13 +420,13 @@ export const attemptClick = async (
 
 /**
  * Start tracing for debugging
- * 
+ *
  * Use this at the beginning of complex tests to capture a trace for debugging
- * 
+ *
  * @param context - Playwright browser context
  * @param testInfo - Test info object
  * @returns Promise that resolves when tracing starts
- * 
+ *
  * @example
  * test('complex test scenario', async ({ page, context }, testInfo) => {
  *   await startTracing(context, testInfo);
@@ -436,9 +448,9 @@ export const startTracing = async (
 
 /**
  * Stop tracing and save trace file
- * 
+ *
  * Use this at the end of tests or in afterEach hooks
- * 
+ *
  * @param context - Playwright browser context
  * @param testInfo - Test info object
  * @returns Promise that resolves when trace is saved
@@ -454,13 +466,13 @@ export const stopTracing = async (
 
 /**
  * Check multiple conditions using soft assertions
- * 
+ *
  * This allows multiple checks without stopping test execution on first failure
- * 
+ *
  * @param page - Playwright page object
  * @param conditions - Array of functions that return promises
  * @returns Promise that resolves when all conditions are checked
- * 
+ *
  * @example
  * await expectMultipleConditions(page, [
  *   async () => await expect(page.locator('#elem1')).toBeVisible(),
@@ -484,7 +496,7 @@ export const expectMultipleConditions = async (
 
 /**
  * Enhanced test setup that handles navigation and state clearing
- * 
+ *
  * @param page - Playwright page object
  * @param context - Playwright browser context
  * @param options - Optional configuration options

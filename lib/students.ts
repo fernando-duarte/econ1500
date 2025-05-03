@@ -1,6 +1,8 @@
 /**
  * Student roster data for ECON1500
- * Provides student data for login and selection
+ *
+ * Provides student data for login and selection.
+ * Contains validation functions and types for the student roster.
  */
 
 import { z } from "zod";
