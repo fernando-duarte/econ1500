@@ -47,6 +47,9 @@ export default function GamePage() {
             // Navigate to home and refresh router cache
             router.replace('/');
             router.refresh();
+
+            // Wait for the redirect to complete
+            await new Promise(resolve => setTimeout(resolve, 500));
         } catch (err: unknown) {
             console.error('Logout failed:', err);
             setLogoutError(err instanceof Error ? err.message : String(err));

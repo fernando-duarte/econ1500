@@ -66,8 +66,8 @@ test.describe('Session Management', () => {
         // Click logout
         await page.getByRole('button', { name: 'Logout' }).click();
 
-        // Verify we're back at the root URL (doesn't require specific pattern matching)
-        expect(page.url()).not.toContain('/game');
+        // Wait for the navigation to complete (max 5 seconds)
+        await page.waitForURL('**/', { timeout: 5000 });
 
         // Verify cookie cleared
         const cookies = await context.cookies();
@@ -117,8 +117,8 @@ test.describe('Session Management', () => {
         // Logout to return to login page
         await page.getByRole('button', { name: 'Logout' }).click();
 
-        // Verify we're back at the login page (doesn't require specific pattern matching)
-        expect(page.url()).not.toContain('/game');
+        // Wait for the navigation to complete (max 5 seconds)
+        await page.waitForURL('**/', { timeout: 5000 });
 
         // Input should be pre-filled
         const input = page.getByRole('textbox', { name: 'Name' });
