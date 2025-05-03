@@ -68,4 +68,32 @@ test.describe('Student Selection Interface', () => {
         const stored = await page.evaluate(() => localStorage.getItem('lastUsername'));
         expect(stored).toBe(customName);
     });
+
+    test('should allow manual entry after using dropdown selection', async ({ page }) => {
+        // First use the dropdown to select a student
+        const combo = page.getByRole('combobox');
+        await combo.click();
+        await page.getByRole('option', { name: 'Hans Xu' }).click();
+
+        // Verify name field is populated with selected student
+        const nameInput = page.getByRole('textbox', { name: 'Name' });
+        await expect(nameInput).toHaveValue('Hans Xu');
+
+        // Then manually change the name
+        const newName = 'Modified Student Name';
+        await nameInput.fill(newName);
+
+        // Verify the manually entered value replaces the dropdown selection
+        await expect(nameInput).toHaveValue(newName);
+
+        // Submit the form with the manually entered name
+        await page.getByRole('button', { name: 'Sign in' }).click();
+
+        // Verify navigation to game page
+        await expect(page).toHaveURL(/\/game/);
+
+        // Verify localStorage saves the manually entered name
+        const stored = await page.evaluate(() => localStorage.getItem('lastUsername'));
+        expect(stored).toBe(newName);
+    });
 }); 
