@@ -4,10 +4,10 @@ import {
   setupBasicTest,
   _authenticateAndVerify,
   getNameInput,
-  getSignInButton,
   _getLogoutButton,
   testProtectedRoute,
-  _clearAppState
+  _clearAppState,
+  _fillAndSubmitLoginForm
 } from "./helpers";
 
 const _authFile = "playwright/.auth/user.json";
@@ -21,10 +21,8 @@ test.describe("Session Management", () => {
     page,
     context,
   }) => {
-    // Login
-    const nameInput = getNameInput(page);
-    await nameInput.fill("Aidan Wang");
-    await getSignInButton(page).click();
+    // Login using helper
+    await _fillAndSubmitLoginForm(page, "Aidan Wang");
 
     // Verify navigation to game page
     await expect(page).toHaveURL(/\/game/, { timeout: 5000 });
@@ -90,11 +88,8 @@ test.describe("Session Management", () => {
     const page1 = await context.newPage();
     await setupBasicTest(page1, context);
 
-    // Login directly without using helper
-    await page1.goto("/");
-    const nameInput = page1.getByRole("textbox", { name: "Name" });
-    await nameInput.fill("Aidan Wang");
-    await page1.getByRole("button", { name: "Sign in" }).click();
+    // Login using the helper
+    await _fillAndSubmitLoginForm(page1, "Aidan Wang");
 
     // Verify navigation to game page
     await expect(page1).toHaveURL(/\/game/, { timeout: 5000 });

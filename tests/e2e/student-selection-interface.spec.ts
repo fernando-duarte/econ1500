@@ -8,12 +8,20 @@ import {
   verifyCommonElements,
   retryButtonClick,
   expectRedirectWithReturnUrl,
-  _getTestStudents as getTestStudents
+  _getTestStudents as getTestStudents,
+  startTracing,
+  stopTracing,
+  saveScreenshotWithContext
 } from "./helpers";
 
 test.describe("Student Selection Interface", () => {
-  test.beforeEach(async ({ page, context }) => {
+  test.beforeEach(async ({ page, context }, testInfo) => {
     await setupBasicTest(page, context);
+    await startTracing(context, testInfo);
+  });
+
+  test.afterEach(async ({ context }, testInfo) => {
+    await stopTracing(context, testInfo);
   });
 
   test("should render dropdown with student options", async ({ page }) => {
@@ -108,12 +116,15 @@ test.describe("Student Selection Interface", () => {
     });
   });
 
-  test("should not allow submitting empty selection", async ({ page }) => {
+  test("should not allow submitting empty selection", async ({ page }, testInfo) => {
     // Try to submit without selecting anything
     const signInButton = getSignInButton(page);
 
     // Button should be disabled
     await expect(signInButton).toBeDisabled();
+
+    // Save screenshot of disabled button state
+    await saveScreenshotWithContext(page, testInfo, "disabled-button");
 
     // Attempt to navigate directly to protected route
     await page.goto("/game");

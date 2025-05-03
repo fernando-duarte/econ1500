@@ -9,7 +9,8 @@ import {
   checkSessionCookie,
   errorMessages,
   getNameInput,
-  retryButtonClick
+  retryButtonClick,
+  verifyCommonElements
 } from "./helpers";
 
 const authFile = "playwright/.auth/user.json";
@@ -77,7 +78,10 @@ test.describe("User Authentication Flow", () => {
     const page = await context.newPage();
 
     await page.goto("/game");
-    await expect(page).toHaveURL(/\/game/);
+    await verifyCommonElements(page, {
+      authenticated: true,
+      expectedUrl: /\/game/
+    });
 
     await context.close();
   });
