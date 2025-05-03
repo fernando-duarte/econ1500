@@ -55,10 +55,28 @@ test.describe('Real-time Connectivity', () => {
         await page.screenshot({ path: 'test-results/socket-connection.png' });
     });
 
-    // We'll skip the reconnection test for now
-    test.skip('should reconnect automatically when connection is temporarily lost', async () => {
-        // To be implemented
+    // TODO: Future implementation - Reconnection test
+    /*
+    This test will verify that socket connections automatically reconnect when temporarily lost.
+    Implementation will require:
+    1. A reliable way to simulate network disconnection
+    2. Access to socket connection events
+    3. Verification of reconnection success
+    
+    Example implementation:
+    test('should reconnect automatically when connection is temporarily lost', async ({ page, context }) => {
+        // Authenticate the user
+        await authenticate(page, context);
+        
+        // Verify initial connection
+        
+        // Simulate connection loss
+        
+        // Wait for reconnection
+        
+        // Verify reconnection was successful
     });
+    */
 
     test('should properly authenticate socket connection with user credentials', async ({ page, context }) => {
         const testUsername = 'Emily Mueller';
