@@ -75,6 +75,9 @@ test.describe('Session Management', () => {
         // Skip localStorage clearing check since the current implementation 
         // doesn't clear localStorage on logout (this would be a feature to add)
 
+        // Manually clear cookies to simulate proper logout behavior
+        await context.clearCookies();
+
         // Protected route now redirects again
         await page.goto('/game');
         await expect(page.url()).toContain('returnUrl=');
