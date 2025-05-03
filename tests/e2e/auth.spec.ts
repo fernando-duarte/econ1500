@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { getNameInput, getSignInButton, getCombobox, getStudentOption } from './helpers';
 
 const authFile = 'playwright/.auth/user.json';
 
@@ -11,12 +12,12 @@ test.describe('User Authentication Flow', () => {
     });
 
     test('should allow users to log in with valid name', async ({ page, context }) => {
-        const nameInput = page.getByRole('textbox', { name: 'Name' });
+        const nameInput = getNameInput(page);
         await expect(nameInput).toBeVisible();
         const testStudent = 'Aidan Wang';
 
         await nameInput.fill(testStudent);
-        await page.getByRole('button', { name: 'Sign in' }).click();
+        await getSignInButton(page).click();
         await expect(page).toHaveURL(/\/game/);
 
         const stored = await page.evaluate(() => localStorage.getItem('lastUsername'));
@@ -30,8 +31,8 @@ test.describe('User Authentication Flow', () => {
     });
 
     test('should display error when using invalid name format', async ({ page }) => {
-        const nameInput = page.getByRole('textbox', { name: 'Name' });
-        const submit = page.getByRole('button', { name: 'Sign in' });
+        const nameInput = getNameInput(page);
+        const submit = getSignInButton(page);
 
         await nameInput.fill('Invalid@Name#');
         await submit.click();
@@ -45,7 +46,7 @@ test.describe('User Authentication Flow', () => {
     });
 
     test('should handle form submission with Enter key', async ({ page }) => {
-        const nameInput = page.getByRole('textbox', { name: 'Name' });
+        const nameInput = getNameInput(page);
         await nameInput.fill('Emily Mueller');
         // Pressing Enter on the input will trigger form submission
         await nameInput.press('Enter');
@@ -55,13 +56,13 @@ test.describe('User Authentication Flow', () => {
 
     test('should allow selecting a student from dropdown', async ({ page }) => {
         // Open the combobox and select 'Hans Xu'
-        const combo = page.getByRole('combobox');
+        const combo = getCombobox(page);
         await combo.click();
-        const option = page.getByRole('option', { name: 'Hans Xu' });
+        const option = getStudentOption(page, 'Hans Xu');
         await expect(option).toBeVisible();
         await option.click();
 
-        await page.getByRole('button', { name: 'Sign in' }).click();
+        await getSignInButton(page).click();
         await expect(page).toHaveURL(/\/game/);
     });
 

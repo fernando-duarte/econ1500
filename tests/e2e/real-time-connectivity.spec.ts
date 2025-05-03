@@ -1,4 +1,5 @@
 import { test, expect, Page, BrowserContext } from '@playwright/test';
+import { getNameInput, getSignInButton, getLogoutButton } from './helpers';
 
 const authFile = 'playwright/.auth/user.json';
 
@@ -10,10 +11,15 @@ async function authenticate(
     context: BrowserContext,
     username = 'Aidan Wang',
 ): Promise<void> {
-    const input = page.getByRole('textbox', { name: 'Name' });
+    const input = getNameInput(page);
     await expect(input).toBeVisible();
     await input.fill(username);
-    await page.getByRole('button', { name: 'Sign in' }).click();
+
+    // Get the button and wait for it to be enabled before clicking
+    const signInButton = getSignInButton(page);
+    await expect(signInButton).toBeEnabled();
+    await signInButton.click();
+
     await expect(page).toHaveURL(/\/game/);
     await context.storageState({ path: authFile });
 }
@@ -47,9 +53,7 @@ test.describe('Real-time Connectivity', () => {
         await expect(page).toHaveURL(/\/game/);
 
         // Check for the logout button which indicates an authenticated session
-        await expect(
-            page.getByRole('button', { name: 'Logout' })
-        ).toBeVisible();
+        await expect(getLogoutButton(page)).toBeVisible();
 
         // Take a screenshot for manual verification
         await page.screenshot({ path: 'test-results/socket-connection.png' });
@@ -95,8 +99,6 @@ test.describe('Real-time Connectivity', () => {
         await expect(page).toHaveURL(/\/game/);
 
         // Verify logout button is visible (authenticated session)
-        await expect(
-            page.getByRole('button', { name: 'Logout' })
-        ).toBeVisible();
+        await expect(getLogoutButton(page)).toBeVisible();
     });
 }); 

@@ -24,8 +24,6 @@ This document outlines a comprehensive end-to-end testing strategy for the ECON1
 - Verify that authentication middleware redirects unauthorized users to the login page
 - Test that the login redirect preserves the original destination URL
 
-## Important Tests
-
 ### 4. Student Selection Interface
 
 - Verify the student search and selection dropdown works correctly

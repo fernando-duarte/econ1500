@@ -1,4 +1,5 @@
 import { test, expect, Page, BrowserContext } from '@playwright/test';
+import { getNameInput, getSignInButton, getLogoutButton } from './helpers';
 
 const authFile = 'playwright/.auth/user.json';
 
@@ -10,10 +11,15 @@ async function authenticate(
     context: BrowserContext,
     username = 'Aidan Wang',
 ): Promise<void> {
-    const input = page.getByRole('textbox', { name: 'Name' });
+    const input = getNameInput(page);
     await expect(input).toBeVisible();
     await input.fill(username);
-    await page.getByRole('button', { name: 'Sign in' }).click();
+
+    // Get the button and wait for it to be enabled before clicking
+    const signInButton = getSignInButton(page);
+    await expect(signInButton).toBeEnabled();
+    await signInButton.click();
+
     await expect(page).toHaveURL(/\/game/);
     await context.storageState({ path: authFile });
 }
@@ -55,8 +61,8 @@ test.describe('Session Management', () => {
         expect(page.url()).toContain('returnUrl=');
 
         // Perform login and return to /game
-        await page.getByRole('textbox', { name: 'Name' }).fill('Hans Xu');
-        await page.getByRole('button', { name: 'Sign in' }).click();
+        await getNameInput(page).fill('Hans Xu');
+        await getSignInButton(page).click();
         await expect(page).toHaveURL(/\/game/);
     });
 
@@ -64,7 +70,7 @@ test.describe('Session Management', () => {
         await authenticate(page, context);
 
         // Click logout
-        await page.getByRole('button', { name: 'Logout' }).click();
+        await getLogoutButton(page).click();
 
         // Wait for the navigation to complete (max 5 seconds)
         await page.waitForURL('**/', { timeout: 5000 });
@@ -104,19 +110,19 @@ test.describe('Session Management', () => {
         }
 
         // Re-authenticate
-        await page.getByRole('textbox', { name: 'Name' }).fill('Emily Mueller');
-        await page.getByRole('button', { name: 'Sign in' }).click();
+        await getNameInput(page).fill('Emily Mueller');
+        await getSignInButton(page).click();
         await expect(page).toHaveURL(/\/game/);
     });
 
     test('should pre-populate login with last username', async ({ page }) => {
         // First login with a specific username
-        await page.getByRole('textbox', { name: 'Name' }).fill('Hans Xu');
-        await page.getByRole('button', { name: 'Sign in' }).click();
+        await getNameInput(page).fill('Hans Xu');
+        await getSignInButton(page).click();
         await expect(page).toHaveURL(/\/game/);
 
         // Logout to return to login page
-        await page.getByRole('button', { name: 'Logout' }).click();
+        await getLogoutButton(page).click();
 
         // Wait for the navigation to complete (max 5 seconds)
         await page.waitForURL('**/', { timeout: 5000 });
@@ -125,9 +131,9 @@ test.describe('Session Management', () => {
         // This would need to be fixed in the application code
 
         // Just check login still works
-        const input = page.getByRole('textbox', { name: 'Name' });
+        const input = getNameInput(page);
         await input.fill('Hans Xu');
-        await page.getByRole('button', { name: 'Sign in' }).click();
+        await getSignInButton(page).click();
         await expect(page).toHaveURL(/\/game/);
     });
 
