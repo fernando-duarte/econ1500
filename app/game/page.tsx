@@ -21,6 +21,8 @@ export default function GamePage() {
   const queryClient = useQueryClient();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState<string | null>(null);
+  // Get username from localStorage for UserInfo component
+  const username = typeof window !== 'undefined' ? localStorage.getItem('lastUsername') || 'User' : 'User';
 
   const handleLogout = useCallback(async () => {
     setLogoutError(null);
@@ -80,7 +82,7 @@ export default function GamePage() {
         <CardHeader className="space-y-1">
           <CardTitle className="text-center text-2xl font-bold">Game Interface</CardTitle>
           <div className="flex justify-center">
-            <UserInfo />
+            <UserInfo user={{ name: username }} />
           </div>
         </CardHeader>
         <CardContent>
