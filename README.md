@@ -46,6 +46,7 @@ This project follows the Next.js App Router architecture with the following dire
 
 - `app/`: Contains all the routes and app-specific components
 - `components/`: Shared UI components used across multiple routes
+- `config/`: Centralized configuration files
 - `lib/`: Business logic, data fetching, and API integrations
 - `utils/`: Helper functions and utility modules
 - `public/`: Static assets (images, fonts, etc.)
@@ -55,6 +56,7 @@ This project follows the Next.js App Router architecture with the following dire
 
 - **app/**: Route-specific components and layouts. Follow Next.js App Router conventions.
 - **components/**: Reusable UI components (buttons, modals, forms, etc.)
+- **config/**: Centralized configuration for tools like ESLint, Prettier, and lint-staged
 - **lib/**: Code related to external services, data processing, and application logic
 - **utils/**: Generic helper functions, formatters, validators, etc.
 
@@ -70,6 +72,20 @@ This project uses:
 - **Husky**: For Git hooks to ensure code quality on commit
 - **lint-staged**: For running linters on staged files
 
+### Configuration System
+
+The project uses a centralized configuration approach:
+
+- **`config/`**: Contains all tool configurations
+  - `eslint.js`: ESLint rules and settings
+  - `prettier.js`: Prettier formatting options
+  - `lint-staged.js`: Pre-commit linting configuration
+  - `README.md`: Documentation for the configuration system
+
+Scripts in `package.json` reference these configurations.
+
+> **Note:** For backward compatibility, some original configuration files are still present but will be deprecated in future updates.
+
 ### Testing and Coverage
 
 This project uses:
@@ -84,10 +100,10 @@ This project uses:
 npm run test:coverage
 
 # Run specific tests with coverage
-npm run test:coverage -- tests/your-test-file.spec.ts
+npm run test:file -- tests/your-test-file.spec.ts
 
 # Run tests with UI mode
-npm run test:coverage:ui
+npm run test:e2e
 ```
 
 #### Test Suite Overview
@@ -105,24 +121,13 @@ npm run coverage:show
 
 ```bash
 # Clean up coverage data and reports
-npm run coverage:clean
+npm run clean:test
 ```
 
 #### Coverage Implementation Details
 
 - Coverage is only collected in Chromium browsers (not Firefox or WebKit)
 - Both JavaScript and CSS coverage are collected automatically
-
-### Configuration Files
-
-- `eslint.config.mjs`: ESLint configuration
-- `.prettierrc.json`: Prettier configuration
-- `.gitignore`: Specifies files ignored by Git
-- `.prettierignore`: Specifies files ignored by Prettier
-- `.gitattributes`: Configures how Git handles different file types
-- `.husky/`: Contains Git hooks for pre-commit checks
-
-For more details on the ignore patterns and configuration, see the [Ignore Files Guide](./docs/ignore-files.md).
 
 ### Environment Variables
 

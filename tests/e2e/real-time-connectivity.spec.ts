@@ -3,7 +3,7 @@ import {
   setupBasicTest,
   _authenticateAndVerify,
   verifyCommonElements,
-  saveScreenshotWithContext
+  saveScreenshotWithContext,
 } from "./helpers";
 
 // Extend Window interface for io property
@@ -13,7 +13,7 @@ declare global {
     __socketInstance?: {
       disconnect?: () => void;
       connect?: () => void;
-    }
+    };
   }
 }
 
@@ -22,7 +22,10 @@ test.describe("Real-time Connectivity", () => {
     await setupBasicTest(page, context);
   });
 
-  test("should establish socket connection properly after login", async ({ page, context }, testInfo) => {
+  test("should establish socket connection properly after login", async ({
+    page,
+    context,
+  }, testInfo) => {
     // Authenticate with verification
     await _authenticateAndVerify(page, context, "Aidan Wang");
 
@@ -32,7 +35,7 @@ test.describe("Real-time Connectivity", () => {
     // Verify authenticated state and URL
     await verifyCommonElements(page, {
       authenticated: true,
-      expectedUrl: /\/game/
+      expectedUrl: /\/game/,
     });
 
     // Take a screenshot for manual verification
@@ -50,7 +53,7 @@ test.describe("Real-time Connectivity", () => {
         // This is a simplified example - actual code would depend on how
         // the socket is exposed in your application
         const socketInstance = window.__socketInstance;
-        if (socketInstance && typeof socketInstance.disconnect === 'function') {
+        if (socketInstance && typeof socketInstance.disconnect === "function") {
           socketInstance.disconnect();
         }
       }
@@ -67,7 +70,7 @@ test.describe("Real-time Connectivity", () => {
       // we're still on the game page (not kicked out to login)
       await verifyCommonElements(page, {
         authenticated: true,
-        expectedUrl: /\/game/
+        expectedUrl: /\/game/,
       });
     }
   });
@@ -81,7 +84,7 @@ test.describe("Real-time Connectivity", () => {
       // Similar logic as previous test for disconnection
       if (window.io) {
         const socketInstance = window.__socketInstance;
-        if (socketInstance && typeof socketInstance.disconnect === 'function') {
+        if (socketInstance && typeof socketInstance.disconnect === "function") {
           socketInstance.disconnect();
         }
       }
@@ -92,7 +95,7 @@ test.describe("Real-time Connectivity", () => {
       // Reconnect logic depends on your socket implementation
       if (window.io) {
         const socketInstance = window.__socketInstance;
-        if (socketInstance && typeof socketInstance.connect === 'function') {
+        if (socketInstance && typeof socketInstance.connect === "function") {
           socketInstance.connect();
         }
       }
@@ -102,7 +105,7 @@ test.describe("Real-time Connectivity", () => {
     await page.waitForTimeout(2000);
     await verifyCommonElements(page, {
       authenticated: true,
-      expectedUrl: /\/game/
+      expectedUrl: /\/game/,
     });
   });
 });

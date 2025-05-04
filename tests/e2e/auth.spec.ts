@@ -10,13 +10,13 @@ import {
   errorMessages,
   getNameInput,
   retryButtonClick,
-  verifyCommonElements
+  verifyCommonElements,
 } from "./helpers";
 
 const authFile = "playwright/.auth/user.json";
 
 // Tests that can run in parallel
-test.describe.configure({ mode: 'parallel' });
+test.describe.configure({ mode: "parallel" });
 
 test.describe("User Authentication Flow", () => {
   test.beforeEach(async ({ page, context }) => {
@@ -28,7 +28,7 @@ test.describe("User Authentication Flow", () => {
 
     await _authenticateAndVerify(page, context, testStudent, {
       storeAuth: true,
-      expectedRedirect: /\/game/
+      expectedRedirect: /\/game/,
     });
 
     // Verify session data
@@ -37,13 +37,7 @@ test.describe("User Authentication Flow", () => {
   });
 
   test("should display error when using invalid name format", async ({ page }) => {
-    await testFormField(
-      page,
-      "Name",
-      "Valid Name",
-      "Invalid@Name#",
-      errorMessages.invalidFormat
-    );
+    await testFormField(page, "Name", "Valid Name", "Invalid@Name#", errorMessages.invalidFormat);
   });
 
   test("should handle form submission with Enter key", async ({ page }) => {
@@ -65,7 +59,7 @@ test.describe("User Authentication Flow", () => {
     await retryButtonClick(signInButton, {
       fallbackAction: async () => {
         await page.goto("/game");
-      }
+      },
     });
 
     // Verify successful navigation
@@ -80,7 +74,7 @@ test.describe("User Authentication Flow", () => {
     await page.goto("/game");
     await verifyCommonElements(page, {
       authenticated: true,
-      expectedUrl: /\/game/
+      expectedUrl: /\/game/,
     });
 
     await context.close();

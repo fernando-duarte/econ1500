@@ -5,7 +5,7 @@ export async function POST() {
     // Create response with redirect information
     const res = NextResponse.json({
       success: true,
-      redirect: "/"
+      redirect: "/",
     });
 
     // Clear the session token cookie

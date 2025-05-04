@@ -11,7 +11,7 @@ import {
   _getTestStudents as getTestStudents,
   startTracing,
   stopTracing,
-  saveScreenshotWithContext
+  saveScreenshotWithContext,
 } from "./helpers";
 
 test.describe("Student Selection Interface", () => {
@@ -112,7 +112,7 @@ test.describe("Student Selection Interface", () => {
     // Verify we landed on the game page
     await verifyCommonElements(page, {
       authenticated: true,
-      expectedUrl: /\/game/
+      expectedUrl: /\/game/,
     });
   });
 

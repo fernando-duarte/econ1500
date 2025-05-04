@@ -50,19 +50,17 @@ const formSchema = z.object({
         return !value.includes("  ") && !value.startsWith(" ") && !value.endsWith(" ");
       },
       {
-        message: "Too many spaces"
+        message: "Too many spaces",
       }
     )
     .refine(
       (value) => {
         // Simple profanity check
         const profanityList = ["badword", "profanity", "inappropriate"];
-        return !profanityList.some(word =>
-          value.toLowerCase().includes(word.toLowerCase())
-        );
+        return !profanityList.some((word) => value.toLowerCase().includes(word.toLowerCase()));
       },
       {
-        message: "Inappropriate language"
+        message: "Inappropriate language",
       }
     ),
 });

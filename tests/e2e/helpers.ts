@@ -8,7 +8,7 @@ import {
   getCombobox,
   getStudentOption,
   getErrorMessage,
-  getLogoutButton
+  getLogoutButton,
 } from "./selectors";
 
 // Actions
@@ -19,30 +19,17 @@ import {
   pipeAsync,
   openCombobox,
   clickOption,
-  stopTracingSafe
+  stopTracingSafe,
 } from "./actions";
 
 // State management
-import {
-  clearAppState,
-  checkLocalStorage,
-  checkSessionCookie
-} from "./state";
+import { clearAppState, checkLocalStorage, checkSessionCookie } from "./state";
 
 // Test data
-import {
-  getTestStudents,
-  errorMessages
-} from "./data";
+import { getTestStudents, errorMessages } from "./data";
 
 // --- Re-exports for selectors ---
-export {
-  getNameInput,
-  getSignInButton,
-  getCombobox,
-  getStudentOption,
-  getErrorMessage
-};
+export { getNameInput, getSignInButton, getCombobox, getStudentOption, getErrorMessage };
 
 // Alias logout button for backward compatibility
 export const _getLogoutButton = (page: Page) => getLogoutButton(page);
@@ -87,10 +74,7 @@ export const setupBasicTest = async (
 /**
  * Fill and submit the login form
  */
-export const _fillAndSubmitLoginForm = async (
-  page: Page,
-  username: string
-): Promise<void> => {
+export const _fillAndSubmitLoginForm = async (page: Page, username: string): Promise<void> => {
   await getNameInput(page).fill(username);
   await getSignInButton(page).click();
 };
@@ -114,7 +98,7 @@ export const _authenticateAndVerify = async (
   await expect(page).toHaveURL(/\/game/);
 
   // Verify session cookie
-  const hasSession = (await context.cookies()).some(c => c.name === 'session-token');
+  const hasSession = (await context.cookies()).some((c) => c.name === "session-token");
   expect(hasSession).toBeTruthy();
 
   // Store state if requested
@@ -123,7 +107,7 @@ export const _authenticateAndVerify = async (
   }
 
   // Wait and verify final redirect
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState("networkidle");
   if (options?.expectedRedirect) {
     await expect(page).toHaveURL(options.expectedRedirect, { timeout: 5000 });
   } else {
@@ -158,10 +142,7 @@ export const testProtectedRoute = async (
 /**
  * Expect an error message to be visible
  */
-export const expectErrorMessage = async (
-  page: Page,
-  errorText: string
-): Promise<void> => {
+export const expectErrorMessage = async (page: Page, errorText: string): Promise<void> => {
   await expect(page.getByText(errorText)).toBeVisible();
 };
 
@@ -180,18 +161,14 @@ export const expectRedirectWithReturnUrl = async (
 /**
  * Verify a successful form submission
  */
-export const _verifySuccessfulSubmission = async (
-  page: Page
-): Promise<void> => {
+export const _verifySuccessfulSubmission = async (page: Page): Promise<void> => {
   await expect(page).toHaveURL(/\/game/);
 };
 
 /**
  * Verify loading state during form submission
  */
-export const verifyLoadingState = async (
-  page: Page
-): Promise<void> => {
+export const verifyLoadingState = async (page: Page): Promise<void> => {
   try {
     await expect(getSignInButton(page)).toBeDisabled({ timeout: 1000 });
   } catch {
@@ -228,21 +205,22 @@ export const testFormField = async (
 /**
  * Start tracing for debugging
  */
-export const startTracing = async (
-  context: BrowserContext,
-  testInfo: TestInfo
-): Promise<void> => {
-  await context.tracing.start({ screenshots: true, snapshots: true, sources: true, title: testInfo.title });
+export const startTracing = async (context: BrowserContext, testInfo: TestInfo): Promise<void> => {
+  await context.tracing.start({
+    screenshots: true,
+    snapshots: true,
+    sources: true,
+    title: testInfo.title,
+  });
 };
 
 /**
  * Stop tracing and save trace file
  */
-export const stopTracing = async (
-  context: BrowserContext,
-  testInfo: TestInfo
-): Promise<void> => {
-  await context.tracing.stop({ path: `./test-results/traces/${testInfo.title.replace(/\s+/g, '-')}.zip` });
+export const stopTracing = async (context: BrowserContext, testInfo: TestInfo): Promise<void> => {
+  await context.tracing.stop({
+    path: `./test-results/traces/${testInfo.title.replace(/\s+/g, "-")}.zip`,
+  });
 };
 
 /**
@@ -254,7 +232,7 @@ export const saveScreenshotWithContext = async (
   name: string,
   options?: { fullPage?: boolean; selector?: string }
 ): Promise<void> => {
-  const path = `test-results/${testInfo.title.replace(/\s+/g, '-')}-${name}.png`;
+  const path = `test-results/${testInfo.title.replace(/\s+/g, "-")}-${name}.png`;
   if (options?.selector) {
     await page.locator(options.selector).screenshot({ path });
   } else {
@@ -273,7 +251,7 @@ export const verifyCommonElements = async (
     expectedElements?: Array<{ selector: string; text?: string }>;
   }
 ): Promise<void> => {
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState("networkidle");
 
   if (options?.expectedUrl) {
     await expect(page).toHaveURL(options.expectedUrl, { timeout: 5000 });
@@ -292,19 +270,23 @@ export const verifyCommonElements = async (
     try {
       await expect(getNameInput(page)).toBeVisible({ timeout: 5000 });
     } catch {
-      const loginHeadings = page.locator('h1, h2').filter({ hasText: /login/i });
+      const loginHeadings = page.locator("h1, h2").filter({ hasText: /login/i });
       await expect(loginHeadings).toBeVisible({ timeout: 5000 });
     }
   }
 
   if (options?.expectedElements) {
     for (const el of options.expectedElements) {
-      const locator = el.text ? page.locator(el.selector, { hasText: el.text }) : page.locator(el.selector);
+      const locator = el.text
+        ? page.locator(el.selector, { hasText: el.text })
+        : page.locator(el.selector);
       try {
         await expect(locator).toBeVisible({ timeout: 5000 });
       } catch {
         await page.screenshot({ path: `test-results/element-not-found-${Date.now()}.png` });
-        throw new Error(`Expected element ${el.selector} ${el.text ? 'with text ' + el.text : ''} not found`);
+        throw new Error(
+          `Expected element ${el.selector} ${el.text ? "with text " + el.text : ""} not found`
+        );
       }
     }
   }

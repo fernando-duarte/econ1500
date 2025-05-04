@@ -22,7 +22,8 @@ export default function GamePage() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState<string | null>(null);
   // Get username from localStorage for UserInfo component
-  const username = typeof window !== 'undefined' ? localStorage.getItem('lastUsername') || 'User' : 'User';
+  const username =
+    typeof window !== "undefined" ? localStorage.getItem("lastUsername") || "User" : "User";
 
   const handleLogout = useCallback(async () => {
     setLogoutError(null);

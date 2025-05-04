@@ -1,94 +1,93 @@
 import { test, expect } from "@playwright/test";
 import {
-    setupBasicTest,
-    testProtectedRoute,
-    _authenticateAndVerify,
-    getNameInput,
-    getSignInButton,
-    retryButtonClick
+  setupBasicTest,
+  testProtectedRoute,
+  _authenticateAndVerify,
+  getNameInput,
+  getSignInButton,
+  retryButtonClick,
 } from "./helpers";
 
 test.describe("Game Access Protection", () => {
-    test.beforeEach(async ({ page, context: _context }) => {
-        // Use the new setupBasicTest helper
-        await setupBasicTest(page, _context, { skipClearState: true });
-    });
+  test.beforeEach(async ({ page, context: _context }) => {
+    // Use the new setupBasicTest helper
+    await setupBasicTest(page, _context, { skipClearState: true });
+  });
 
-    test("should prevent unauthenticated users from accessing game page directly", async ({
-        page,
-    }) => {
-        // Use the new testProtectedRoute helper
-        await testProtectedRoute(page, "/game");
-    });
+  test("should prevent unauthenticated users from accessing game page directly", async ({
+    page,
+  }) => {
+    // Use the new testProtectedRoute helper
+    await testProtectedRoute(page, "/game");
+  });
 
-    test("should verify authentication middleware redirects unauthorized users", async ({ page }) => {
-        // Array of protected routes to test middleware protection
-        const protectedRoutes = [
-            "/game",
-            "/game/settings",
-            "/game/leaderboard",
-        ];
+  test("should verify authentication middleware redirects unauthorized users", async ({ page }) => {
+    // Array of protected routes to test middleware protection
+    const protectedRoutes = ["/game", "/game/settings", "/game/leaderboard"];
 
-        for (const route of protectedRoutes) {
-            // Use the testProtectedRoute helper for each route
-            await testProtectedRoute(page, route);
+    for (const route of protectedRoutes) {
+      // Use the testProtectedRoute helper for each route
+      await testProtectedRoute(page, route);
 
-            // Return to login page between tests
-            await page.goto("/");
-        }
-    });
+      // Return to login page between tests
+      await page.goto("/");
+    }
+  });
 
-    test("should allow authenticated users to access game page", async ({ page, context: _context }) => {
-        // Navigate to the login page
-        await page.goto("/");
+  test("should allow authenticated users to access game page", async ({
+    page,
+    context: _context,
+  }) => {
+    // Navigate to the login page
+    await page.goto("/");
 
-        // Fill in the username
-        await getNameInput(page).fill("Aidan Wang");
+    // Fill in the username
+    await getNameInput(page).fill("Aidan Wang");
 
-        // Use the more reliable retryButtonClick to submit the form
-        await retryButtonClick(getSignInButton(page), {
-            maxAttempts: 3,
-            fallbackAction: async () => {
-                // As a fallback, try submitting the form directly
-                await page.evaluate(() => {
-                    const form = document.getElementById('login-form');
-                    if (form) form.dispatchEvent(new Event('submit', { bubbles: true }));
-                });
-                await page.waitForURL(/\/game/, { timeout: 5000 });
-            }
+    // Use the more reliable retryButtonClick to submit the form
+    await retryButtonClick(getSignInButton(page), {
+      maxAttempts: 3,
+      fallbackAction: async () => {
+        // As a fallback, try submitting the form directly
+        await page.evaluate(() => {
+          const form = document.getElementById("login-form");
+          if (form) form.dispatchEvent(new Event("submit", { bubbles: true }));
         });
-
-        // Wait for navigation and check we're on the game page
-        await expect(page).toHaveURL(/\/game/, { timeout: 10000 });
-
-        // Now verify direct access to settings page works
-        await page.goto("/game/settings");
-        await expect(page).toHaveURL(/\/game\/settings/, { timeout: 5000 });
+        await page.waitForURL(/\/game/, { timeout: 5000 });
+      },
     });
 
-    test("should store original destination URL during login redirect", async ({ page }) => {
-        // Define a specific destination route different from the main game page
-        const destinationRoute = "/game/settings";
+    // Wait for navigation and check we're on the game page
+    await expect(page).toHaveURL(/\/game/, { timeout: 10000 });
 
-        // Use testProtectedRoute without authentication
-        await testProtectedRoute(page, destinationRoute);
+    // Now verify direct access to settings page works
+    await page.goto("/game/settings");
+    await expect(page).toHaveURL(/\/game\/settings/, { timeout: 5000 });
+  });
 
-        // Perform login with valid credentials
-        await getNameInput(page).fill("Test User");
+  test("should store original destination URL during login redirect", async ({ page }) => {
+    // Define a specific destination route different from the main game page
+    const destinationRoute = "/game/settings";
 
-        // Use retryButtonClick instead of try/catch
-        await retryButtonClick(getSignInButton(page), {
-            fallbackAction: async () => {
-                await page.goto("/game");
-            }
-        });
+    // Use testProtectedRoute without authentication
+    await testProtectedRoute(page, destinationRoute);
 
-        // Currently, the app always redirects to /game after login
-        // rather than the original destination URL
-        await expect(page).toHaveURL(/\/game$/);
+    // Perform login with valid credentials
+    await getNameInput(page).fill("Test User");
 
-        // TODO: In the future, this test should be updated to verify
-        // that the user is redirected to the original destination URL (destinationRoute)
-        // await expect(page).toHaveURL(destinationRoute);
+    // Use retryButtonClick instead of try/catch
+    await retryButtonClick(getSignInButton(page), {
+      fallbackAction: async () => {
+        await page.goto("/game");
+      },
     });
+
+    // Currently, the app always redirects to /game after login
+    // rather than the original destination URL
+    await expect(page).toHaveURL(/\/game$/);
+
+    // TODO: In the future, this test should be updated to verify
+    // that the user is redirected to the original destination URL (destinationRoute)
+    // await expect(page).toHaveURL(destinationRoute);
+  });
 });

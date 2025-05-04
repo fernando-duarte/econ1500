@@ -7,7 +7,7 @@ import {
   verifyCommonElements,
   checkSessionCookie,
   clickWhenEnabled,
-  _getLogoutButton
+  _getLogoutButton,
 } from "./helpers";
 
 const _authFile = "playwright/.auth/user.json";
@@ -28,7 +28,7 @@ test.describe("Session Management", () => {
     // Verify navigation to game page and authenticated state
     await verifyCommonElements(page, {
       authenticated: true,
-      expectedUrl: /\/game/
+      expectedUrl: /\/game/,
     });
 
     // Verify session cookie is set
@@ -38,14 +38,14 @@ test.describe("Session Management", () => {
     await page.goto("/game/settings");
     await verifyCommonElements(page, {
       authenticated: true,
-      expectedUrl: /\/game\/settings/
+      expectedUrl: /\/game\/settings/,
     });
 
     // Navigate to another protected page
     await page.goto("/game/leaderboard");
     await verifyCommonElements(page, {
       authenticated: true,
-      expectedUrl: /\/game\/leaderboard/
+      expectedUrl: /\/game\/leaderboard/,
     });
 
     // Session cookie still present
@@ -65,7 +65,7 @@ test.describe("Session Management", () => {
     // Verify we're authenticated and on the game page
     await verifyCommonElements(page, {
       authenticated: true,
-      expectedUrl: /\/game/
+      expectedUrl: /\/game/,
     });
 
     // Find and click the logout button
@@ -76,7 +76,7 @@ test.describe("Session Management", () => {
     // Verify we're logged out and on the login page
     await verifyCommonElements(page, {
       authenticated: false,
-      expectedUrl: /\/$/
+      expectedUrl: /\/$/,
     });
 
     // Session cookie should be removed
@@ -85,11 +85,7 @@ test.describe("Session Management", () => {
 
   test("should require authentication for multiple protected routes", async ({ page }) => {
     // Array of protected routes to check
-    const protectedRoutes = [
-      "/game",
-      "/game/settings",
-      "/game/leaderboard",
-    ];
+    const protectedRoutes = ["/game", "/game/settings", "/game/leaderboard"];
 
     for (const route of protectedRoutes) {
       await testProtectedRoute(page, route);
@@ -111,7 +107,7 @@ test.describe("Session Management", () => {
     // Verify navigation to game page
     await verifyCommonElements(page1, {
       authenticated: true,
-      expectedUrl: /\/game/
+      expectedUrl: /\/game/,
     });
 
     // Open a new tab/page in the same context
@@ -121,7 +117,7 @@ test.describe("Session Management", () => {
     // Verify we're still authenticated on the second page
     await verifyCommonElements(page2, {
       authenticated: true,
-      expectedUrl: /\/game\/settings/
+      expectedUrl: /\/game\/settings/,
     });
 
     // Clean up
