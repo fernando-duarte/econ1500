@@ -7,11 +7,9 @@ console.warn('📦 Running post-install setup...');
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
-import { fileURLToPath } from 'url';
 
-// Get current directory in ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Remove unused filename variable as it's not needed
+// const __filename = fileURLToPath(import.meta.url);
 
 // Check and create .env.local if doesn't exist
 const envLocalPath = path.join(process.cwd(), '.env.local');

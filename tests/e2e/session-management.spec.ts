@@ -10,8 +10,6 @@ import {
   _getLogoutButton,
 } from "./helpers";
 
-const _authFile = "playwright/.auth/user.json";
-
 test.describe("Session Management", () => {
   test.beforeEach(async ({ page, context }) => {
     await setupBasicTest(page, context);

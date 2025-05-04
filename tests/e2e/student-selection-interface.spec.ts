@@ -80,7 +80,7 @@ test.describe("Student Selection Interface", () => {
     try {
       // First try to see if it's not visible (better approach)
       await expect(getStudentOption(page, "Hans Xu")).not.toBeVisible({ timeout: 2000 });
-    } catch (_e) {
+    } catch {
       // If the above check fails, verify the element doesn't exist or has a count of 0
       const elements = await page.getByRole("option").filter({ hasText: "Hans Xu" }).count();
       // Allow 0 or 1 but hidden - this test is just making sure non-matching students

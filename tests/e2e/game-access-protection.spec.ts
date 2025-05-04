@@ -2,16 +2,15 @@ import { test, expect } from "@playwright/test";
 import {
   setupBasicTest,
   testProtectedRoute,
-  _authenticateAndVerify,
   getNameInput,
   getSignInButton,
   retryButtonClick,
 } from "./helpers";
 
 test.describe("Game Access Protection", () => {
-  test.beforeEach(async ({ page, context: _context }) => {
+  test.beforeEach(async ({ page, context }) => {
     // Use the new setupBasicTest helper
-    await setupBasicTest(page, _context, { skipClearState: true });
+    await setupBasicTest(page, context, { skipClearState: true });
   });
 
   test("should prevent unauthenticated users from accessing game page directly", async ({
@@ -34,10 +33,7 @@ test.describe("Game Access Protection", () => {
     }
   });
 
-  test("should allow authenticated users to access game page", async ({
-    page,
-    context: _context,
-  }) => {
+  test("should allow authenticated users to access game page", async ({ page }) => {
     // Navigate to the login page
     await page.goto("/");
 

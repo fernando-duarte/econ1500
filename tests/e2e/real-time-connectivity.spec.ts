@@ -65,7 +65,7 @@ test.describe("Real-time Connectivity", () => {
       await expect(page.getByText("Connection lost", { exact: false })).toBeVisible({
         timeout: 5000,
       });
-    } catch (_e) {
+    } catch {
       // If there's no explicit "Connection lost" message, at least ensure
       // we're still on the game page (not kicked out to login)
       await verifyCommonElements(page, {
