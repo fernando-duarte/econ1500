@@ -21,11 +21,6 @@ export function MainNavigation() {
             Game
           </Link>
         </NavigationMenuItem>
-        <NavigationMenuItem>
-          <Link href="/examples" className={navigationMenuTriggerStyle()}>
-            Examples
-          </Link>
-        </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   );
