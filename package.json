@@ -2,6 +2,7 @@
   "name": "econ1500",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "engines": {
     "node": ">=22.0.0"
   },
@@ -11,16 +12,29 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
+    "lint:all": "eslint --config ./config/eslint.js .",
+    "lint:all:fix": "eslint --config ./config/eslint.js . --fix",
     "prepare": "husky",
-    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,css}\"",
+    "format": "prettier --config ./config/prettier.js --write \"**/*.{js,jsx,ts,tsx,json,md,css}\"",
     "type-check": "tsc --noEmit",
     "analyze": "ANALYZE=true next build",
     "test:e2e": "playwright test --reporter=list",
     "test:e2e:cov": "playwright test",
-    "clean:test": "rimraf test-results playwright-report monocart-report/coverage/**/*.* monocart-report/*.{html,json}"
+    "test:e2e:non-interactive": "playwright test --reporter=json > test-results.json",
+    "test:e2e:run": "node scripts/non-interactive-test.js",
+    "test:file": "node scripts/non-interactive-test.js",
+    "test:auth-setup": "npx tsx tests/e2e/setup-auth.ts",
+    "clean:test": "rimraf test-results playwright-report monocart-report/coverage/**/*.* monocart-report/*.{html,json}",
+    "postinstall": "npx playwright install --with-deps"
   },
   "lint-staged": {
-    "config": "lint-staged.config.mjs"
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --config ./config/eslint.js --fix",
+      "prettier --config ./config/prettier.js --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --config ./config/prettier.js --write"
+    ]
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

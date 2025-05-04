@@ -37,10 +37,13 @@ yarn-error.log*
 .pnpm-debug.log*
 *.log
 
-# local env files (can opt-in for committing if needed)
-.env*
+# local env files
+.env
+.env.local
+.env.*.local
 !.env.example
-!.env.template
+!.env.development
+!.env.production
 
 # vercel
 .vercel
@@ -110,3 +113,5 @@ monocart-report/
 
 # Backup files
 /backups/
+
+playwright/.auth
