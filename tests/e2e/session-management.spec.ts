@@ -2,12 +2,12 @@
 import { test, expect } from "@playwright/test";
 import {
   setupBasicTest,
-  _authenticateAndVerify,
   getNameInput,
-  _getLogoutButton,
   testProtectedRoute,
-  _clearAppState,
-  _fillAndSubmitLoginForm
+  verifyCommonElements,
+  checkSessionCookie,
+  clickWhenEnabled,
+  _getLogoutButton
 } from "./helpers";
 
 const _authFile = "playwright/.auth/user.json";
@@ -21,27 +21,35 @@ test.describe("Session Management", () => {
     page,
     context,
   }) => {
-    // Login using helper
-    await _fillAndSubmitLoginForm(page, "Aidan Wang");
+    // Fill login form
+    await getNameInput(page).fill("Aidan Wang");
+    await clickWhenEnabled(page.getByRole("button", { name: "Sign in" }));
 
-    // Verify navigation to game page
-    await expect(page).toHaveURL(/\/game/, { timeout: 5000 });
+    // Verify navigation to game page and authenticated state
+    await verifyCommonElements(page, {
+      authenticated: true,
+      expectedUrl: /\/game/
+    });
 
-    // Verify cookies are set
-    const cookies = await context.cookies();
-    expect(cookies.some((c) => c.name === "session-token")).toBeTruthy();
+    // Verify session cookie is set
+    await expect(checkSessionCookie(context)).resolves.toBe(true);
 
     // Navigate within protected area
     await page.goto("/game/settings");
-    await expect(page).toHaveURL(/\/game\/settings/, { timeout: 5000 });
+    await verifyCommonElements(page, {
+      authenticated: true,
+      expectedUrl: /\/game\/settings/
+    });
 
     // Navigate to another protected page
     await page.goto("/game/leaderboard");
-    await expect(page).toHaveURL(/\/game\/leaderboard/, { timeout: 5000 });
+    await verifyCommonElements(page, {
+      authenticated: true,
+      expectedUrl: /\/game\/leaderboard/
+    });
 
     // Session cookie still present
-    const cookiesAfterNavigation = await context.cookies();
-    expect(cookiesAfterNavigation.some((c) => c.name === "session-token")).toBeTruthy();
+    await expect(checkSessionCookie(context)).resolves.toBe(true);
   });
 
   test("should redirect unauthenticated users to login page", async ({ page }) => {
@@ -50,21 +58,29 @@ test.describe("Session Management", () => {
   });
 
   test("should update login state after logging out", async ({ page, context }) => {
-    // First authenticate the user using helper
-    await _authenticateAndVerify(page, context, "Aidan Wang");
+    // Authenticate user and navigate to game page
+    await getNameInput(page).fill("Aidan Wang");
+    await clickWhenEnabled(page.getByRole("button", { name: "Sign in" }));
 
-    // Find and click the logout button using the helper
+    // Verify we're authenticated and on the game page
+    await verifyCommonElements(page, {
+      authenticated: true,
+      expectedUrl: /\/game/
+    });
+
+    // Find and click the logout button
     const logoutButton = _getLogoutButton(page);
     await expect(logoutButton).toBeVisible({ timeout: 5000 });
     await logoutButton.click();
 
-    // Verify we're redirected back to login page
-    await expect(page).toHaveURL(/\/$/, { timeout: 5000 });
-    await expect(getNameInput(page)).toBeVisible({ timeout: 5000 });
+    // Verify we're logged out and on the login page
+    await verifyCommonElements(page, {
+      authenticated: false,
+      expectedUrl: /\/$/
+    });
 
     // Session cookie should be removed
-    const cookies = await context.cookies();
-    expect(cookies.some((c) => c.name === "session-token")).toBeFalsy();
+    await expect(checkSessionCookie(context)).resolves.toBe(false);
   });
 
   test("should require authentication for multiple protected routes", async ({ page }) => {
@@ -78,8 +94,8 @@ test.describe("Session Management", () => {
     for (const route of protectedRoutes) {
       await testProtectedRoute(page, route);
 
-      // Clear state between tests
-      await _clearAppState(page, page.context());
+      // Return to login page between tests
+      await page.goto("/");
     }
   });
 
@@ -88,18 +104,25 @@ test.describe("Session Management", () => {
     const page1 = await context.newPage();
     await setupBasicTest(page1, context);
 
-    // Login using the helper
-    await _fillAndSubmitLoginForm(page1, "Aidan Wang");
+    // Login on first page
+    await getNameInput(page1).fill("Aidan Wang");
+    await clickWhenEnabled(page1.getByRole("button", { name: "Sign in" }));
 
     // Verify navigation to game page
-    await expect(page1).toHaveURL(/\/game/, { timeout: 5000 });
+    await verifyCommonElements(page1, {
+      authenticated: true,
+      expectedUrl: /\/game/
+    });
 
     // Open a new tab/page in the same context
     const page2 = await context.newPage();
     await page2.goto("/game/settings");
 
-    // Verify we're still on settings page (not redirected to login)
-    await expect(page2).toHaveURL(/\/game\/settings/, { timeout: 5000 });
+    // Verify we're still authenticated on the second page
+    await verifyCommonElements(page2, {
+      authenticated: true,
+      expectedUrl: /\/game\/settings/
+    });
 
     // Clean up
     await page1.close();

@@ -1,42 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React from "react";
 
-export function UserInfo() {
-  const [username, setUsername] = useState<string | null>(null);
+/**
+ * Props for UserInfo component
+ */
+export interface User {
+  name: string;
+  image?: string;
+}
 
-  useEffect(() => {
-    // Get username from localStorage
-    const storedUsername = localStorage.getItem("lastUsername");
-
-    if (storedUsername) {
-      setUsername(storedUsername);
-    } else {
-      // As a fallback, try to get it from the cookie in client-side code
-      const cookies = document.cookie.split(";");
-      const sessionCookie = cookies.find((cookie) => cookie.trim().startsWith("session-token="));
-
-      if (sessionCookie) {
-        // Simple decode for demo purposes
-        const cookieParts = sessionCookie.split("=");
-        if (cookieParts.length > 1 && cookieParts[1]) {
-          const value = decodeURIComponent(cookieParts[1]);
-          setUsername(value);
-        }
-      }
-    }
-  }, []);
-
-  if (!username) return null;
+/**
+ * Displays the user's avatar and name.
+ */
+export function UserInfo({ user }: { user: User }) {
+  if (!user?.name) return null;
 
   return (
     <div
       id="user-info"
       data-testid="user-info"
-      className="user-info flex items-center gap-2 text-sm font-medium"
+      className="user-info flex items-center gap-2"
       aria-label="User information"
     >
-      Logged in as: <span className="font-bold">{username}</span>
+      {user.image ? (
+        <img
+          src={user.image}
+          alt={user.name}
+          className="h-8 w-8 rounded-full object-cover"
+        />
+      ) : (
+        <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-xs uppercase text-gray-600">
+          {user.name.charAt(0)}
+        </div>
+      )}
+      <span className="text-sm font-medium">{user.name}</span>
     </div>
   );
 }
