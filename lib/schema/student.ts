@@ -4,8 +4,8 @@ import { z } from "zod";
 const STUDENT_ID_PATTERN = /^[sS][0-9]{1,6}$/;
 
 export const studentSchema = z.object({
-    id: z.string().regex(STUDENT_ID_PATTERN, "Invalid student ID format"),
-    name: z.string().min(1, "Name is required"),
+  id: z.string().regex(STUDENT_ID_PATTERN, "Invalid student ID format"),
+  name: z.string().min(1, "Name is required"),
 });
 
-export type Student = z.infer<typeof studentSchema>; 
+export type Student = z.infer<typeof studentSchema>;

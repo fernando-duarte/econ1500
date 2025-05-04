@@ -8,14 +8,16 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-// Get current directory in ESM
+// Get the directory name of the current module
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
 
-// Check and create .env.local if doesn't exist
-const envLocalPath = path.join(process.cwd(), '.env.local');
-const envExamplePath = path.join(process.cwd(), '.env.example');
+// Use relative paths from the script's directory
+const rootDir = path.join(__dirname, '..');
+const envLocalPath = path.join(rootDir, '.env.local');
+const envExamplePath = path.join(rootDir, '.env.example');
 
 if (!fs.existsSync(envLocalPath) && fs.existsSync(envExamplePath)) {
     console.warn('🔧 Creating .env.local from example template...');

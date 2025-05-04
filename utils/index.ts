@@ -1,7 +1,7 @@
 /**
  * Utilities barrel file
  *
- * Use this file to export all your shared utility functions
+ * Use this file to export all your shared utility functions.
  *
  * Example:
  * export { calculateTotal } from './math';

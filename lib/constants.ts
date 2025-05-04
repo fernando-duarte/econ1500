@@ -1,5 +1,8 @@
 /**
  * Application constants
+ *
+ * This file contains constants used throughout the application,
+ * including external URLs and UTM tracking parameters.
  */
 
 // Campaign UTM parameters
