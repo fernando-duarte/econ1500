@@ -15,6 +15,8 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Loader2 } from "lucide-react";
 import { MainNavigation } from "@/components/ui/main-navigation";
 import { UserInfo } from "@/components/ui/UserInfo";
+import { Container } from "@/components/ui/container";
+import { SkipLink } from "@/components/ui/skip-link";
 
 export default function GamePage() {
   const router = useRouter();
@@ -65,13 +67,11 @@ export default function GamePage() {
   }, [router, queryClient]);
 
   return (
-    <main className="container flex min-h-screen flex-col items-center justify-center px-4 py-12">
-      <a
-        href="#game-interface"
-        className="focus:bg-background focus:text-foreground focus:ring-ring sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:ring-2 focus:outline-none"
-      >
-        Skip to game interface
-      </a>
+    <Container
+      as="main"
+      className="flex min-h-screen flex-col items-center justify-center px-4 py-12"
+    >
+      <SkipLink href="#game-interface">Skip to game interface</SkipLink>
 
       <MainNavigation />
 
@@ -108,6 +108,6 @@ export default function GamePage() {
           </Button>
         </CardFooter>
       </Card>
-    </main>
+    </Container>
   );
 }

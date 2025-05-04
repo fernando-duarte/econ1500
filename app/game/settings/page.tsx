@@ -9,6 +9,9 @@ import { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { MainNavigation } from "@/components/ui/main-navigation";
 import { UserInfo, User } from "@/components/ui/UserInfo";
+import { Container } from "@/components/ui/container";
+import { SkipLink } from "@/components/ui/skip-link";
+import { Typography } from "@/components/ui/typography";
 
 export default function GameSettingsPage() {
   const [username, setUsername] = useState<string | null>(null);
@@ -23,13 +26,11 @@ export default function GameSettingsPage() {
   const user: User | null = username ? { name: username } : null;
 
   return (
-    <main className="container flex min-h-screen flex-col items-center justify-center px-4 py-12">
-      <a
-        href="#settings-interface"
-        className="focus:bg-background focus:text-foreground focus:ring-ring sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:ring-2 focus:outline-none"
-      >
-        Skip to settings interface
-      </a>
+    <Container
+      as="main"
+      className="flex min-h-screen flex-col items-center justify-center px-4 py-12"
+    >
+      <SkipLink href="#settings-interface">Skip to settings interface</SkipLink>
 
       <MainNavigation />
 
@@ -43,11 +44,11 @@ export default function GameSettingsPage() {
           <div className="flex justify-center">{user && <UserInfo user={user} />}</div>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground text-center">
+          <Typography.Muted className="text-center">
             Game settings configuration options will appear here.
-          </p>
+          </Typography.Muted>
         </CardContent>
       </Card>
-    </main>
+    </Container>
   );
 }

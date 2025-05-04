@@ -33,6 +33,11 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Loader2, X } from "lucide-react";
 import { Combobox } from "@/components/ui/combobox";
 import { students } from "@/lib/students";
+import { Container } from "@/components/ui/container";
+import { SkipLink } from "@/components/ui/skip-link";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import { Stack } from "@/components/ui/stack";
 
 // Form validation schema
 const formSchema = z.object({
@@ -118,13 +123,8 @@ export default function LoginPage() {
   );
 
   return (
-    <div className="container mx-auto flex min-h-screen flex-col items-center justify-center px-4">
-      <a
-        href="#login-form"
-        className="focus:bg-background focus:text-foreground focus:ring-ring sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:ring-2 focus:outline-none"
-      >
-        Skip to login form
-      </a>
+    <Container className="flex min-h-screen flex-col items-center justify-center px-4">
+      <SkipLink href="#login-form">Skip to login form</SkipLink>
       <Card className="w-full max-w-md focus-within:outline-none">
         <CardHeader className="space-y-2 pb-6 text-center">
           <CardTitle>ECON1500</CardTitle>
@@ -139,11 +139,9 @@ export default function LoginPage() {
             </Alert>
           )}
 
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                Select your name
-              </label>
+          <Stack gap="4">
+            <Stack gap="2">
+              <Label id="student-select-label">Select your name</Label>
               <Combobox
                 items={studentOptions}
                 value={selectedStudent}
@@ -157,16 +155,15 @@ export default function LoginPage() {
                 searchPlaceholder="Type to search..."
                 emptyText="No student found"
                 className="focus-within:ring-ring w-full focus-within:ring-2 focus-within:ring-offset-2"
+                aria-labelledby="student-select-label"
               />
-            </div>
+            </Stack>
 
             <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background text-muted-foreground px-2">Or enter manually</span>
-              </div>
+              <Separator className="my-4" />
+              <span className="bg-background text-muted-foreground absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-2 text-xs uppercase">
+                Or enter manually
+              </span>
             </div>
 
             <Form {...form}>
@@ -215,7 +212,7 @@ export default function LoginPage() {
                 />
               </form>
             </Form>
-          </div>
+          </Stack>
         </CardContent>
 
         <CardFooter>
@@ -237,6 +234,6 @@ export default function LoginPage() {
           </Button>
         </CardFooter>
       </Card>
-    </div>
+    </Container>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 
 /**
  * Props for UserInfo component
@@ -24,7 +25,13 @@ export function UserInfo({ user }: { user: User }) {
       aria-label="User information"
     >
       {user.image ? (
-        <img src={user.image} alt={user.name} className="h-8 w-8 rounded-full object-cover" />
+        <Image
+          src={user.image}
+          alt={user.name}
+          width={32}
+          height={32}
+          className="rounded-full object-cover"
+        />
       ) : (
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-xs text-gray-600 uppercase">
           {user.name.charAt(0)}

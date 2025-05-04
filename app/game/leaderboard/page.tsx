@@ -9,6 +9,9 @@ import { useState, useEffect } from "react";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { MainNavigation } from "@/components/ui/main-navigation";
 import { UserInfo, User } from "@/components/ui/UserInfo";
+import { Container } from "@/components/ui/container";
+import { SkipLink } from "@/components/ui/skip-link";
+import { Typography } from "@/components/ui/typography";
 
 export default function GameLeaderboardPage() {
   const [username, setUsername] = useState<string | null>(null);
@@ -23,13 +26,11 @@ export default function GameLeaderboardPage() {
   const user: User | null = username ? { name: username } : null;
 
   return (
-    <main className="container flex min-h-screen flex-col items-center justify-center px-4 py-12">
-      <a
-        href="#leaderboard-interface"
-        className="focus:bg-background focus:text-foreground focus:ring-ring sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:ring-2 focus:outline-none"
-      >
-        Skip to leaderboard interface
-      </a>
+    <Container
+      as="main"
+      className="flex min-h-screen flex-col items-center justify-center px-4 py-12"
+    >
+      <SkipLink href="#leaderboard-interface">Skip to leaderboard interface</SkipLink>
 
       <MainNavigation />
 
@@ -43,11 +44,11 @@ export default function GameLeaderboardPage() {
           <div className="flex justify-center">{user && <UserInfo user={user} />}</div>
         </CardHeader>
         <CardContent>
-          <p className="text-muted-foreground text-center">
+          <Typography.Muted className="text-center">
             Game scores and rankings will appear here.
-          </p>
+          </Typography.Muted>
         </CardContent>
       </Card>
-    </main>
+    </Container>
   );
 }
