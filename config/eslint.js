@@ -1,3 +1,10 @@
+/**
+ * ESLint Configuration
+ *
+ * This file centralizes the ESLint configuration.
+ * It exports a configuration object that matches the settings previously in eslint.config.mjs
+ */
+
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
@@ -75,8 +82,11 @@ const eslintConfig = [
       "!.env.template",
 
       // Backup files
-      "backups/"
-    ]
+      "backups/",
+
+      // Config directory (to avoid linting our own config files)
+      "config/",
+    ],
   },
   ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
   {
@@ -85,82 +95,100 @@ const eslintConfig = [
       "react/no-unescaped-entities": "off",
       "@next/next/no-img-element": "off",
       "no-unused-vars": "off", // Turn off base rule as it can report incorrect errors
-      "@typescript-eslint/no-unused-vars": ["error", {
-        "argsIgnorePattern": "^_",
-        "varsIgnorePattern": "^_",
-        "caughtErrorsIgnorePattern": "^_",
-        "ignoreRestSiblings": true
-      }],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
+        },
+      ],
 
       // Additional recommended rules
       "react/react-in-jsx-scope": "off", // Not needed in Next.js
       "react/prop-types": "off", // Not needed with TypeScript
       "prefer-const": "error", // Enforce const for variables that don't change
-      "no-console": ["warn", { "allow": ["warn", "error"] }], // Warn about console.log in production
+      "no-console": ["warn", { allow: ["warn", "error"] }], // Warn about console.log in production
       "jsx-a11y/alt-text": "error", // Enforce alt text for accessibility
       "no-duplicate-imports": "error", // Prevent duplicate imports
       "no-var": "error", // Prevent use of var
 
       // Global max-lines rule as a baseline
-      "max-lines": ["warn", {
-        "max": 200,
-        "skipBlankLines": true,
-        "skipComments": true
-      }]
-    }
+      "max-lines": [
+        "warn",
+        {
+          max: 200,
+          skipBlankLines: true,
+          skipComments: true,
+        },
+      ],
+    },
   },
   // Specific overrides for different file types
   {
     files: ["**/*.tsx", "**/*.jsx"],
     rules: {
       // Components can be up to 200 lines
-      "max-lines": ["warn", {
-        "max": 200,
-        "skipBlankLines": true,
-        "skipComments": true
-      }]
-    }
+      "max-lines": [
+        "warn",
+        {
+          max: 200,
+          skipBlankLines: true,
+          skipComments: true,
+        },
+      ],
+    },
   },
   {
     files: ["**/*.ts", "**/*.js"],
     rules: {
       // Utility files should be more concise (150 lines)
-      "max-lines": ["warn", {
-        "max": 150,
-        "skipBlankLines": true,
-        "skipComments": true
-      }]
-    }
+      "max-lines": [
+        "warn",
+        {
+          max: 150,
+          skipBlankLines: true,
+          skipComments: true,
+        },
+      ],
+    },
   },
   {
     files: ["**/test/**", "**/*.test.*", "**/*.spec.*"],
     rules: {
       // Test files can be longer (300 lines)
-      "max-lines": ["warn", {
-        "max": 300,
-        "skipBlankLines": true,
-        "skipComments": true
-      }]
-    }
+      "max-lines": [
+        "warn",
+        {
+          max: 300,
+          skipBlankLines: true,
+          skipComments: true,
+        },
+      ],
+    },
   },
   {
     files: ["**/page.tsx", "**/layout.tsx"],
     rules: {
       // Next.js page/layout components can be a bit longer (250 lines)
-      "max-lines": ["warn", {
-        "max": 250,
-        "skipBlankLines": true,
-        "skipComments": true
-      }]
-    }
+      "max-lines": [
+        "warn",
+        {
+          max: 250,
+          skipBlankLines: true,
+          skipComments: true,
+        },
+      ],
+    },
   },
   {
     // Allow console.log in utility scripts
-    files: ["**/check-validation.js", "**/validate-all-students.js", "**/scripts/**/*.js"],
+    files: ["**/validate-all-students.js", "**/scripts/**/*.js"],
     rules: {
-      "no-console": "off"
-    }
-  }
+      "no-console": "off",
+    },
+  },
 ];
 
 export default eslintConfig;
