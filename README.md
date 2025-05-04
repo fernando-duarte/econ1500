@@ -99,23 +99,13 @@ This project uses:
 # Run all tests with coverage
 npm run test:coverage
 
-# Run specific tests with coverage
-npm run test:file -- tests/your-test-file.spec.ts
-
-# Run tests with UI mode
-npm run test:e2e
+# View HTML coverage report in browser
+npm run show:coverage
 ```
 
 #### Test Suite Overview
 
 The test suite includes end-to-end tests for validating application functionality.
-
-#### Viewing Coverage Reports
-
-```bash
-# View HTML coverage report in browser
-npm run coverage:show
-```
 
 #### Cleaning Coverage Data
 
@@ -128,6 +118,8 @@ npm run clean:test
 
 - Coverage is only collected in Chromium browsers (not Firefox or WebKit)
 - Both JavaScript and CSS coverage are collected automatically
+- Coverage is configured to focus on app, components, and lib directories
+- LCOV reports are generated for integration with other tools
 
 ### Environment Variables
 
