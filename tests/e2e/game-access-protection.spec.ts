@@ -9,9 +9,9 @@ import {
 } from "./helpers";
 
 test.describe("Game Access Protection", () => {
-    test.beforeEach(async ({ page, context }) => {
+    test.beforeEach(async ({ page, context: _context }) => {
         // Use the new setupBasicTest helper
-        await setupBasicTest(page, context, { skipClearState: true });
+        await setupBasicTest(page, _context, { skipClearState: true });
     });
 
     test("should prevent unauthenticated users from accessing game page directly", async ({
@@ -38,13 +38,32 @@ test.describe("Game Access Protection", () => {
         }
     });
 
-    test("should allow authenticated users to access game page", async ({ page, context }) => {
-        // Use the helper for authentication
-        await _authenticateAndVerify(page, context, "Aidan Wang");
+    test("should allow authenticated users to access game page", async ({ page, context: _context }) => {
+        // Navigate to the login page
+        await page.goto("/");
 
-        // Verify direct access after authentication works
+        // Fill in the username
+        await getNameInput(page).fill("Aidan Wang");
+
+        // Use the more reliable retryButtonClick to submit the form
+        await retryButtonClick(getSignInButton(page), {
+            maxAttempts: 3,
+            fallbackAction: async () => {
+                // As a fallback, try submitting the form directly
+                await page.evaluate(() => {
+                    const form = document.getElementById('login-form');
+                    if (form) form.dispatchEvent(new Event('submit', { bubbles: true }));
+                });
+                await page.waitForURL(/\/game/, { timeout: 5000 });
+            }
+        });
+
+        // Wait for navigation and check we're on the game page
+        await expect(page).toHaveURL(/\/game/, { timeout: 10000 });
+
+        // Now verify direct access to settings page works
         await page.goto("/game/settings");
-        await expect(page).toHaveURL(/\/game\/settings/);
+        await expect(page).toHaveURL(/\/game\/settings/, { timeout: 5000 });
     });
 
     test("should store original destination URL during login redirect", async ({ page }) => {
