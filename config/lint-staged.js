@@ -7,11 +7,18 @@
  */
 
 import { relative } from "path";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+
+// Get the directory of the current module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const rootDir = dirname(__dirname);
 
 // This configuration allows Next.js to lint only the changed files
 // rather than running ESLint on the entire project on each commit
 const buildEslintCommand = (filenames) =>
-  `next lint --fix --file ${filenames.map((f) => relative(process.cwd(), f)).join(" --file ")}`;
+  `next lint --fix --file ${filenames.map((f) => relative(rootDir, f)).join(" --file ")}`;
 
 const config = {
   // Run ESLint on JS, JSX, TS, and TSX files

@@ -3,6 +3,13 @@
 import { spawnSync } from "child_process";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+// Get the directory name of the current module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const rootDir = path.join(__dirname, "..");
 
 // Get the test file path from command line argument
 const testFile = process.argv[2];
@@ -14,10 +21,10 @@ if (!testFile) {
 }
 
 // Path to the original Playwright config file
-const configPath = path.resolve(process.cwd(), "playwright.config.ts");
+const configPath = path.join(rootDir, "playwright.config.ts");
 
 // Make a backup of the original config file
-const backupConfigPath = path.resolve(process.cwd(), "playwright.config.backup.ts");
+const backupConfigPath = path.join(rootDir, "playwright.config.backup.ts");
 fs.copyFileSync(configPath, backupConfigPath);
 
 try {
