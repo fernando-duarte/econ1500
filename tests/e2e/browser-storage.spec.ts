@@ -29,7 +29,7 @@ test.describe("Browser Storage", () => {
         expect(storedValue).toBe(testUsername);
     });
 
-    test("should manually set username in input field", async ({ page, context }) => {
+    test("should manually set username in input field", async ({ page }) => {
         const testUsername = "Manual Test User";
 
         // Fill the input directly
@@ -44,7 +44,7 @@ test.describe("Browser Storage", () => {
         expect(storedValue).toBe(testUsername);
     });
 
-    test("should update stored username when logging in again", async ({ page, context, browserName }) => {
+    test("should update stored username when logging in again", async ({ page, browserName }) => {
         // Clear localStorage first to ensure clean state
         await page.evaluate(() => localStorage.clear());
 
@@ -91,7 +91,7 @@ test.describe("Browser Storage", () => {
     // and whether returning to the page after logout actually pre-fills the field
 
     // This test checks if login state is saved while localStorage persists
-    test("should maintain localStorage across sessions", async ({ page, context }) => {
+    test("should maintain localStorage across sessions", async ({ page }) => {
         const testUsername = "Storage Test User";
 
         // Set localStorage directly to simulate a returning user
