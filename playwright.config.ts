@@ -2,7 +2,7 @@
 import { defineConfig, devices } from "@playwright/test";
 import { resolve } from "path";
 import * as path from "path";
-import * as thresholds from "./config/coverage-thresholds";
+import thresholds from "./config/coverage-thresholds.js";
 import * as fs from "fs";
 
 // Get the directory name directly since we're in a module
@@ -102,6 +102,12 @@ export default defineConfig({
             path.join(outputDir, "raw-coverage.json"),
             JSON.stringify(allCoverage, null, 2)
           );
+
+          // Skip when running --list command
+          if (!testInfo || !testInfo.attachments || !testInfo.attachments.getCoverageSummary) {
+            console.log("⚠️ Coverage summary not available (possibly running with --list)");
+            return;
+          }
 
           // Get coverage summary
           const summary = testInfo.attachments.getCoverageSummary(allCoverage);

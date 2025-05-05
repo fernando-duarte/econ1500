@@ -4,7 +4,7 @@
  * These thresholds are initially set conservatively to establish a baseline.
  * They should be gradually increased as coverage improves.
  */
-module.exports = {
+export default {
     // Global thresholds applied to the entire codebase
     global: {
         lines: 60, // Starting with a moderate target

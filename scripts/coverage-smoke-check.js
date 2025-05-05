@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import * as thresholds from "../config/coverage-thresholds.js";
+import thresholds from "../config/coverage-thresholds.js";
 
 /**
  * Lightweight script to run as a daily check that coverage hasn't regressed

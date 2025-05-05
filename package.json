@@ -12,7 +12,7 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "lint:all": "eslint --config ./config/eslint.js .",
+    "lint:all": "eslint --config ./config/eslint.js . && npx playwright test --list",
     "lint:all:fix": "eslint --config ./config/eslint.js . --fix",
     "prepare": "husky",
     "format": "prettier --config ./config/prettier.js --write \"**/*.{js,jsx,ts,tsx,json,md,css}\"",
