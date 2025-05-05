@@ -15,6 +15,13 @@
 /playwright-report/
 /.nyc_output/
 
+# Coverage reports
+.v8-coverage/
+monocart-report/
+*.lcov
+coverage.json
+raw-coverage.json
+
 # next.js
 /.next/
 /out/

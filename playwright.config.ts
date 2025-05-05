@@ -1,5 +1,10 @@
 // playwright.config.ts
 import { defineConfig, devices } from "@playwright/test";
+import { fileURLToPath } from "url";
+import path from "path";
+
+// Get the directory name of the current module
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Read environment variables from file.
@@ -78,6 +83,9 @@ export default defineConfig({
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
   ],
+
+  /* Add globalTeardown property */
+  globalTeardown: path.resolve(__dirname, "./global-teardown.ts"),
 
   /* Run your local dev server before starting the tests */
   webServer: {

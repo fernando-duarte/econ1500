@@ -22,7 +22,13 @@
     "test:e2e:non-interactive": "playwright test --reporter=json > test-results/test-results.json",
     "test:auth-setup": "npx tsx tests/e2e/setup-auth.ts",
     "clean:test": "rimraf test-results playwright-report",
-    "postinstall": "npx playwright install --with-deps"
+    "postinstall": "npx playwright install --with-deps",
+    "pretest:e2e:coverage": "rimraf ./.v8-coverage && mkdir -p ./.v8-coverage && mkdir -p ./monocart-report",
+    "test:e2e:coverage:single": "cross-env NODE_V8_COVERAGE=./.v8-coverage playwright test tests/e2e/auth.spec.ts --project=chromium",
+    "test:e2e:coverage:single:safe": "cross-env NODE_V8_COVERAGE=./.v8-coverage playwright test tests/e2e/auth.spec.ts --project=chromium || echo 'Test may have failed but coverage will still be processed'",
+    "test:e2e:coverage:skip": "cross-env SKIP_COVERAGE=1 npm run test:e2e",
+    "coverage:view": "npx monocart serve-report ./monocart-report -p 8080",
+    "test:e2e:coverage:single:auto": "npm run test:e2e:coverage:single && npm run coverage:view"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -70,17 +76,21 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
     "eslint-config-prettier": "^10.1.2",
     "http-server": "^14.1.1",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
+    "monocart-reporter": "^2.9.0",
+    "p-limit": "^4.0.0",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "rimraf": "^6.0.1",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.2.8",
-    "typescript": "^5"
+    "typescript": "^5",
+    "v8-to-istanbul": "^9.1.0"
   }
 }
