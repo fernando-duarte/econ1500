@@ -572,8 +572,8 @@ The coverage report will be automatically served at http://localhost:8080 when u
 
 ## Implementation Notes
 
-- Date started: ******\_\_\_******
-- Implementation completed: ******\_\_\_******
-- Final coverage percentage: ******\_\_\_******
-- Team members involved: ******\_\_\_******
-- Notable challenges: ******\_\_\_******
+- Date started: **\*\***\_\_\_**\*\***
+- Implementation completed: **\*\***\_\_\_**\*\***
+- Final coverage percentage: **\*\***\_\_\_**\*\***
+- Team members involved: **\*\***\_\_\_**\*\***
+- Notable challenges: **\*\***\_\_\_**\*\***
