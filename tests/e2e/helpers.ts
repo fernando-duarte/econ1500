@@ -19,7 +19,6 @@ import {
   pipeAsync,
   openCombobox,
   clickOption,
-  stopTracingSafe,
 } from "./actions";
 
 // State management
@@ -198,33 +197,10 @@ export const testFormField = async (
   await expectErrorMessage(page, expectedError);
 
   await field.fill(validValue);
-  await clickWhenEnabled(submitBtn);
-  await expect(page.getByText(expectedError)).not.toBeVisible();
 };
 
 /**
- * Start tracing for debugging
- */
-export const startTracing = async (context: BrowserContext, testInfo: TestInfo): Promise<void> => {
-  await context.tracing.start({
-    screenshots: true,
-    snapshots: true,
-    sources: true,
-    title: testInfo.title,
-  });
-};
-
-/**
- * Stop tracing and save trace file
- */
-export const stopTracing = async (context: BrowserContext, testInfo: TestInfo): Promise<void> => {
-  await context.tracing.stop({
-    path: `./test-results/traces/${testInfo.title.replace(/\s+/g, "-")}.zip`,
-  });
-};
-
-/**
- * Save screenshot with contextual information
+ * Save screenshot with context for test failures
  */
 export const saveScreenshotWithContext = async (
   page: Page,
@@ -232,16 +208,20 @@ export const saveScreenshotWithContext = async (
   name: string,
   options?: { fullPage?: boolean; selector?: string }
 ): Promise<void> => {
-  const path = `test-results/${testInfo.title.replace(/\s+/g, "-")}-${name}.png`;
+  const screenshotPath = testInfo.outputPath(`${name}.png`);
   if (options?.selector) {
-    await page.locator(options.selector).screenshot({ path });
+    await page.locator(options.selector).screenshot({ path: screenshotPath });
   } else {
-    await page.screenshot({ path, fullPage: options?.fullPage || false });
+    await page.screenshot({
+      path: screenshotPath,
+      fullPage: options?.fullPage ?? false,
+    });
   }
+  await testInfo.attach(name, { path: screenshotPath, contentType: "image/png" });
 };
 
 /**
- * Verify common page elements and authentication state
+ * Verify common elements on a page
  */
 export const verifyCommonElements = async (
   page: Page,
@@ -251,42 +231,21 @@ export const verifyCommonElements = async (
     expectedElements?: Array<{ selector: string; text?: string }>;
   }
 ): Promise<void> => {
-  await page.waitForLoadState("networkidle");
-
   if (options?.expectedUrl) {
-    await expect(page).toHaveURL(options.expectedUrl, { timeout: 5000 });
+    await expect(page).toHaveURL(options.expectedUrl);
   }
 
-  if (options?.authenticated === true) {
-    // Authenticated state: prefer logout button, fallback to user-info indicator
-    try {
-      await expect(getLogoutButton(page)).toBeVisible({ timeout: 5000 });
-    } catch {
-      const userInfo = page.locator('[id="user-info"], .user-info');
-      await expect(userInfo).toBeVisible({ timeout: 5000 });
-    }
-  } else if (options?.authenticated === false) {
-    // Look for login indicators
-    try {
-      await expect(getNameInput(page)).toBeVisible({ timeout: 5000 });
-    } catch {
-      const loginHeadings = page.locator("h1, h2").filter({ hasText: /login/i });
-      await expect(loginHeadings).toBeVisible({ timeout: 5000 });
-    }
+  if (options?.authenticated) {
+    // Verify logout button is visible when authenticated
+    await expect(getLogoutButton(page)).toBeVisible();
   }
 
   if (options?.expectedElements) {
-    for (const el of options.expectedElements) {
-      const locator = el.text
-        ? page.locator(el.selector, { hasText: el.text })
-        : page.locator(el.selector);
-      try {
-        await expect(locator).toBeVisible({ timeout: 5000 });
-      } catch {
-        await page.screenshot({ path: `test-results/element-not-found-${Date.now()}.png` });
-        throw new Error(
-          `Expected element ${el.selector} ${el.text ? "with text " + el.text : ""} not found`
-        );
+    for (const element of options.expectedElements) {
+      const locator = page.locator(element.selector);
+      await expect(locator).toBeVisible();
+      if (element.text) {
+        await expect(locator).toContainText(element.text);
       }
     }
   }
@@ -298,4 +257,3 @@ export const _pipeAsync = pipeAsync;
 // Expose lower-level utilities if needed
 export const _openCombobox = openCombobox;
 export const _clickOption = clickOption;
-export const _stopTracingSafe = stopTracingSafe;

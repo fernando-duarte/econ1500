@@ -26,7 +26,6 @@ export default defineConfig({
     ["html"], // Default HTML reporter
     ["line"], // More compact for CI logs
     ["json", { outputFile: "test-results/test-results.json" }], // JSON reporter output to test-results directory
-    // Monocart reporter will be configured when needed
   ],
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   outputDir: "test-results",

@@ -86,40 +86,25 @@ Scripts in `package.json` reference these configurations.
 
 > **Note:** For backward compatibility, some original configuration files are still present but will be deprecated in future updates.
 
-### Testing and Coverage
+### Testing
 
 This project uses:
 
 - **Playwright**: For end-to-end testing
-- **Monocart Reporter**: For test coverage analysis
 
-#### Running Tests with Coverage
+#### Running Tests
 
 ```bash
-# Run all tests with coverage
-npm run test:coverage
+# Run all tests
+npm run test:e2e
 
-# View HTML coverage report in browser
-npm run show:coverage
+# Run a specific test file
+npm run test:file tests/e2e/auth.spec.ts
 ```
 
 #### Test Suite Overview
 
-The test suite includes end-to-end tests for validating application functionality.
-
-#### Cleaning Coverage Data
-
-```bash
-# Clean up coverage data and reports
-npm run clean:test
-```
-
-#### Coverage Implementation Details
-
-- Coverage is only collected in Chromium browsers (not Firefox or WebKit)
-- Both JavaScript and CSS coverage are collected automatically
-- Coverage is configured to focus on app, components, and lib directories
-- LCOV reports are generated for integration with other tools
+The test suite includes end-to-end tests for validating application functionality including authentication, form validation, and user interactions.
 
 ### Environment Variables
 

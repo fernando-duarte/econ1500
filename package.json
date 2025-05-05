@@ -19,20 +19,16 @@
     "type-check": "tsc --noEmit",
     "analyze": "ANALYZE=true next build",
     "test:e2e": "playwright test --reporter=list",
-    "test:e2e:cov": "playwright test",
-    "test:e2e:non-interactive": "playwright test --reporter=json > test-results.json",
-    "test:e2e:run": "node scripts/non-interactive-test.js",
-    "test:file": "node scripts/non-interactive-test.js",
+    "test:e2e:non-interactive": "playwright test --reporter=json > test-results/test-results.json",
     "test:auth-setup": "npx tsx tests/e2e/setup-auth.ts",
-    "test:coverage": "playwright test --config=playwright.coverage.config.ts --project=chromium",
-    "show:coverage": "npx monocart show-report coverage-report/index.html",
-    "clean:test": "rimraf test-results playwright-report monocart-report/coverage/**/*.* monocart-report/*.{html,json} coverage-report",
+    "clean:test": "rimraf test-results playwright-report",
     "postinstall": "npx playwright install --with-deps"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --config ./config/eslint.js --fix",
-      "prettier --config ./config/prettier.js --write"
+      "prettier --config ./config/prettier.js --write",
+      "tsc --noEmit"
     ],
     "*.{json,md,css}": [
       "prettier --config ./config/prettier.js --write"
@@ -80,7 +76,6 @@
     "http-server": "^14.1.1",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
-    "monocart-reporter": "^2.9.18",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "rimraf": "^6.0.1",

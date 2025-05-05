@@ -11,8 +11,6 @@
 !.yarn/versions
 
 # testing
-/coverage
-/coverage-reports/
 /test-results/
 /playwright-report/
 /.nyc_output/
@@ -107,9 +105,6 @@ Icon
 
 # Local storybook builds
 /storybook-static/
-
-# Test reports
-monocart-report/
 
 # Backup files
 /backups/

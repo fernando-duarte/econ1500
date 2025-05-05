@@ -55,12 +55,9 @@ const eslintConfig = [
       // Public folder and assets
       "public/",
 
-      // Test coverage reports
-      "coverage/",
+      // Test results
       "test-results/",
       "playwright-report/",
-      "monocart-report/assets/**",
-      "monocart-report/coverage/**",
 
       // Editor-specific files
       ".idea/",

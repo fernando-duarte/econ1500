@@ -9,19 +9,12 @@ import {
   retryButtonClick,
   expectRedirectWithReturnUrl,
   _getTestStudents as getTestStudents,
-  startTracing,
-  stopTracing,
   saveScreenshotWithContext,
 } from "./helpers";
 
 test.describe("Student Selection Interface", () => {
-  test.beforeEach(async ({ page, context }, testInfo) => {
+  test.beforeEach(async ({ page, context }) => {
     await setupBasicTest(page, context);
-    await startTracing(context, testInfo);
-  });
-
-  test.afterEach(async ({ context }, testInfo) => {
-    await stopTracing(context, testInfo);
   });
 
   test("should render dropdown with student options", async ({ page }) => {
