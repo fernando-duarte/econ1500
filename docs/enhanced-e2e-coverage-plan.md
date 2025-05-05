@@ -439,6 +439,22 @@ export default async () => {
 
 > **TypeScript Note**: Using TypeScript for the global teardown provides better type safety and consistency with the rest of your TypeScript codebase. Make sure your tsconfig.json includes this file. Playwright will automatically compile and use the JavaScript output.
 
+### TypeScript Configuration Update
+
+Since `global-teardown.ts` is written in TypeScript, ensure it's properly included in your TypeScript compilation by updating your `tsconfig.json`:
+
+```json
+{
+  "include": [
+    "**/*.ts",
+    "global-teardown.ts" // Ensure teardown is included in compilation
+  ]
+  // existing configuration...
+}
+```
+
+This ensures the teardown file is properly type-checked and compiled, which is critical for Playwright to correctly execute it during the test process.
+
 ---
 
 ## 📑 Export LCOV for CI Integration
@@ -662,6 +678,162 @@ If you find areas with low coverage:
 
 ---
 
+## 🛠️ Monocart CLI Tools for Debugging and Sharing
+
+Monocart-Reporter provides useful CLI utilities for working with coverage reports outside the testing process:
+
+```bash
+# View a generated report in browser with proper trace handling
+npx monocart show-report ./monocart-report/index.html
+
+# Start a local server to view reports with trace visualization
+npx monocart serve-report ./monocart-report -p 8080
+
+# Manually merge multiple coverage reports (useful for combining sharded test runs)
+npx monocart merge './coverage-reports/shard*/index.json' -o ./monocart-report/merged/index.html
+```
+
+These commands are particularly useful when:
+
+- Debugging coverage issues during development
+- Analyzing trace files along with coverage data
+- Sharing results with team members who don't have direct CI access
+- Manually processing coverage from different test runs or environments
+
+Use `npx monocart --help` for more options and commands.
+
+---
+
+## 🚩 Progressive Implementation Strategy
+
+To minimize disruption while implementing this enhanced coverage plan, a phased approach is recommended. This allows for validation at each step and helps identify issues early with minimal changes to existing code.
+
+### Phase 1: Minimal Viable Coverage (1-2 days)
+
+**Focus**: Basic coverage with minimal infrastructure changes
+
+1. **Initial setup and dependencies**:
+
+   ```bash
+   npm install --save-dev monocart-reporter v8-to-istanbul cross-env rimraf
+   ```
+
+2. **Create minimal coverage fixture** in `tests/coverage-fixtures.ts`:
+
+   - Implement JS coverage collection for Chromium only
+   - Use simplified remapping without complex error handling
+   - Skip CSS coverage initially for simplicity
+
+3. **Modify a single test file** to validate the approach:
+
+   ```typescript
+   // Convert just one test file to verify setup
+   import { test, expect } from "../coverage-fixtures";
+   ```
+
+4. **Add basic scripts** to `package.json`:
+
+   ```json
+   "pretest:e2e:coverage": "rimraf ./.v8-coverage && mkdir -p ./.v8-coverage",
+   "test:e2e:coverage:single": "cross-env NODE_V8_COVERAGE=./.v8-coverage playwright test tests/e2e/auth.spec.ts --project=chromium"
+   ```
+
+5. **Create simplified global-teardown.ts**:
+   - Basic coverage collection and processing
+   - Console output before advancing to HTML reports
+
+**Validation**: Run a single test with coverage and verify console output
+
+### Phase 2: Expansion and Refinement (3-5 days)
+
+**Focus**: Expand test coverage and improve reporting
+
+1. **Enhance coverage fixtures**:
+
+   - Add full error handling to remapping function
+   - Implement optional CSS coverage support
+   - Support all browsers (not just Chromium)
+
+2. **Create threshold configuration**:
+
+   - Create `config/coverage-thresholds.js` with initial lenient thresholds
+   - Set baseline thresholds based on current coverage metrics
+
+3. **Convert key test files**:
+
+   - Update 3-5 more test files to use coverage fixtures
+   - Target tests covering critical application paths
+
+4. **Implement HTML reporting**:
+
+   - Update `playwright.config.ts` with monocart-reporter HTML config
+   - Generate visual reports without strict threshold enforcement
+
+5. **Create export-lcov.js**:
+   - Enable LCOV export for tool integration
+   - Implement standardized coverage data access pattern
+
+**Validation**: Run subset of tests, review HTML report, verify LCOV export
+
+### Phase 3: Full Integration (1-2 weeks)
+
+**Focus**: Complete implementation and CI integration
+
+1. **Convert all remaining tests**:
+
+   - Update all test files to use coverage fixtures
+   - Enable parallel test execution with merged coverage reports
+
+2. **Refine thresholds**:
+
+   - Adjust based on actual coverage measurements
+   - Gradually increase thresholds for critical paths
+   - Implement per-module threshold customization
+
+3. **Complete CI integration**:
+
+   - Add GitHub workflow step for coverage collection
+   - Configure artifact storage for reports
+   - Set up Coveralls integration
+
+4. **Implement advanced tooling**:
+
+   - Create coverage smoke check script
+   - Document CLI tools for the team
+   - Add fallback behavior across all scripts
+
+5. **Production workflow integration**:
+   - Update team documentation
+   - Add coverage review to PR process
+   - Establish coverage maintenance protocols
+
+**Validation**: Full test suite with coverage, CI integration, team workflow validation
+
+### Implementation Safeguards
+
+1. **Feature flags** for easy toggling:
+
+   ```bash
+   # Add to scripts for easy toggling
+   SKIP_COVERAGE=1 npm run test:e2e
+   ```
+
+2. **Performance monitoring**:
+
+   - Track added test execution time
+   - Monitor memory usage during coverage collection
+   - Implement coverage:nocss option for performance-critical scenarios
+
+3. **Threshold bypass** for urgent fixes:
+   ```bash
+   # Allow bypassing thresholds when needed
+   BYPASS_COVERAGE_THRESHOLDS=1 npm run test:e2e:coverage
+   ```
+
+This progressive approach ensures the coverage system can be implemented with minimal disruption while steadily improving the quality of test coverage.
+
+---
+
 ## 🚩 Implementation Checklist
 
 - [ ] Install new dependencies: `npm install --save-dev monocart-reporter rimraf cross-env v8-to-istanbul p-limit coveralls`
@@ -671,8 +843,10 @@ If you find areas with low coverage:
 - [ ] Create `tests/coverage-fixtures.ts` with configurable CSS coverage support and enhanced source-map remapping
 - [ ] Update imports in existing E2E tests to use the coverage fixture
 - [ ] Create `global-teardown.ts` with parallelized file processing and proper mock context
+- [ ] Update `tsconfig.json` to include the global-teardown.ts file
 - [ ] Create `scripts/export-lcov.js` for CI integration with fallback to raw coverage
 - [ ] Create `scripts/coverage-smoke-check.js` for daily verification
+- [ ] Implement standardized coverage data access pattern across scripts
 - [ ] Set appropriate coverage thresholds for the ECON1500 project
 - [ ] Add CI configuration for report artifact storage with continue-on-error
 - [ ] Update `.gitignore` to exclude coverage artifacts:
@@ -695,9 +869,11 @@ For the smoothest implementation, follow this order:
 1. Create `tests/coverage-fixtures.ts` first and update at least one test to verify coverage collection
 2. Create `config/coverage-thresholds.js` with initial tolerant thresholds
 3. Create `global-teardown.ts` to ensure coverage data is properly processed
-4. Implement scripts in `package.json` for local coverage testing
-5. Test locally with a small subset of tests to validate the setup
-6. Complete the remaining steps and gradually phase in all tests
+4. Update `tsconfig.json` to include the global-teardown.ts file
+5. Implement scripts in `package.json` for local coverage testing
+6. Create standardized coverage data access utility for consistent file handling
+7. Test locally with a small subset of tests to validate the setup
+8. Complete the remaining steps and gradually phase in all tests
 
 This enhanced plan provides advanced features like:
 
@@ -715,3 +891,42 @@ This enhanced plan provides advanced features like:
 - TypeScript integration for the global teardown file
 - Granular coverage thresholds for specific modules
 - Proper .gitignore entries for coverage artifacts
+
+---
+
+## 📊 Standardized Coverage Data Access
+
+To maintain consistency across all scripts that access coverage data, implement this standard pattern for accessing coverage files:
+
+```js
+// standardized-coverage-access.js - Can be extracted to a shared utility
+function getCoverageData() {
+  const covPath = path.resolve("./monocart-report/coverage.json");
+  const rawCovPath = path.resolve("./monocart-report/raw-coverage.json");
+
+  try {
+    if (fs.existsSync(covPath)) {
+      console.log("✅ Using coverage.json for data access");
+      return JSON.parse(fs.readFileSync(covPath, "utf8"));
+    }
+
+    if (fs.existsSync(rawCovPath)) {
+      console.log("✅ Using raw-coverage.json (tests may have failed)");
+      return JSON.parse(fs.readFileSync(rawCovPath, "utf8"));
+    }
+
+    throw new Error("No coverage files found");
+  } catch (error) {
+    console.error(`❌ Error accessing coverage data: ${error.message}`);
+    process.exit(1);
+  }
+}
+```
+
+Apply this pattern to:
+
+- `scripts/export-lcov.js` (already implemented above)
+- `scripts/coverage-smoke-check.js`
+- Any custom integrations or report generators
+
+This ensures graceful fallback behavior when tests fail but still produce raw coverage data.
