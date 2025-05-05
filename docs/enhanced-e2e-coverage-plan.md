@@ -11,6 +11,8 @@ econ1500/
 ├── package.json
 ├── playwright.config.ts             // Will be modified
 ├── global-teardown.ts               // New file to be created
+                                     // Note: Consider moving to scripts/ or config/
+                                     // in future refactorings for better organization
 ├── scripts/
 │   ├── export-lcov.js               // New file to be created
 │   └── coverage-smoke-check.js      // Optional daily smoke check script
@@ -44,7 +46,7 @@ Add to your **package.json**:
 ```json
 {
   "devDependencies": {
-    "monocart-reporter": "^x.y.z",
+    "monocart-reporter": "^2.9.0",
     "rimraf": "^5.x",
     "cross-env": "^7.x",
     "v8-to-istanbul": "^9.x",
@@ -242,7 +244,9 @@ async function remap(entry) {
 
       entry.url = basePath + mappedExt;
     }
-  } catch {
+  } catch (error) {
+    // Enhanced error handling to prevent coverage failures
+    console.warn(`⚠️ Source map remapping failed for ${entry.url}: ${error.message}`);
     // Fallback: keep original
   }
   return entry;
@@ -254,7 +258,10 @@ export const test = base.extend<{}, { autoV8Coverage: boolean }>({
       const isChromium = testInfo.project.name === "Chromium";
       if (isChromium) {
         // Start JS coverage always
-        await page.coverage.startJSCoverage({ resetOnNavigation: false });
+        await page.coverage.startJSCoverage({
+          resetOnNavigation: false,
+          reportAnonymousScripts: true, // Enables coverage for inline scripts
+        });
 
         // Only start CSS coverage if not skipped (for performance)
         if (!skipCssCoverage) {
@@ -462,11 +469,25 @@ import { writeLcov } from "monocart-reporter";
       process.exit(1);
     }
 
-    const lcov = await writeLcov(jsonData);
-    fs.writeFileSync("./coverage.lcov", lcov);
-    console.log("✅ Generated coverage.lcov for ECON1500 codebase");
+    try {
+      const lcov = await writeLcov(jsonData);
+      const lcovPath = "./coverage.lcov";
+      fs.writeFileSync(lcovPath, lcov);
+
+      if (fs.existsSync(lcovPath)) {
+        const stats = fs.statSync(lcovPath);
+        console.log(
+          `✅ Generated coverage.lcov (${(stats.size / 1024).toFixed(2)} KB) for ECON1500 codebase`
+        );
+      } else {
+        throw new Error("Failed to write LCOV file");
+      }
+    } catch (lcovError) {
+      console.error("❌ Error generating LCOV content:", lcovError);
+      process.exit(1);
+    }
   } catch (error) {
-    console.error("❌ Error generating LCOV file:", error);
+    console.error("❌ Error reading coverage data:", error);
     process.exit(1);
   }
 })();
@@ -666,6 +687,17 @@ raw-coverage.json
 ```
 
 - [ ] Test the complete workflow locally before pushing to CI
+
+### Recommended Implementation Order
+
+For the smoothest implementation, follow this order:
+
+1. Create `tests/coverage-fixtures.ts` first and update at least one test to verify coverage collection
+2. Create `config/coverage-thresholds.js` with initial tolerant thresholds
+3. Create `global-teardown.ts` to ensure coverage data is properly processed
+4. Implement scripts in `package.json` for local coverage testing
+5. Test locally with a small subset of tests to validate the setup
+6. Complete the remaining steps and gradually phase in all tests
 
 This enhanced plan provides advanced features like:
 
