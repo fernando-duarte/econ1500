@@ -10,6 +10,64 @@ Our coverage system uses:
 - V8 coverage for collecting coverage data
 - Monocart-Reporter for processing and displaying coverage reports
 
+## Complete Script Reference
+
+### Linting and Code Quality
+
+- `lint`: Run ESLint using Next.js configuration to identify code issues
+- `lint:fix`: Run ESLint and automatically fix issues where possible
+- `lint:all`: Lint the entire project and list all Playwright tests
+- `lint:all:fix`: Lint and fix issues across the entire project
+- `format`: Format code with Prettier according to project standards
+- `type-check`: Run the TypeScript compiler without emitting files to check types
+
+### Basic Testing
+
+- `test:e2e`: Run Playwright end-to-end tests with list reporter for readable output
+- `test:e2e:non-interactive`: Run tests and output JSON results for CI environments
+- `test:auth-setup`: Set up authentication for Playwright tests
+- `clean:test`: Remove test results and Playwright report directories
+- `postinstall`: Automatically install Playwright dependencies after npm install
+
+### Coverage Setup and Preparation
+
+- `pretest:e2e:coverage`: Prepare directories for V8 coverage collection and reporting
+
+### Single Test Coverage Options
+
+- `test:e2e:coverage:single`: Run coverage on just the auth test (useful for quick checks)
+- `test:e2e:coverage:single:safe`: Run auth test coverage with failure protection, allowing coverage processing even if tests fail
+
+### Core Test Coverage Options
+
+- `test:e2e:coverage:core`: Run coverage on critical test files only (auth, session management, form validation)
+
+### Full Coverage Options
+
+- `test:e2e:coverage`: Run coverage collection on all tests
+- `test:e2e:coverage:nocss`: Run coverage excluding CSS files (significantly faster)
+- `test:e2e:coverage:skip`: Run tests without collecting coverage (fastest option)
+- `test:e2e:coverage:debug`: Run coverage with debug mode enabled for troubleshooting
+- `test:e2e:coverage:bypass-thresholds`: Run coverage ignoring threshold requirements (for urgent fixes)
+- `test:e2e:coverage:ci`: Run coverage optimized for CI environments with limited resources (increased memory, fewer workers)
+
+### Coverage Reporting and Analysis
+
+- `coverage:smoke`: Quick check that coverage hasn't regressed significantly
+- `coverage:lcov`: Export coverage data to LCOV format for external tools
+- `coverage:view`: Serve the coverage report on a local web server (port 8080)
+
+### Combined Coverage and Viewing Commands
+
+These commands run tests with coverage and automatically open the report viewer:
+
+- `test:e2e:coverage:core:auto`: Run core tests coverage and view report
+- `test:e2e:coverage:auto`: Run all tests coverage and view report
+- `test:e2e:coverage:nocss:auto`: Run coverage without CSS and view report
+- `test:e2e:coverage:single:auto`: Run single test coverage and view report
+- `test:e2e:coverage:bypass-thresholds:auto`: Run coverage bypassing thresholds and view report
+- `test:e2e:coverage:ci:auto`: Run CI-optimized coverage and view report
+
 ## Running Tests with Coverage
 
 To run tests with coverage:
@@ -30,6 +88,7 @@ npm run test:e2e:coverage:skip
 We enforce the following minimum coverage thresholds:
 
 - **Global**:
+
   - Lines: 60%
   - Functions: 50%
   - Branches: 40%
@@ -55,6 +114,7 @@ After running tests with coverage:
 2. Or run `npm run coverage:view` to start a local server at http://localhost:8080
 
 The coverage report provides:
+
 - Overall coverage metrics
 - Per-file coverage details
 - Highlighted source code showing covered/uncovered lines
@@ -124,4 +184,4 @@ npm run coverage:lcov
 
 ## Support
 
-If you have questions about the coverage setup or need help improving coverage for your components, please contact the DevOps team. 
+If you have questions about the coverage setup or need help improving coverage for your components, please contact the DevOps team.
