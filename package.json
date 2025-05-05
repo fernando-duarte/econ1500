@@ -23,7 +23,7 @@
     "test:auth-setup": "npx tsx tests/e2e/setup-auth.ts",
     "clean:test": "rimraf test-results playwright-report",
     "postinstall": "npx playwright install --with-deps",
-    "pretest:e2e:coverage": "rimraf ./.v8-coverage && mkdir -p ./.v8-coverage && mkdir -p ./monocart-report",
+    "pretest:e2e:coverage": "rimraf ./.v8-coverage ./monocart-report && mkdir -p ./.v8-coverage && mkdir -p ./monocart-report",
     "test:e2e:coverage:single": "cross-env NODE_V8_COVERAGE=./.v8-coverage playwright test tests/e2e/auth.spec.ts --project=chromium",
     "test:e2e:coverage:single:safe": "cross-env NODE_V8_COVERAGE=./.v8-coverage playwright test tests/e2e/auth.spec.ts --project=chromium || echo 'Test may have failed but coverage will still be processed'",
     "test:e2e:coverage:core": "cross-env NODE_V8_COVERAGE=./.v8-coverage playwright test tests/e2e/auth.spec.ts tests/e2e/session-management.spec.ts tests/e2e/form-validation.spec.ts --project=chromium",

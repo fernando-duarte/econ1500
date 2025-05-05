@@ -31,7 +31,7 @@ Our coverage system uses:
 
 ### Coverage Setup and Preparation
 
-- `pretest:e2e:coverage`: Prepare directories for V8 coverage collection and reporting
+- `pretest:e2e:coverage`: Clean up and prepare directories for coverage collection - removes both `.v8-coverage` and `monocart-report` directories completely and recreates them fresh
 
 ### Single Test Coverage Options
 

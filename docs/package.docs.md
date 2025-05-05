@@ -40,7 +40,7 @@
 
 ### Coverage Setup
 
-- `pretest:e2e:coverage`: Prepare coverage directories
+- `pretest:e2e:coverage`: Clean up and prepare coverage directories - removes both `.v8-coverage` and `monocart-report` directories and recreates them
 
 ### Single Test Coverage Options
 
