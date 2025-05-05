@@ -10,7 +10,7 @@ This document outlines the complete, detailed setup to collect, merge, and enfor
 econ1500/
 ├── package.json
 ├── playwright.config.ts             // Will be modified
-├── global-teardown.js               // New file to be created
+├── global-teardown.ts               // New file to be created
 ├── scripts/
 │   ├── export-lcov.js               // New file to be created
 │   └── coverage-smoke-check.js      // Optional daily smoke check script
@@ -63,6 +63,8 @@ Add to your **package.json**:
 }
 ```
 
+> **CSS Coverage Performance Note**: When first implementing coverage, start with `test:e2e:coverage:nocss` to establish baseline performance and file size. CSS coverage significantly increases coverage file sizes and can slow down tests. After gauging the impact, you can decide whether to include CSS coverage in your regular workflow.
+
 ---
 
 ## 🛠 Playwright Configuration with Thresholds & CI Artifacts
@@ -78,15 +80,31 @@ module.exports = {
     branches: 70,
     statements: 80,
   },
-  // Optional: per-directory thresholds for critical code
+  // Directory-specific thresholds for more granular control
   critical: {
     lines: 90,
     functions: 85,
     branches: 80,
     statements: 90,
   },
+  // Enhanced granularity for specific modules
+  "lib/auth": {
+    lines: 90,
+    functions: 90,
+    branches: 85,
+    statements: 90,
+  },
+  "lib/socket": {
+    lines: 85,
+    functions: 85,
+    branches: 80,
+    statements: 85,
+  },
+  // Add other critical modules that need tailored thresholds
 };
 ```
+
+> **Threshold Configuration Note**: Review your codebase to identify which specific modules need higher coverage thresholds. Adjust the directory paths and threshold values to match your actual codebase structure and quality requirements.
 
 Then update your **playwright.config.ts**:
 
@@ -121,6 +139,7 @@ export default mergeConfig<PlaywrightReporterConfig>(
         mergeCoverageFiles: true,
         coverage: {
           entryFilter: entry => {
+            // Ensure these paths match your project's actual structure
             return entry.url?.includes('/app/') ||
                    entry.url?.includes('/components/') ||
                    entry.url?.includes('/lib/') ||
@@ -128,6 +147,7 @@ export default mergeConfig<PlaywrightReporterConfig>(
                    entry.url?.includes('/hooks/');
           },
           sourceFilter: sourcePath => {
+            // Ensure these paths match your project's actual structure
             return sourcePath.includes('/app/') ||
                    sourcePath.includes('/components/') ||
                    sourcePath.includes('/lib/') ||
@@ -170,10 +190,12 @@ export default mergeConfig<PlaywrightReporterConfig>(
         }
       } as PlaywrightReporterConfig]]
     ],
-    globalTeardown: require.resolve('./global-teardown.js'),
+    globalTeardown: require.resolve('./global-teardown.ts'), // Note: Using .ts extension for TypeScript
   })
 );
 ```
+
+> **Path Filter Note**: Review your Next.js output directory structure and adjust the path filters if needed to match your actual build output patterns.
 
 ---
 
@@ -301,9 +323,9 @@ npm run test:e2e:coverage:nocss
 
 ## 🔁 Enhanced Global Teardown with Parallel Processing
 
-Create **global-teardown.js**:
+Create **global-teardown.ts** (using TypeScript for better type safety):
 
-```js
+```ts
 import fs from "fs";
 import path from "path";
 import { addCoverageReport } from "monocart-reporter";
@@ -407,6 +429,8 @@ export default async () => {
   console.log("✅ Coverage report generated successfully!");
 };
 ```
+
+> **TypeScript Note**: Using TypeScript for the global teardown provides better type safety and consistency with the rest of your TypeScript codebase. Make sure your tsconfig.json includes this file. Playwright will automatically compile and use the JavaScript output.
 
 ---
 
@@ -625,11 +649,22 @@ If you find areas with low coverage:
 - [ ] Update `playwright.config.ts` with parallel-safe coverage configuration
 - [ ] Create `tests/coverage-fixtures.ts` with configurable CSS coverage support and enhanced source-map remapping
 - [ ] Update imports in existing E2E tests to use the coverage fixture
-- [ ] Create `global-teardown.js` with parallelized file processing and proper mock context
+- [ ] Create `global-teardown.ts` with parallelized file processing and proper mock context
 - [ ] Create `scripts/export-lcov.js` for CI integration with fallback to raw coverage
 - [ ] Create `scripts/coverage-smoke-check.js` for daily verification
 - [ ] Set appropriate coverage thresholds for the ECON1500 project
 - [ ] Add CI configuration for report artifact storage with continue-on-error
+- [ ] Update `.gitignore` to exclude coverage artifacts:
+
+```
+# Coverage reports
+.v8-coverage/
+monocart-report/
+*.lcov
+coverage.json
+raw-coverage.json
+```
+
 - [ ] Test the complete workflow locally before pushing to CI
 
 This enhanced plan provides advanced features like:
@@ -645,3 +680,6 @@ This enhanced plan provides advanced features like:
 - Mock context objects in global teardown to ensure proper reporting
 - Daily smoke check to catch significant coverage regressions
 - Detailed report interpretation guide for the team
+- TypeScript integration for the global teardown file
+- Granular coverage thresholds for specific modules
+- Proper .gitignore entries for coverage artifacts
