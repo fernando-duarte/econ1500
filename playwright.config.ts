@@ -1,12 +1,12 @@
 // playwright.config.ts
 import { defineConfig, devices } from "@playwright/test";
-import { fileURLToPath } from "url";
-import path from "path";
+import { resolve } from "path";
+import * as path from "path";
 import * as thresholds from "./config/coverage-thresholds";
-import fs from "fs";
+import * as fs from "fs";
 
-// Get the directory name of the current module
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// Get the directory name directly since we're in a module
+const __dirname = process.cwd();
 
 /**
  * Read environment variables from file.
@@ -14,6 +14,26 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
  */
 // import dotenv from 'dotenv';
 // dotenv.config();
+
+// Define interfaces for the coverage data structure
+interface CoverageEntry {
+  url?: string;
+  path?: string;
+  [key: string]: unknown;
+}
+
+interface CoverageSummary {
+  [key: string]: { total: number; covered: number; pct: number };
+}
+
+interface TestInfoAttachments {
+  getCoverageSummary: (coverage: Record<string, CoverageEntry>) => CoverageSummary;
+  create: (name: string, options: { body: string; contentType: string }) => void;
+}
+
+interface TestInfo {
+  attachments: TestInfoAttachments;
+}
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -49,7 +69,7 @@ export default defineConfig({
         // Coverage configuration options
         coverage: {
           // Only include relevant files
-          entryFilter: (entry: Record<string, unknown>) => {
+          entryFilter: (entry: CoverageEntry) => {
             return (
               entry.url?.toString().includes("/app/") ||
               entry.url?.toString().includes("/components/") ||
@@ -71,7 +91,7 @@ export default defineConfig({
         },
 
         // Report generation when tests complete
-        onEnd: (allCoverage: Record<string, unknown>, testInfo: Record<string, unknown>) => {
+        onEnd: (allCoverage: Record<string, CoverageEntry>, testInfo: TestInfo) => {
           const outputDir = "./monocart-report";
           if (!fs.existsSync(outputDir)) {
             fs.mkdirSync(outputDir, { recursive: true });
@@ -95,54 +115,50 @@ export default defineConfig({
           }
 
           // Check global thresholds
-          const failures = (
-            Object.keys(thresholds.global) as Array<keyof typeof thresholds.global>
-          )
+          const failures = (Object.keys(thresholds.global) as Array<keyof typeof thresholds.global>)
             .map((key) => {
-              const actual = summary[key].pct;
+              const actual = summary[String(key)]?.pct ?? 0;
               const required = thresholds.global[key];
-              return actual < required ? `${key}: ${actual.toFixed(1)}% < ${required}%` : null;
+              return actual < required
+                ? `${String(key)}: ${actual.toFixed(1)}% < ${required}%`
+                : null;
             })
             .filter((msg): msg is string => !!msg);
 
           // Check critical directory-specific thresholds
-          // @ts-expect-error - type is compatible but TypeScript complains
           for (const [dir, dirThresholds] of Object.entries(thresholds.critical)) {
             // Get directory-specific coverage
-            const dirSummary = Object.values(allCoverage)
-              .filter((entry: Record<string, unknown>) =>
-                entry.path?.toString().includes(dir)
-              )
-              .reduce(
-                (acc: Record<string, { total: number; covered: number; pct: number }>,
-                  entry: Record<string, unknown>) => {
-                  // Accumulate coverage for this directory
-                  for (const key of Object.keys(dirThresholds) as Array<
-                    keyof typeof dirThresholds
-                  >) {
-                    if (!acc[key]) {
-                      acc[key] = { total: 0, covered: 0, pct: 0 };
-                    }
-                    if (entry[key]) {
-                      acc[key].total += (entry[key] as any).total;
-                      acc[key].covered += (entry[key] as any).covered;
-                      if (acc[key].total > 0) {
-                        acc[key].pct = (acc[key].covered / acc[key].total) * 100;
-                      }
-                    }
+            const dirEntries = Object.values(allCoverage).filter((entry: CoverageEntry) =>
+              entry.path?.toString().includes(dir)
+            );
+
+            const dirSummary = dirEntries.reduce((acc: CoverageSummary, entry: CoverageEntry) => {
+              // Accumulate coverage for this directory
+              for (const key of Object.keys(dirThresholds)) {
+                if (!acc[key]) {
+                  acc[key] = { total: 0, covered: 0, pct: 0 };
+                }
+
+                const typedEntry = entry[key] as { total: number; covered: number } | undefined;
+                if (typedEntry) {
+                  acc[key].total += typedEntry.total;
+                  acc[key].covered += typedEntry.covered;
+                  if (acc[key].total > 0) {
+                    acc[key].pct = (acc[key].covered / acc[key].total) * 100;
                   }
-                  return acc;
-                },
-                {} as Record<string, { total: number; covered: number; pct: number }>
-              );
+                }
+              }
+              return acc;
+            }, {} as CoverageSummary);
 
             // Check each metric against the directory threshold
-            for (const key of Object.keys(dirThresholds) as Array<keyof typeof dirThresholds>) {
-              const typedDirSummary = dirSummary as Record<string, { total: number; covered: number; pct: number }>;
-              if (typedDirSummary[key] && typedDirSummary[key].pct < dirThresholds[key]) {
-                failures.push(
-                  `${dir} ${key}: ${typedDirSummary[key].pct.toFixed(1)}% < ${dirThresholds[key]}%`
-                );
+            for (const stringKey of Object.keys(dirThresholds)) {
+              const typedDirThresholds = dirThresholds as Record<string, number>;
+              const metric = dirSummary[stringKey];
+              const threshold = typedDirThresholds[stringKey];
+
+              if (metric && threshold !== undefined && metric.pct < threshold) {
+                failures.push(`${dir} ${stringKey}: ${metric.pct.toFixed(1)}% < ${threshold}%`);
               }
             }
           }
@@ -158,12 +174,12 @@ export default defineConfig({
             console.log("✅ All coverage thresholds met!");
           }
         },
-      }
+      },
     ],
   ],
 
   /* Add globalTeardown property */
-  globalTeardown: path.resolve(__dirname, "./global-teardown.ts"),
+  globalTeardown: resolve(__dirname, "./global-teardown.ts"),
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   outputDir: "test-results",
