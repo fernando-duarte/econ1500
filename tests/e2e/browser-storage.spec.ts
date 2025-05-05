@@ -1,12 +1,9 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../coverage-fixtures";
 import {
     setupBasicTest,
     getNameInput,
     getSignInButton,
-    _getLogoutButton,
-    checkLocalStorage,
     clickWhenEnabled,
-    verifyCommonElements,
     _authenticateAndVerify,
 } from "./helpers";
 

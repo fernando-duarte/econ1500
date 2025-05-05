@@ -13,6 +13,9 @@ interface MockTestInfo {
         }) => void;
     };
     project: { name: string };
+    config: {
+        rootDir: string;
+    };
     // Add any other required properties that are used
 }
 
@@ -22,7 +25,7 @@ type CoverageEntry = any;
 /**
  * Processes V8 coverage files and generates a coverage report
  */
-const globalTeardown = async () => {
+const globalTeardown = async (config: { rootDir: string }) => {
     // Feature flag for skipping coverage collection
     if (process.env.SKIP_COVERAGE === "1") {
         console.log("Coverage collection skipped via SKIP_COVERAGE flag");
@@ -56,24 +59,66 @@ const globalTeardown = async () => {
         try {
             const raw = JSON.parse(fs.readFileSync(fp, "utf8"));
 
+            // Debug: log all URLs before filtering
+            console.log(`Found ${raw.result.length} entries in ${file}`);
+
+            // Log the first few URLs to see what we're working with
+            if (raw.result.length > 0) {
+                console.log("Sample URLs:");
+                raw.result.slice(0, 3).forEach((e: CoverageEntry) => {
+                    console.log(`  URL: ${e.url}`);
+                });
+            }
+
             // More robust filtering with explicit node_modules exclusion
-            const entries = raw.result
-                .filter((e: CoverageEntry) => e.url?.startsWith("file:"))
-                .filter((e: CoverageEntry) => {
-                    const url = e.url?.toLowerCase() || "";
-                    return (
-                        (url.includes("/app/") ||
-                            url.includes("/components/") ||
-                            url.includes("/lib/") ||
-                            url.includes("/utils/") ||
-                            url.includes("/hooks/")) &&
-                        !url.includes("node_modules")
-                    );
-                })
+            const entriesAfterFirstFilter = raw.result.filter((e: CoverageEntry) =>
+                e.url?.startsWith("file:") || e.url?.startsWith("http://localhost"));
+            console.log(`  After first filter: ${entriesAfterFirstFilter.length} entries`);
+
+            // Debug: print some sample URLs that are being filtered
+            if (entriesAfterFirstFilter.length > 0) {
+                console.log("SAMPLE URLs AFTER FIRST FILTER:");
+                entriesAfterFirstFilter.slice(0, 10).forEach((e: CoverageEntry) => {
+                    console.log(`  URL: ${e.url}`);
+                });
+            }
+
+            const entriesAfterPathFilter = entriesAfterFirstFilter.filter((e: CoverageEntry) => {
+                const url = e.url?.toLowerCase() || "";
+
+                // Accept everything except node_modules and internal node stuff
+                if (url.includes("node_modules") || url.startsWith("node:")) {
+                    return false;
+                }
+
+                // Accept almost everything else
+                return true;
+            });
+            console.log(`  After path filter: ${entriesAfterPathFilter.length} entries`);
+
+            if (entriesAfterPathFilter.length > 0) {
+                console.log("SAMPLE PATHS THAT PASSED FILTER:");
+                entriesAfterPathFilter.slice(0, 10).forEach((e: CoverageEntry) => {
+                    console.log(`  URL passed: ${e.url}`);
+                });
+            }
+
+            const entries = entriesAfterPathFilter
                 .map((e: CoverageEntry) => {
                     try {
-                        // Improved file path handling
+                        // Handle HTTP URLs
+                        if (e.url?.startsWith("http://localhost")) {
+                            // For HTTP URLs, just include them but don't try to fetch the source
+                            // since we're just trying to get a working report for now
+                            console.log(`  Including HTTP URL without source: ${e.url}`);
+                            // Add a dummy source to avoid errors
+                            e.source = "// Source not available for client-side code";
+                            return e;
+                        }
+
+                        // Handle file URLs
                         const filePath = fileURLToPath(e.url);
+                        console.log(`  Trying to access: ${filePath}`);
                         if (fs.existsSync(filePath)) {
                             e.source = fs.readFileSync(filePath, "utf8");
                             return e;
@@ -91,6 +136,7 @@ const globalTeardown = async () => {
                 })
                 .filter(Boolean); // Remove nulls
 
+            console.log(`  Final entries after file check: ${entries.length}`);
             return entries;
         } catch (error: unknown) {
             if (error instanceof Error) {
@@ -131,6 +177,9 @@ const globalTeardown = async () => {
                 },
             },
             project: { name: "GlobalTeardown" },
+            config: {
+                rootDir: config.rootDir || process.cwd()
+            }
         };
 
         // Use as any to bypass the type checking for the mock object
@@ -144,9 +193,87 @@ const globalTeardown = async () => {
             path.join(outputDir, "raw-coverage.json"),
             JSON.stringify(allEntries, null, 2)
         );
+
+        // Create a simple HTML file that points to the raw coverage data
+        const htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E2E Test Coverage Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .summary {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .summary h2 {
+            margin-top: 0;
+        }
+        .files {
+            margin-bottom: 20px;
+        }
+        .file-item {
+            margin-bottom: 8px;
+        }
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>E2E Test Coverage Report</h1>
+        
+        <div class="summary">
+            <h2>Summary</h2>
+            <p>This report shows the code coverage collected during E2E tests.</p>
+            <p>Files Processed: ${files.length}</p>
+            <p>Coverage Entries: ${allEntries.length}</p>
+        </div>
+        
+        <div class="files">
+            <h2>Coverage Data</h2>
+            <div class="file-item">
+                <a href="raw-coverage.json" download>Download Raw Coverage Data (JSON)</a>
+            </div>
+        </div>
+        
+        <div class="notes">
+            <h2>Notes</h2>
+            <p>This is a minimal report. For a more detailed view, you can process the raw-coverage.json file with coverage visualization tools.</p>
+        </div>
+    </div>
+</body>
+</html>`;
+
+        fs.writeFileSync(path.join(outputDir, "index.html"), htmlContent);
+        console.log("✅ HTML report generated at ./monocart-report/index.html");
+
     } catch (error: unknown) {
         if (error instanceof Error) {
             console.error("❌ Failed to generate coverage report:", error.message);
+            console.error(error.stack); // Add stack trace for better debugging
         } else {
             console.error("❌ Failed to generate coverage report: Unknown error");
         }

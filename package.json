@@ -26,9 +26,22 @@
     "pretest:e2e:coverage": "rimraf ./.v8-coverage && mkdir -p ./.v8-coverage && mkdir -p ./monocart-report",
     "test:e2e:coverage:single": "cross-env NODE_V8_COVERAGE=./.v8-coverage playwright test tests/e2e/auth.spec.ts --project=chromium",
     "test:e2e:coverage:single:safe": "cross-env NODE_V8_COVERAGE=./.v8-coverage playwright test tests/e2e/auth.spec.ts --project=chromium || echo 'Test may have failed but coverage will still be processed'",
+    "test:e2e:coverage:core": "cross-env NODE_V8_COVERAGE=./.v8-coverage playwright test tests/e2e/auth.spec.ts tests/e2e/session-management.spec.ts tests/e2e/form-validation.spec.ts --project=chromium",
+    "test:e2e:coverage": "cross-env NODE_V8_COVERAGE=./.v8-coverage playwright test",
+    "test:e2e:coverage:nocss": "cross-env NODE_V8_COVERAGE=./.v8-coverage SKIP_CSS_COVERAGE=1 playwright test",
     "test:e2e:coverage:skip": "cross-env SKIP_COVERAGE=1 npm run test:e2e",
+    "test:e2e:coverage:debug": "cross-env NODE_V8_COVERAGE=./.v8-coverage DEBUG_COVERAGE=1 playwright test tests/e2e/auth.spec.ts --project=chromium",
+    "test:e2e:coverage:bypass-thresholds": "cross-env NODE_V8_COVERAGE=./.v8-coverage BYPASS_COVERAGE_THRESHOLDS=1 playwright test",
+    "test:e2e:coverage:ci": "cross-env NODE_V8_COVERAGE=./.v8-coverage NODE_OPTIONS=--max_old_space_size=4096 playwright test --workers=2",
+    "coverage:smoke": "node scripts/coverage-smoke-check.js",
+    "coverage:lcov": "node scripts/export-lcov.js",
     "coverage:view": "npx monocart serve-report ./monocart-report -p 8080",
-    "test:e2e:coverage:single:auto": "npm run test:e2e:coverage:single && npm run coverage:view"
+    "test:e2e:coverage:core:auto": "npm run test:e2e:coverage:core && npm run coverage:view",
+    "test:e2e:coverage:auto": "npm run test:e2e:coverage && npm run coverage:view",
+    "test:e2e:coverage:nocss:auto": "npm run test:e2e:coverage:nocss && npm run coverage:view",
+    "test:e2e:coverage:single:auto": "npm run test:e2e:coverage:single && npm run coverage:view",
+    "test:e2e:coverage:bypass-thresholds:auto": "npm run test:e2e:coverage:bypass-thresholds && npm run coverage:view",
+    "test:e2e:coverage:ci:auto": "npm run test:e2e:coverage:ci && npm run coverage:view"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

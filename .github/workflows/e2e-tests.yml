@@ -1,0 +1,50 @@
+name: E2E Tests with Coverage
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run tests with coverage
+        id: run_tests
+        run: npm run test:e2e:coverage:ci
+        continue-on-error: true # Continue even if tests or coverage thresholds fail
+
+      - name: Export LCOV
+        run: npm run coverage:lcov
+
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload HTML report as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: monocart-report
+          retention-days: 14
+
+      # Now fail the build if the tests actually failed
+      - name: Check test result
+        if: steps.run_tests.outcome != 'success'
+        run: exit 1 

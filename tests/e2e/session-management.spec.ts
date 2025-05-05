@@ -1,5 +1,5 @@
 // These types are used for type declarations in function parameters
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../coverage-fixtures";
 import {
   setupBasicTest,
   getNameInput,
