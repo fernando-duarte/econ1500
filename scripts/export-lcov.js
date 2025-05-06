@@ -41,9 +41,7 @@ function urlToPath(urlString) {
       return decodeURIComponent(fileUrl.pathname);
     }
     return urlString;
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  catch (_) {
+  } catch {
     return urlString;
   }
 }
@@ -55,7 +53,7 @@ function findCoverageEntries(obj, depth = 0, maxDepth = 3) {
   if (depth > maxDepth) return [];
 
   // If it's null or not an object, return empty array
-  if (!obj || typeof obj !== 'object') return [];
+  if (!obj || typeof obj !== "object") return [];
 
   // If it looks like a valid coverage entry with url and functions properties
   if (obj.url && obj.functions && Array.isArray(obj.functions)) {
@@ -64,11 +62,11 @@ function findCoverageEntries(obj, depth = 0, maxDepth = 3) {
 
   // If it's an array, process each element
   if (Array.isArray(obj)) {
-    return obj.flatMap(item => findCoverageEntries(item, depth + 1, maxDepth));
+    return obj.flatMap((item) => findCoverageEntries(item, depth + 1, maxDepth));
   }
 
   // If it's an object, process each value
-  return Object.values(obj).flatMap(value => findCoverageEntries(value, depth + 1, maxDepth));
+  return Object.values(obj).flatMap((value) => findCoverageEntries(value, depth + 1, maxDepth));
 }
 
 /**
@@ -99,10 +97,12 @@ function generateLcov(coverageData) {
 
     // Filter for only app/ components/ lib/ or utils/ paths
     // Also accept absolute paths that include these directories
-    if (!filePath.includes('/app/') &&
-      !filePath.includes('/components/') &&
-      !filePath.includes('/lib/') &&
-      !filePath.includes('/utils/')) {
+    if (
+      !filePath.includes("/app/") &&
+      !filePath.includes("/components/") &&
+      !filePath.includes("/lib/") &&
+      !filePath.includes("/utils/")
+    ) {
       continue;
     }
 
@@ -136,7 +136,7 @@ function generateLcov(coverageData) {
       fnFound++;
 
       // Only counts as hit if any range has a count > 0
-      const isHit = func.ranges.some(range => range.count > 0);
+      const isHit = func.ranges.some((range) => range.count > 0);
       if (isHit) {
         fnHit++;
       }

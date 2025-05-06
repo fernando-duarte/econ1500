@@ -1,10 +1,5 @@
 import { test, expect } from "../coverage-fixtures";
-import {
-  setupBasicTest,
-  getNameInput,
-  getSignInButton,
-  clickWhenEnabled,
-} from "./helpers";
+import { setupBasicTest, getNameInput, getSignInButton, clickWhenEnabled } from "./helpers";
 
 // Tests that can run in parallel
 test.describe.configure({ mode: "parallel" });
@@ -14,9 +9,7 @@ test.describe("Browser Storage", () => {
     await setupBasicTest(page, context);
   });
 
-  test("should store username in localStorage after successful login", async ({
-    page,
-  }) => {
+  test("should store username in localStorage after successful login", async ({ page }) => {
     const testUsername = "Storage Test User";
 
     // Clear localStorage first to ensure clean state
@@ -26,10 +19,7 @@ test.describe("Browser Storage", () => {
     await getNameInput(page).fill(testUsername);
 
     // Click sign in and wait for navigation to complete
-    await Promise.all([
-      page.waitForURL(/\/game/),
-      clickWhenEnabled(getSignInButton(page))
-    ]);
+    await Promise.all([page.waitForURL(/\/game/), clickWhenEnabled(getSignInButton(page))]);
 
     // Wait a bit longer to ensure localStorage is definitely set
     await page.waitForTimeout(1000);
@@ -55,10 +45,7 @@ test.describe("Browser Storage", () => {
     await getNameInput(page).fill(testUsername);
 
     // Click sign in and wait for navigation to complete
-    await Promise.all([
-      page.waitForURL(/\/game/),
-      clickWhenEnabled(getSignInButton(page))
-    ]);
+    await Promise.all([page.waitForURL(/\/game/), clickWhenEnabled(getSignInButton(page))]);
 
     // Wait a bit longer to ensure localStorage is definitely set
     await page.waitForTimeout(1000);
@@ -96,10 +83,7 @@ test.describe("Browser Storage", () => {
     await getNameInput(page).fill(secondUsername);
 
     // Click sign in and wait for navigation to complete
-    await Promise.all([
-      page.waitForURL(/\/game/),
-      clickWhenEnabled(getSignInButton(page))
-    ]);
+    await Promise.all([page.waitForURL(/\/game/), clickWhenEnabled(getSignInButton(page))]);
 
     // Add a longer delay to ensure localStorage is updated
     await page.waitForTimeout(1000);
@@ -135,10 +119,7 @@ test.describe("Browser Storage", () => {
     await getNameInput(page).fill(testUsername);
 
     // Click sign in and wait for navigation to complete
-    await Promise.all([
-      page.waitForURL(/\/game/),
-      clickWhenEnabled(getSignInButton(page))
-    ]);
+    await Promise.all([page.waitForURL(/\/game/), clickWhenEnabled(getSignInButton(page))]);
 
     // Wait a moment to ensure localStorage is set
     await page.waitForTimeout(1000);

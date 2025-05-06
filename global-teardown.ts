@@ -1,6 +1,6 @@
-import 'ts-node/register';
-import fs from "fs";
-import path from "path";
+import "ts-node/register";
+import * as fs from "fs";
+import * as path from "path";
 import { addCoverageReport } from "monocart-reporter";
 import { fileURLToPath } from "url";
 import pLimit from "p-limit";

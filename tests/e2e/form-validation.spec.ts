@@ -86,28 +86,30 @@ test.describe("Form Validation and Error Handling", () => {
     const nameInput = getNameInput(page);
     await nameInput.fill("Aidan Wang");
 
-    // Mock loading state 
+    // Mock loading state
     await page.evaluate(() => {
       // Add a class to simulate loading state
-      document.querySelector('form')?.classList.add('loading');
+      document.querySelector("form")?.classList.add("loading");
     });
 
     // Verify loading state appears
     await verifyLoadingState(page);
 
     // Mock successful authentication instead of waiting for redirect
-    await context.addCookies([{
-      name: 'session-token',
-      value: 'Aidan Wang',
-      domain: 'localhost',
-      path: '/',
-      httpOnly: true,
-      secure: false,
-      sameSite: 'Lax',
-    }]);
+    await context.addCookies([
+      {
+        name: "session-token",
+        value: "Aidan Wang",
+        domain: "localhost",
+        path: "/",
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+      },
+    ]);
 
     // Navigate directly to game page
-    await page.goto('/game');
+    await page.goto("/game");
 
     // Verify we eventually redirect to game page
     await verifyCommonElements(page, {
