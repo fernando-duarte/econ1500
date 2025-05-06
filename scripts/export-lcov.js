@@ -41,8 +41,9 @@ function urlToPath(urlString) {
       return decodeURIComponent(fileUrl.pathname);
     }
     return urlString;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (_) {
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  catch (_) {
     return urlString;
   }
 }
