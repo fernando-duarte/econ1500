@@ -66,6 +66,8 @@ export function GdpPieChart({ data }: { data: State }) {
     },
   ];
 
+  // The Recharts Pie component passes complex objects to callbacks
+  // that are difficult to precisely type in TypeScript.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onPieEnter = (_: any, index: number) => {
     setActiveIndex([index]);
@@ -95,7 +97,8 @@ export function GdpPieChart({ data }: { data: State }) {
     return null;
   };
 
-  // Custom active shape for the pie slices (when hovered)
+  // The renderActiveShape prop for Pie requires a specific interface that's difficult to match
+  // precisely. The Recharts library lacks detailed TypeScript typings for this callback.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderActiveShape = (props: any) => {
     const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
@@ -115,19 +118,17 @@ export function GdpPieChart({ data }: { data: State }) {
     );
   };
 
-  // Custom label for the pie slices that also acts as a hover target
+  // The Pie component's label prop accepts a render function with complex,
+  // poorly-typed parameters. Properties must be safely accessed as they may be undefined.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderCustomizedLabel = (props: any) => {
     const { cx, cy, midAngle, outerRadius, payload } = props;
 
-    // Safe access to properties
-    const index = typeof payload === "object" && payload !== null ? payload.index || 0 : 0;
-    const shortName =
-      typeof payload === "object" && payload !== null ? payload.shortName || "" : "";
-    const percentage =
-      typeof payload === "object" && payload !== null ? payload.percentage || "0%" : "0%";
-    const color =
-      typeof payload === "object" && payload !== null ? payload.color || "#000" : "#000";
+    // Safely access payload properties with fallbacks to prevent undefined errors
+    const index = typeof payload?.index === "number" ? payload.index : 0;
+    const shortName = typeof payload?.shortName === "string" ? payload.shortName : "";
+    const percentage = typeof payload?.percentage === "string" ? payload.percentage : "0%";
+    const color = typeof payload?.color === "string" ? payload.color : "#000";
 
     const RADIAN = Math.PI / 180;
     // Positioning label outside the pie
