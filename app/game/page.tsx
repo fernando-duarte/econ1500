@@ -14,6 +14,7 @@ import { getSocket } from "@/lib/socket";
 import { Controls } from "@/components/game/Controls";
 import { Dashboard } from "@/components/game/Dashboard";
 import { History } from "@/components/game/History";
+import { GdpPieChart } from "@/components/game/GdpPieChart";
 import { growthModel } from "@/lib/constants";
 import { runRound } from "@/lib/game/engine";
 import type { Controls as ControlsType } from "@/lib/game/types";
@@ -66,7 +67,7 @@ export default function GamePage() {
       <Container className="flex flex-col items-center justify-center px-4">
         <SkipLink href="#game-interface">Skip to game interface</SkipLink>
 
-        <Card id="game-interface" className="w-full max-w-md shadow-lg">
+        <Card id="game-interface" className="w-full max-w-5xl shadow-lg">
           <CardHeader>
             <CardTitle className="text-center text-2xl">Game Interface</CardTitle>
             <div className="text-center">
@@ -75,14 +76,26 @@ export default function GamePage() {
           </CardHeader>
           <CardContent>
             {/* Game UI */}
-            {/* 1. Dashboard with state variables */}
-            {prev && preview && <Dashboard prev={prev} preview={preview} />}
+            <div className="flex flex-col gap-8 md:flex-row">
+              {/* Left column: Dashboard and Controls */}
+              <div className="flex-1">
+                {/* 1. Dashboard with state variables */}
+                <div>{prev && preview && <Dashboard prev={prev} preview={preview} />}</div>
 
-            {/* 2. Controls */}
-            <Controls onSubmit={handleSubmit} />
+                {/* 2. Controls */}
+                <div className="mt-8">
+                  <Controls onSubmit={handleSubmit} />
+                </div>
+              </div>
 
-            {/* 3. History */}
-            <History data={history} />
+              {/* Right column: GDP Composition Pie Chart */}
+              <div className="flex-1">{preview && <GdpPieChart data={preview} />}</div>
+            </div>
+
+            {/* 4. History */}
+            <div className="mt-8">
+              <History data={history} />
+            </div>
           </CardContent>
         </Card>
       </Container>
