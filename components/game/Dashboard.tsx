@@ -10,13 +10,19 @@ export function Dashboard({ prev, preview }: { prev: State; preview: State }) {
         {/* Capital Box */}
         <Card className="relative flex aspect-square flex-1 flex-col items-center justify-center">
           <div className="text-2xl font-semibold">{prev.K.toFixed(2)}</div>
-          <div className="text-muted-foreground mt-auto pb-2 text-sm">Capital</div>
+          <div className="text-muted-foreground mt-auto flex flex-col items-center pb-2 text-sm">
+            <span>Capital</span>
+            <span className="text-xs">(billions USD)</span>
+          </div>
         </Card>
 
         {/* Productivity Box */}
         <Card className="relative flex aspect-square flex-1 flex-col items-center justify-center">
           <div className="text-2xl font-semibold">{prev.A.toFixed(3)}</div>
-          <div className="text-muted-foreground mt-auto pb-2 text-sm">Productivity</div>
+          <div className="text-muted-foreground mt-auto flex flex-col items-center pb-2 text-sm">
+            <span>Productivity</span>
+            <span className="text-xs">(Index, 2017 = 1)</span>
+          </div>
         </Card>
 
         {/* Population Box */}
