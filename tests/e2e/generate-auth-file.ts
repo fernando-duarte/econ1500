@@ -19,6 +19,7 @@ export async function generateAuthFile() {
 
   // Get username from environment variable or use default
   const username = process.env.TEST_USERNAME || "Aidan Wang";
+  console.log(`Using username: ${username}`);
 
   // Create the auth state file with cookie data
   const authState = {
@@ -47,10 +48,9 @@ export async function generateAuthFile() {
   return authFile;
 }
 
-// Run directly if script is executed directly
-if (require.main === module) {
-  generateAuthFile().catch((error) => {
-    console.error("Failed to generate authentication file:", error);
-    process.exit(1);
-  });
-}
+// Always execute the main function when the script is run directly
+// This is more reliable in npm script environments than the import.meta.url check
+generateAuthFile().catch((error) => {
+  console.error("Failed to generate authentication file:", error);
+  process.exit(1);
+});
