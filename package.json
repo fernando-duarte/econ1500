@@ -21,6 +21,7 @@
     "test:e2e": "playwright test --reporter=list",
     "test:e2e:non-interactive": "playwright test --reporter=json > test-results/test-results.json",
     "test:auth-setup": "npx tsx tests/e2e/setup-auth.ts",
+    "test:auth-generate": "npx tsx tests/e2e/generate-auth-file.ts",
     "clean:test": "rimraf test-results playwright-report",
     "postinstall": "npx playwright install --with-deps",
     "pretest:e2e:coverage": "rimraf ./.v8-coverage ./monocart-report && mkdir -p ./.v8-coverage && mkdir -p ./monocart-report",

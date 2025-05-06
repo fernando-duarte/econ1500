@@ -45,7 +45,6 @@ export const _getTestStudents = getTestStudents;
 export { errorMessages };
 
 // --- Flows and utilities ---
-const authFile = "playwright/.auth/user.json";
 
 /**
  * Wait for page to load completely
@@ -84,8 +83,7 @@ export const _fillAndSubmitLoginForm = async (page: Page, username: string): Pro
 export const _authenticateAndVerify = async (
   page: Page,
   context: BrowserContext,
-  username = "Aidan Wang",
-  options?: { storeAuth?: boolean; expectedRedirect?: string | RegExp }
+  username = "Aidan Wang"
 ): Promise<void> => {
   // Fill name and submit
   await expect(getNameInput(page)).toBeVisible();
@@ -93,27 +91,24 @@ export const _authenticateAndVerify = async (
 
   // MOCK approach: Don't wait for server-side redirect
   // Mock the authentication by setting cookies directly
-  await context.addCookies([{
-    name: 'session-token',
-    value: username,
-    domain: 'localhost',
-    path: '/',
-    httpOnly: true,
-    secure: false,
-    sameSite: 'Lax',
-  }]);
+  await context.addCookies([
+    {
+      name: "session-token",
+      value: username,
+      domain: "localhost",
+      path: "/",
+      httpOnly: true,
+      secure: false,
+      sameSite: "Lax",
+    },
+  ]);
 
   // Navigate directly to game page
-  await page.goto('/game');
+  await page.goto("/game");
 
   // Verify session cookie is set
   const hasSession = (await context.cookies()).some((c) => c.name === "session-token");
   expect(hasSession).toBeTruthy();
-
-  // Store state if requested
-  if (options?.storeAuth) {
-    await context.storageState({ path: authFile });
-  }
 
   // Check we're on the game page
   await expect(page).toHaveURL(/\/game/);
@@ -246,7 +241,7 @@ export const verifyCommonElements = async (
       await expect(getLogoutButton(page)).toBeVisible({ timeout: 2000 });
     } catch {
       // If logout button isn't visible, at least make sure we're on the game page
-      await expect(page.url()).toContain('/game');
+      await expect(page.url()).toContain("/game");
     }
   }
 

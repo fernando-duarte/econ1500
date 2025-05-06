@@ -24,6 +24,11 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
+      - name: Generate authentication files for testing
+        run: npm run test:auth-generate
+        env:
+          TEST_USERNAME: "CI Test User"
+
       - name: Run tests with coverage
         id: run_tests
         run: npm run test:e2e:coverage:ci

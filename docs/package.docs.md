@@ -110,6 +110,12 @@
 
 ### Development Dependencies
 
+- `@babel/plugin-proposal-class-properties`: Babel plugin for class properties
+- `@babel/plugin-proposal-decorators`: Babel plugin for decorators
+- `@babel/plugin-transform-runtime`: Babel plugin for runtime transformation
+- `@babel/preset-env`: Babel preset for environment targeting
+- `@babel/preset-typescript`: Babel preset for TypeScript
+- `@babel/runtime`: Babel runtime helpers
 - `@eslint/eslintrc`: ESLint configuration
 - `@playwright/test`: End-to-end testing framework
 - `@shadcn/ui`: UI component collection
@@ -133,6 +139,7 @@
 - `prettier-plugin-tailwindcss`: Tailwind CSS plugin for Prettier
 - `rimraf`: Cross-platform rm -rf
 - `tailwindcss`: CSS framework
+- `ts-node`: TypeScript execution environment for Node.js
 - `tw-animate-css`: Animation utilities for Tailwind
 - `typescript`: TypeScript language
 - `v8-to-istanbul`: Convert V8 coverage to Istanbul format
