@@ -1,5 +1,12 @@
 "use client";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Sector } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip,
+  Sector,
+} from "recharts";
 import type { State } from "@/lib/game/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -39,7 +46,7 @@ export function GdpPieChart({ data }: { data: State }) {
       value: C,
       percentage: formatPercentage(C),
       color: COLORS[0],
-      index: 0
+      index: 0,
     },
     {
       name: "Investment (I)",
@@ -47,7 +54,7 @@ export function GdpPieChart({ data }: { data: State }) {
       value: I,
       percentage: formatPercentage(I),
       color: COLORS[1],
-      index: 1
+      index: 1,
     },
     {
       name: "Net Exports (NX)",
@@ -55,10 +62,11 @@ export function GdpPieChart({ data }: { data: State }) {
       value: NX,
       percentage: formatPercentage(NX),
       color: COLORS[2],
-      index: 2
+      index: 2,
     },
   ];
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onPieEnter = (_: any, index: number) => {
     setActiveIndex([index]);
   };
@@ -88,6 +96,7 @@ export function GdpPieChart({ data }: { data: State }) {
   };
 
   // Custom active shape for the pie slices (when hovered)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderActiveShape = (props: any) => {
     const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
 
@@ -107,14 +116,18 @@ export function GdpPieChart({ data }: { data: State }) {
   };
 
   // Custom label for the pie slices that also acts as a hover target
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderCustomizedLabel = (props: any) => {
     const { cx, cy, midAngle, outerRadius, payload } = props;
 
     // Safe access to properties
-    const index = typeof payload === 'object' && payload !== null ? payload.index || 0 : 0;
-    const shortName = typeof payload === 'object' && payload !== null ? payload.shortName || '' : '';
-    const percentage = typeof payload === 'object' && payload !== null ? payload.percentage || '0%' : '0%';
-    const color = typeof payload === 'object' && payload !== null ? payload.color || '#000' : '#000';
+    const index = typeof payload === "object" && payload !== null ? payload.index || 0 : 0;
+    const shortName =
+      typeof payload === "object" && payload !== null ? payload.shortName || "" : "";
+    const percentage =
+      typeof payload === "object" && payload !== null ? payload.percentage || "0%" : "0%";
+    const color =
+      typeof payload === "object" && payload !== null ? payload.color || "#000" : "#000";
 
     const RADIAN = Math.PI / 180;
     // Positioning label outside the pie
@@ -132,7 +145,7 @@ export function GdpPieChart({ data }: { data: State }) {
       <g
         onMouseEnter={() => setActiveIndex([index])}
         onMouseLeave={() => setActiveIndex([])}
-        style={{ cursor: 'pointer' }}
+        style={{ cursor: "pointer" }}
         className="select-none"
       >
         <text
@@ -168,12 +181,17 @@ export function GdpPieChart({ data }: { data: State }) {
           outline: none !important;
         }
       `}</style>
-      <Card className="pointer-events-auto select-none focus:outline-none focus:ring-0" tabIndex={-1}>
+      <Card
+        className="pointer-events-auto select-none focus:ring-0 focus:outline-none"
+        tabIndex={-1}
+      >
         <CardHeader className="select-none">
           <CardTitle className="text-center text-xl select-none">GDP Composition</CardTitle>
           <CardDescription className="text-center text-base select-none">
             <Popover>
-              <PopoverTrigger className="cursor-help select-none focus:outline-none focus:ring-0">Y = C+I+NX</PopoverTrigger>
+              <PopoverTrigger className="cursor-help select-none focus:ring-0 focus:outline-none">
+                Y = C+I+NX
+              </PopoverTrigger>
               <PopoverContent className="text-left select-none">
                 <div className="space-y-1 text-sm">
                   <p>
@@ -194,9 +212,12 @@ export function GdpPieChart({ data }: { data: State }) {
           </CardDescription>
         </CardHeader>
         <CardContent className="select-none focus:outline-none">
-          <div className="h-[250px] w-full select-none focus:outline-none" style={{ outline: 'none' }}>
+          <div
+            className="h-[250px] w-full select-none focus:outline-none"
+            style={{ outline: "none" }}
+          >
             <ResponsiveContainer width="100%" height="100%" className="select-none">
-              <PieChart className="select-none" style={{ outline: 'none' }}>
+              <PieChart className="select-none" style={{ outline: "none" }}>
                 <Pie
                   activeIndex={activeIndex}
                   activeShape={renderActiveShape}
@@ -212,21 +233,19 @@ export function GdpPieChart({ data }: { data: State }) {
                   onMouseLeave={onPieLeave}
                   label={renderCustomizedLabel}
                   className="select-none"
-                  style={{ outline: 'none' }}
+                  style={{ outline: "none" }}
                 >
                   {gdpComponents.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={entry.color}
-                      className="select-none"
-                    />
+                    <Cell key={`cell-${index}`} fill={entry.color} className="select-none" />
                   ))}
                 </Pie>
                 <RechartsTooltip
                   content={<CustomTooltip />}
                   active={activeIndex.length > 0}
                   payload={
-                    activeIndex.length > 0 && activeIndex[0] !== undefined && gdpComponents[activeIndex[0]]
+                    activeIndex.length > 0 &&
+                    activeIndex[0] !== undefined &&
+                    gdpComponents[activeIndex[0]]
                       ? [{ payload: gdpComponents[activeIndex[0]] }]
                       : []
                   }
