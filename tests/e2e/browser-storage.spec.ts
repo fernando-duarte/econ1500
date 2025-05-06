@@ -1,108 +1,150 @@
 import { test, expect } from "../coverage-fixtures";
 import {
-    setupBasicTest,
-    getNameInput,
-    getSignInButton,
-    clickWhenEnabled,
-    _authenticateAndVerify,
+  setupBasicTest,
+  getNameInput,
+  getSignInButton,
+  clickWhenEnabled,
 } from "./helpers";
 
 // Tests that can run in parallel
 test.describe.configure({ mode: "parallel" });
 
 test.describe("Browser Storage", () => {
-    test.beforeEach(async ({ page, context }) => {
-        await setupBasicTest(page, context);
+  test.beforeEach(async ({ page, context }) => {
+    await setupBasicTest(page, context);
+  });
+
+  test("should store username in localStorage after successful login", async ({
+    page,
+  }) => {
+    const testUsername = "Storage Test User";
+
+    // Clear localStorage first to ensure clean state
+    await page.evaluate(() => localStorage.clear());
+
+    // Fill the input field
+    await getNameInput(page).fill(testUsername);
+
+    // Click sign in and wait for navigation to complete
+    await Promise.all([
+      page.waitForURL(/\/game/),
+      clickWhenEnabled(getSignInButton(page))
+    ]);
+
+    // Wait a bit longer to ensure localStorage is definitely set
+    await page.waitForTimeout(1000);
+
+    // Verify localStorage contains the username
+    const storedValue = await page.evaluate(() => {
+      return localStorage.getItem("lastUsername");
     });
 
-    test("should store username in localStorage after successful login", async ({ page, context }) => {
-        const testUsername = "Storage Test User";
+    expect(storedValue).toBe(testUsername);
+  });
 
-        // Use helper for authentication instead of manual steps
-        await _authenticateAndVerify(page, context, testUsername);
+  test("should manually set username in input field", async ({ page }) => {
+    const testUsername = "Manual Test User";
 
-        // Verify localStorage contains the username - use page.evaluate for more reliable checking
-        const storedValue = await page.evaluate(() => localStorage.getItem("lastUsername"));
-        expect(storedValue).toBe(testUsername);
+    // Clear localStorage first to ensure clean state
+    await page.evaluate(() => localStorage.clear());
+
+    // Go to the home page
+    await page.goto("/");
+
+    // Fill the input directly
+    await getNameInput(page).fill(testUsername);
+
+    // Click sign in and wait for navigation to complete
+    await Promise.all([
+      page.waitForURL(/\/game/),
+      clickWhenEnabled(getSignInButton(page))
+    ]);
+
+    // Wait a bit longer to ensure localStorage is definitely set
+    await page.waitForTimeout(1000);
+
+    // Verify the username is stored in localStorage
+    const storedValue = await page.evaluate(() => {
+      return localStorage.getItem("lastUsername");
     });
 
-    test("should manually set username in input field", async ({ page }) => {
-        const testUsername = "Manual Test User";
+    expect(storedValue).toBe(testUsername);
+  });
 
-        // Fill the input directly
-        await getNameInput(page).fill(testUsername);
-        await clickWhenEnabled(getSignInButton(page));
+  test("should update stored username when logging in again", async ({ page, browserName }) => {
+    // Clear localStorage first to ensure clean state
+    await page.evaluate(() => localStorage.clear());
 
-        // Verify navigation to game page
-        await expect(page).toHaveURL(/\/game/);
+    // First login directly without calling helpers
+    const firstUsername = "First Test User";
 
-        // Verify the username is stored in localStorage
-        const storedValue = await page.evaluate(() => localStorage.getItem("lastUsername"));
-        expect(storedValue).toBe(testUsername);
-    });
+    // Set the localStorage directly to simulate a successful login
+    await page.evaluate((name) => localStorage.setItem("lastUsername", name), firstUsername);
 
-    test("should update stored username when logging in again", async ({ page, browserName }) => {
-        // Clear localStorage first to ensure clean state
-        await page.evaluate(() => localStorage.clear());
+    // Verify it was set
+    let storedValue = await page.evaluate(() => localStorage.getItem("lastUsername"));
+    expect(storedValue).toBe(firstUsername);
 
-        // First login directly without calling helpers
-        const firstUsername = "First Test User";
+    // Now go to login page and login with a different username
+    await page.goto("/");
+    const secondUsername = "Second Test User";
 
-        // Set the localStorage directly to simulate a successful login
-        await page.evaluate((name) => localStorage.setItem("lastUsername", name), firstUsername);
+    // Clear any pre-filled value to avoid problems in WebKit
+    await getNameInput(page).click();
+    await getNameInput(page).clear();
 
-        // Verify it was set
-        let storedValue = await page.evaluate(() => localStorage.getItem("lastUsername"));
-        expect(storedValue).toBe(firstUsername);
+    await getNameInput(page).fill(secondUsername);
 
-        // Now go to login page and login with a different username
-        await page.goto("/");
-        const secondUsername = "Second Test User";
+    // Click sign in and wait for navigation to complete
+    await Promise.all([
+      page.waitForURL(/\/game/),
+      clickWhenEnabled(getSignInButton(page))
+    ]);
 
-        // Clear any pre-filled value to avoid problems in WebKit
-        await getNameInput(page).click();
-        await getNameInput(page).clear();
+    // Add a longer delay to ensure localStorage is updated
+    await page.waitForTimeout(1000);
 
-        await getNameInput(page).fill(secondUsername);
-        await clickWhenEnabled(getSignInButton(page));
+    // In WebKit, sometimes the values get concatenated, so check if it contains the new value
+    storedValue = await page.evaluate(() => localStorage.getItem("lastUsername"));
 
-        // Wait for navigation to complete
-        await expect(page).toHaveURL(/\/game/);
+    if (browserName === "webkit") {
+      // If we're in WebKit, just make sure the second username is in the stored value
+      expect(storedValue).toContain(secondUsername);
+    } else {
+      expect(storedValue).toBe(secondUsername);
+    }
+  });
 
-        // Verify second username is now stored
-        // Add a small delay to ensure localStorage is updated
-        await page.waitForTimeout(500);
+  // Note: The application behavior needs to be inspected regarding how clearing input is implemented
+  // and whether returning to the page after logout actually pre-fills the field
 
-        // In WebKit, sometimes the values get concatenated, so check if it contains the new value
-        storedValue = await page.evaluate(() => localStorage.getItem("lastUsername"));
+  // This test checks if login state is saved while localStorage persists
+  test("should maintain localStorage across sessions", async ({ page }) => {
+    const testUsername = "Storage Test User";
 
-        if (browserName === 'webkit') {
-            // If we're in WebKit, just make sure the second username is in the stored value
-            expect(storedValue).toContain(secondUsername);
-        } else {
-            expect(storedValue).toBe(secondUsername);
-        }
-    });
+    // Clear localStorage first to ensure clean state
+    await page.evaluate(() => localStorage.clear());
 
-    // Note: The application behavior needs to be inspected regarding how clearing input is implemented
-    // and whether returning to the page after logout actually pre-fills the field
+    // Set localStorage directly to simulate a returning user
+    await page.evaluate((name) => localStorage.setItem("lastUsername", name), testUsername);
 
-    // This test checks if login state is saved while localStorage persists
-    test("should maintain localStorage across sessions", async ({ page }) => {
-        const testUsername = "Storage Test User";
+    // Refresh the page to load with the localStorage value
+    await page.reload();
 
-        // Set localStorage directly to simulate a returning user
-        await page.evaluate((name) => localStorage.setItem("lastUsername", name), testUsername);
+    // Log in with the same username
+    await getNameInput(page).fill(testUsername);
 
-        // Refresh the page to load with the localStorage value
-        await page.reload();
+    // Click sign in and wait for navigation to complete
+    await Promise.all([
+      page.waitForURL(/\/game/),
+      clickWhenEnabled(getSignInButton(page))
+    ]);
 
-        // Log in with the same username
-        await getNameInput(page).fill(testUsername);
-        await clickWhenEnabled(getSignInButton(page));
+    // Wait a moment to ensure localStorage is set
+    await page.waitForTimeout(1000);
 
-        // Verify storage persists
-        const storedValue = await page.evaluate(() => localStorage.getItem("lastUsername"));
-        expect(storedValue).toBe(testUsername);
-    });
-}); 
+    // Verify storage persists
+    const storedValue = await page.evaluate(() => localStorage.getItem("lastUsername"));
+    expect(storedValue).toBe(testUsername);
+  });
+});
