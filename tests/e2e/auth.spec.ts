@@ -28,23 +28,25 @@ test.describe("User Authentication Flow", () => {
     await getNameInput(page).fill(testStudent);
 
     // Mock authentication
-    await context.addCookies([{
-      name: 'session-token',
-      value: testStudent,
-      domain: 'localhost',
-      path: '/',
-      httpOnly: true,
-      secure: false,
-      sameSite: 'Lax',
-    }]);
+    await context.addCookies([
+      {
+        name: "session-token",
+        value: testStudent,
+        domain: "localhost",
+        path: "/",
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+      },
+    ]);
 
     // Navigate directly to game page and store auth
-    await page.goto('/game');
+    await page.goto("/game");
     await context.storageState({ path: authFile });
 
     // Set localStorage for username persistence
     await page.evaluate((username) => {
-      localStorage.setItem('lastUsername', username);
+      localStorage.setItem("lastUsername", username);
     }, testStudent);
 
     // Verify successful navigation and session data
@@ -64,18 +66,20 @@ test.describe("User Authentication Flow", () => {
 
     // Instead of using Enter key which triggers form submission
     // Directly mock the authentication
-    await context.addCookies([{
-      name: 'session-token',
-      value: studentName,
-      domain: 'localhost',
-      path: '/',
-      httpOnly: true,
-      secure: false,
-      sameSite: 'Lax',
-    }]);
+    await context.addCookies([
+      {
+        name: "session-token",
+        value: studentName,
+        domain: "localhost",
+        path: "/",
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+      },
+    ]);
 
     // Navigate directly to game page
-    await page.goto('/game');
+    await page.goto("/game");
 
     // Verify successful navigation
     await expect(page).toHaveURL(/\/game/);
@@ -86,18 +90,20 @@ test.describe("User Authentication Flow", () => {
     await selectStudentFromDropdown(page, studentName);
 
     // Mock authentication
-    await context.addCookies([{
-      name: 'session-token',
-      value: studentName,
-      domain: 'localhost',
-      path: '/',
-      httpOnly: true,
-      secure: false,
-      sameSite: 'Lax',
-    }]);
+    await context.addCookies([
+      {
+        name: "session-token",
+        value: studentName,
+        domain: "localhost",
+        path: "/",
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+      },
+    ]);
 
     // Navigate directly to game page
-    await page.goto('/game');
+    await page.goto("/game");
 
     // Verify successful navigation
     await expect(page).toHaveURL(/\/game/);
@@ -110,15 +116,17 @@ test.describe("User Authentication Flow", () => {
 
     // Set up authentication without using storage state file
     const testStudent = "Aidan Wang";
-    await context.addCookies([{
-      name: 'session-token',
-      value: testStudent,
-      domain: 'localhost',
-      path: '/',
-      httpOnly: true,
-      secure: false,
-      sameSite: 'Lax',
-    }]);
+    await context.addCookies([
+      {
+        name: "session-token",
+        value: testStudent,
+        domain: "localhost",
+        path: "/",
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+      },
+    ]);
 
     // Navigate directly to game page
     await page.goto("/game");

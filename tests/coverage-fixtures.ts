@@ -2,7 +2,7 @@ import { test as baseTest, expect as baseExpect } from "@playwright/test";
 import { addCoverageReport } from "monocart-reporter";
 // Using dynamic import for v8-to-istanbul to avoid ESLint errors
 import { createRequire } from "module";
-import fs from "fs";
+import * as fs from "fs";
 import { fileURLToPath } from "url";
 
 // This type represents the structure of coverage entries
@@ -13,8 +13,9 @@ interface CoverageEntry {
   [key: string]: unknown;
 }
 
-// Get require function from module
-const require = createRequire(import.meta.url);
+// Get require function from module using __filename (more TypeScript compatible)
+const __filename = fileURLToPath(import.meta.url);
+const require = createRequire(__filename);
 const v8ToIstanbul = require("v8-to-istanbul");
 
 // Environment feature flag to allow skipping coverage when needed

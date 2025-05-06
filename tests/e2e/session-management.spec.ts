@@ -19,18 +19,20 @@ test.describe("Session Management", () => {
     context,
   }) => {
     // Mock authentication by setting cookies directly
-    await context.addCookies([{
-      name: 'session-token',
-      value: 'Aidan Wang',
-      domain: 'localhost',
-      path: '/',
-      httpOnly: true,
-      secure: false,
-      sameSite: 'Lax',
-    }]);
+    await context.addCookies([
+      {
+        name: "session-token",
+        value: "Aidan Wang",
+        domain: "localhost",
+        path: "/",
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+      },
+    ]);
 
     // Navigate directly to game page
-    await page.goto('/game');
+    await page.goto("/game");
 
     // Verify navigation to game page and authenticated state
     await verifyCommonElements(page, {
@@ -66,18 +68,20 @@ test.describe("Session Management", () => {
 
   test("should update login state after logging out", async ({ page, context }) => {
     // Mock authentication by setting cookies directly
-    await context.addCookies([{
-      name: 'session-token',
-      value: 'Aidan Wang',
-      domain: 'localhost',
-      path: '/',
-      httpOnly: true,
-      secure: false,
-      sameSite: 'Lax',
-    }]);
+    await context.addCookies([
+      {
+        name: "session-token",
+        value: "Aidan Wang",
+        domain: "localhost",
+        path: "/",
+        httpOnly: true,
+        secure: false,
+        sameSite: "Lax",
+      },
+    ]);
 
     // Navigate directly to game page
-    await page.goto('/game');
+    await page.goto("/game");
 
     // Verify we're authenticated and on the game page
     await verifyCommonElements(page, {
@@ -87,7 +91,7 @@ test.describe("Session Management", () => {
 
     // Mock the logout - clear cookies and redirect
     await context.clearCookies();
-    await page.goto('/');
+    await page.goto("/");
 
     // Verify we're logged out and on the login page
     await verifyCommonElements(page, {

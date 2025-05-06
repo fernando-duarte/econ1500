@@ -69,11 +69,11 @@ export default defineConfig({
         // Add parser options at the root level
         parserOptions: {
           // Use standard babel config
-          configFile: path.resolve(__dirname, 'babel-parser.config.js'),
+          configFile: path.resolve(__dirname, "babel-parser.config.js"),
           // Source type as module to handle import/export
-          sourceType: 'module',
+          sourceType: "module",
           // For TypeScript files
-          plugins: ['typescript', 'jsx', 'decorators-legacy']
+          plugins: ["typescript", "jsx", "decorators-legacy"],
         },
 
         // Coverage configuration options
@@ -102,11 +102,11 @@ export default defineConfig({
           // Enhanced TypeScript parser configuration for coverage
           parserOptions: {
             // Use standard babel config
-            configFile: path.resolve(__dirname, 'babel-parser.config.js'),
+            configFile: path.resolve(__dirname, "babel-parser.config.js"),
             // Source type as module to handle import/export
-            sourceType: 'module',
+            sourceType: "module",
             // For TypeScript files
-            plugins: ['typescript', 'jsx', 'decorators-legacy']
+            plugins: ["typescript", "jsx", "decorators-legacy"],
           },
         },
 
