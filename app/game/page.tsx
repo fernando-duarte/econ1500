@@ -46,7 +46,11 @@ export default function GamePage() {
   const prev = history.length > 0 ? history[history.length - 1] : growthModel.initialState;
   const exogIndex = Math.min(history.length - 1, growthModel.exogenous.length - 1);
   const exog = growthModel.exogenous[exogIndex] || growthModel.exogenous[0];
-  const preview = runRound(prev, lastControls, exog);
+  const preview = runRound(
+    prev as import("@/lib/game/types").State,
+    lastControls,
+    exog as import("@/lib/game/types").ExogRow
+  );
 
   // Handle form submission
   function handleSubmit(controls: ControlsType) {
