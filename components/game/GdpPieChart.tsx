@@ -128,8 +128,26 @@ export function GdpPieChart({ data }: { data: State }) {
   }) => {
     if (active && payload && payload.length > 0 && payload[0]?.payload) {
       const item = payload[0].payload;
+
+      // Determine position based on which segment
+      // Use nullish coalescing to provide a default if index is undefined
+      const index = item.index ?? 0;
+      let tooltipStyle = {};
+
+      // Position tooltips differently for each segment
+      if (index === 0) { // Consumption
+        tooltipStyle = { transform: 'translate(-40px, -120px)' };
+      } else if (index === 1) { // Investment
+        tooltipStyle = { transform: 'translate(80px, -20px)' };
+      } else { // Net Exports
+        tooltipStyle = { transform: 'translate(-40px, 80px)' };
+      }
+
       return (
-        <div className="rounded-md bg-white p-2 shadow-md select-none">
+        <div
+          className="bg-white p-2 rounded-md shadow-md select-none"
+          style={tooltipStyle}
+        >
           <p className="text-sm font-semibold">{item.name}</p>
           <p className="text-xs">Value: {item.value.toFixed(2)} billions USD</p>
           <p className="text-xs">Share of GDP: {item.percentage}</p>
@@ -164,10 +182,10 @@ export function GdpPieChart({ data }: { data: State }) {
 
     // Use type casting to safely access payload properties
     const payload = props.payload as unknown as GdpComponent;
-    const index = payload?.index ?? 0;
-    const shortName = payload?.shortName ?? "";
-    const percentage = payload?.percentage ?? "0%";
-    const color = payload?.color ?? "#000";
+    // Use explicit type assertions to ensure we get string types
+    const shortName = (payload?.shortName || "") as string;
+    const percentage = (payload?.percentage || "0%") as string;
+    const color = (payload?.color || "#000") as string;
 
     const RADIAN = Math.PI / 180;
     // Positioning label outside the pie
@@ -178,20 +196,12 @@ export function GdpPieChart({ data }: { data: State }) {
     // Calculate text anchor based on angle
     const textAnchor = x > cx ? "start" : "end";
 
-    // Create a larger hit area for the label that will also trigger the tooltip
-    const isActive = activeIndex.includes(index);
-
     return (
-      <g
-        onMouseEnter={() => setActiveIndex([index])}
-        onMouseLeave={() => setActiveIndex([])}
-        style={{ cursor: "pointer" }}
-        className="select-none"
-      >
+      <g className="select-none">
         <text
           x={x}
           y={y}
-          fill={isActive ? "#FF0000" : color}
+          fill={color}
           textAnchor={textAnchor}
           dominantBaseline="central"
           fontSize="16"
@@ -260,7 +270,7 @@ export function GdpPieChart({ data }: { data: State }) {
               <PieChart className="select-none" style={{ outline: "none" }}>
                 <Pie
                   activeIndex={activeIndex}
-                  activeShape={renderActiveShape as PieProps["activeShape"]}
+                  activeShape={renderActiveShape}
                   data={gdpComponents}
                   cx="50%"
                   cy="50%"
@@ -271,7 +281,7 @@ export function GdpPieChart({ data }: { data: State }) {
                   nameKey="name"
                   onMouseEnter={onPieEnter}
                   onMouseLeave={onPieLeave}
-                  label={renderCustomizedLabel as PieProps["label"]}
+                  label={renderCustomizedLabel}
                   className="select-none"
                   style={{ outline: "none" }}
                 >
@@ -282,10 +292,17 @@ export function GdpPieChart({ data }: { data: State }) {
                 <RechartsTooltip
                   content={<CustomTooltip />}
                   active={activeIndex.length > 0}
+                  cursor={false}
+                  offset={50}
+                  wrapperStyle={{
+                    visibility: activeIndex.length > 0 ? 'visible' : 'hidden',
+                    position: 'absolute',
+                    zIndex: 1000
+                  }}
                   payload={
                     activeIndex.length > 0 &&
-                    activeIndex[0] !== undefined &&
-                    gdpComponents[activeIndex[0]]
+                      activeIndex[0] !== undefined &&
+                      gdpComponents[activeIndex[0]]
                       ? [{ payload: gdpComponents[activeIndex[0]] }]
                       : []
                   }
