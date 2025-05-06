@@ -22,7 +22,10 @@ export function Dashboard({ prev, preview }: { prev: State; preview: State }) {
         {/* Population Box */}
         <Card className="relative flex aspect-square flex-1 flex-col items-center justify-center">
           <div className="text-2xl font-semibold">{prev.L.toFixed(2)}</div>
-          <div className="text-muted-foreground mt-auto pb-2 text-sm">Population</div>
+          <div className="text-muted-foreground mt-auto flex flex-col items-center pb-2 text-sm">
+            <span>Population</span>
+            <span className="text-xs">(millions)</span>
+          </div>
         </Card>
       </div>
 
