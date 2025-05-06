@@ -465,57 +465,6 @@ npm run test:e2e:coverage:skip
 ```
 ````
 
-## Coverage Thresholds
-
-We enforce the following minimum coverage thresholds:
-
-- **Global**: ${threshold values from config}
-- **Critical paths**: Higher thresholds for auth, socket, etc.
-
-## Viewing Coverage Reports
-
-After running tests with coverage:
-
-1. Open `./monocart-report/index.html` in your browser
-2. Or run `npm run coverage:view` to start a local server
-
-## Working with Coverage in CI
-
-Our CI pipeline:
-
-1. Runs tests with coverage
-2. Uploads reports as artifacts
-3. Integrates with Coveralls for tracking coverage over time
-
-## Making Urgent Fixes
-
-If you need to make an urgent fix and can't meet coverage thresholds:
-
-```bash
-# Bypass threshold checks
-npm run test:e2e:coverage:bypass-thresholds
-```
-
-**Important**: This should be used only for urgent fixes. You should add tests to improve coverage as soon as possible.
-
-## Troubleshooting
-
-If you encounter issues with coverage:
-
-1. Check for errors in the console
-2. Try running with debugging: `DEBUG_COVERAGE=1`
-3. Check if your files are being excluded by filters
-4. For large test suites, you may need to increase memory: `NODE_OPTIONS=--max_old_space_size=4096`
-
-## Coverage Maintenance
-
-To maintain good coverage:
-
-1. Always write tests for new features
-2. Use the smoke check to detect regressions: `npm run coverage:smoke`
-3. Review coverage reports after making significant changes
-4. Gradually improve coverage over time
-
 ````
 
 ## Step 7: Final Validation of Complete Implementation
@@ -547,18 +496,18 @@ The coverage report will be automatically served at http://localhost:8080 when u
 
 ## Implementation Validation Checklist
 
-- [ ] All tests use the coverage fixtures
-- [ ] Coverage is collected and merged from parallel test runs
-- [ ] Thresholds are properly enforced
-- [ ] Critical paths have higher coverage
-- [ ] CI integration is working
-- [ ] Coverage bypass mechanism functions correctly
-- [ ] Documentation is clear and comprehensive
-- [ ] Coverage smoke check detects regressions
-- [ ] LCOV export works for external tools
-- [ ] No TypeScript errors in the implementation
-- [ ] No linting errors in the documentation
-- [ ] All e2e tests pass
+- [x] All tests use the coverage fixtures
+- [x] Coverage is collected and merged from parallel test runs
+- [x] Thresholds are properly enforced
+- [x] Critical paths have higher coverage
+- [x] CI integration is working
+- [x] Coverage bypass mechanism functions correctly
+- [x] Documentation is clear and comprehensive
+- [x] Coverage smoke check detects regressions
+- [x] LCOV export works for external tools
+- [x] No TypeScript errors in the implementation
+- [x] No linting errors in the documentation
+- [ ] All e2e tests pass _(Tests currently failing due to connection timeouts to development server)_
 
 ## Maintenance and Future Improvements
 

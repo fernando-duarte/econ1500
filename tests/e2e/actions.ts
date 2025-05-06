@@ -5,13 +5,13 @@ import { getCombobox, getStudentOption } from "./selectors";
 type AsyncAction<T> = (arg: T) => Promise<T>;
 export const pipeAsync =
   <T>(...fns: Array<AsyncAction<T>>) =>
-    async (initial: T): Promise<T> => {
-      let result = initial;
-      for (const fn of fns) {
-        result = await fn(result);
-      }
-      return result;
-    };
+  async (initial: T): Promise<T> => {
+    let result = initial;
+    for (const fn of fns) {
+      result = await fn(result);
+    }
+    return result;
+  };
 
 /**
  * Attempts to click an element when enabled, with optional screenshot/fallback
@@ -34,7 +34,7 @@ export const clickWhenEnabled = async (
     if (takeScreenshot) {
       try {
         await locator.page().screenshot({ path: `test-results/click-timeout-${Date.now()}.png` });
-      } catch { }
+      } catch {}
     }
     if (fallbackAction) {
       await fallbackAction();
@@ -58,12 +58,12 @@ export const openCombobox = async (page: Page): Promise<Page> => {
  */
 export const clickOption =
   (studentName: string) =>
-    async (page: Page): Promise<Page> => {
-      const option = getStudentOption(page, studentName);
-      await expect(option).toBeVisible({ timeout: 3000 });
-      await option.click();
-      return page;
-    };
+  async (page: Page): Promise<Page> => {
+    const option = getStudentOption(page, studentName);
+    await expect(option).toBeVisible({ timeout: 3000 });
+    await option.click();
+    return page;
+  };
 
 /**
  * Select a student from the dropdown by opening it and clicking the option

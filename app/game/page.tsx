@@ -29,7 +29,7 @@ export default function GamePage() {
             <CardTitle className="text-center text-2xl font-bold">Game Interface</CardTitle>
             <div className="text-center">
               <p>Welcome, {username}!</p>
-              <p className="mt-4 text-sm text-muted-foreground">
+              <p className="text-muted-foreground mt-4 text-sm">
                 This is the main game interface where gameplay will be implemented.
               </p>
             </div>
