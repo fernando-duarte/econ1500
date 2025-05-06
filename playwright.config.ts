@@ -1,5 +1,12 @@
 // playwright.config.ts
 import { defineConfig, devices } from "@playwright/test";
+import { resolve } from "path";
+import * as path from "path";
+import thresholds from "./config/coverage-thresholds.js";
+import * as fs from "fs";
+
+// Get the directory name directly since we're in a module
+const __dirname = process.cwd();
 
 /**
  * Read environment variables from file.
@@ -7,6 +14,26 @@ import { defineConfig, devices } from "@playwright/test";
  */
 // import dotenv from 'dotenv';
 // dotenv.config();
+
+// Define interfaces for the coverage data structure
+interface CoverageEntry {
+  url?: string;
+  path?: string;
+  [key: string]: unknown;
+}
+
+interface CoverageSummary {
+  [key: string]: { total: number; covered: number; pct: number };
+}
+
+interface TestInfoAttachments {
+  getCoverageSummary: (coverage: Record<string, CoverageEntry>) => CoverageSummary;
+  create: (name: string, options: { body: string; contentType: string }) => void;
+}
+
+interface TestInfo {
+  attachments: TestInfoAttachments;
+}
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -23,10 +50,163 @@ export default defineConfig({
   workers: process.env.CI ? 1 : 6,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
-    ["html"], // Default HTML reporter
     ["line"], // More compact for CI logs
-    ["json", { outputFile: "test-results/test-results.json" }], // JSON reporter output to test-results directory
+    [
+      "monocart-reporter",
+      {
+        name: "ECON1500 E2E Coverage Report",
+        outputFile: "./monocart-report/index.html",
+
+        // Enable these options for better reporting
+        reportOptions: {
+          showTest: true, // Show test information
+          showSuite: true, // Show suite information
+          showError: true, // Display detailed error reports
+          showScreenshot: true, // Include screenshots
+          timeNeeded: true, // Show execution time
+        },
+
+        // Add parser options at the root level
+        parserOptions: {
+          // Use standard babel config
+          configFile: path.resolve(__dirname, 'babel-parser.config.js'),
+          // Source type as module to handle import/export
+          sourceType: 'module',
+          // For TypeScript files
+          plugins: ['typescript', 'jsx', 'decorators-legacy']
+        },
+
+        // Coverage configuration options
+        coverage: {
+          // Only include relevant files
+          entryFilter: (entry: CoverageEntry) => {
+            return (
+              entry.url?.toString().includes("/app/") ||
+              entry.url?.toString().includes("/components/") ||
+              entry.url?.toString().includes("/lib/") ||
+              entry.url?.toString().includes("/utils/")
+            );
+          },
+
+          // Source file filtering
+          sourceFilter: (sourcePath: string) => {
+            return (
+              sourcePath.includes("/app/") ||
+              sourcePath.includes("/components/") ||
+              sourcePath.includes("/lib/") ||
+              sourcePath.includes("/utils/") ||
+              sourcePath.includes("/hooks/")
+            );
+          },
+
+          // Enhanced TypeScript parser configuration for coverage
+          parserOptions: {
+            // Use standard babel config
+            configFile: path.resolve(__dirname, 'babel-parser.config.js'),
+            // Source type as module to handle import/export
+            sourceType: 'module',
+            // For TypeScript files
+            plugins: ['typescript', 'jsx', 'decorators-legacy']
+          },
+        },
+
+        // Report generation when tests complete
+        onEnd: (allCoverage: Record<string, CoverageEntry>, testInfo: TestInfo) => {
+          const outputDir = "./monocart-report";
+          if (!fs.existsSync(outputDir)) {
+            fs.mkdirSync(outputDir, { recursive: true });
+          }
+
+          // Always write out the raw coverage data for debugging and further processing
+          fs.writeFileSync(
+            path.join(outputDir, "raw-coverage.json"),
+            JSON.stringify(allCoverage, null, 2)
+          );
+
+          // Skip when running --list command
+          if (!testInfo || !testInfo.attachments || !testInfo.attachments.getCoverageSummary) {
+            console.log("⚠️ Coverage summary not available (possibly running with --list)");
+            return;
+          }
+
+          // Get coverage summary
+          const summary = testInfo.attachments.getCoverageSummary(allCoverage);
+
+          // Skip threshold checks if bypass flag is set
+          if (process.env.BYPASS_COVERAGE_THRESHOLDS === "1") {
+            console.log(
+              "⚠️ Coverage thresholds check bypassed via BYPASS_COVERAGE_THRESHOLDS flag"
+            );
+            return;
+          }
+
+          // Check global thresholds
+          const failures = (Object.keys(thresholds.global) as Array<keyof typeof thresholds.global>)
+            .map((key) => {
+              const actual = summary[String(key)]?.pct ?? 0;
+              const required = thresholds.global[key];
+              return actual < required
+                ? `${String(key)}: ${actual.toFixed(1)}% < ${required}%`
+                : null;
+            })
+            .filter((msg): msg is string => !!msg);
+
+          // Check critical directory-specific thresholds
+          for (const [dir, dirThresholds] of Object.entries(thresholds.critical)) {
+            // Get directory-specific coverage
+            const dirEntries = Object.values(allCoverage).filter((entry: CoverageEntry) =>
+              entry.path?.toString().includes(dir)
+            );
+
+            const dirSummary = dirEntries.reduce((acc: CoverageSummary, entry: CoverageEntry) => {
+              // Accumulate coverage for this directory
+              for (const key of Object.keys(dirThresholds)) {
+                if (!acc[key]) {
+                  acc[key] = { total: 0, covered: 0, pct: 0 };
+                }
+
+                const typedEntry = entry[key] as { total: number; covered: number } | undefined;
+                if (typedEntry) {
+                  acc[key].total += typedEntry.total;
+                  acc[key].covered += typedEntry.covered;
+                  if (acc[key].total > 0) {
+                    acc[key].pct = (acc[key].covered / acc[key].total) * 100;
+                  }
+                }
+              }
+              return acc;
+            }, {} as CoverageSummary);
+
+            // Check each metric against the directory threshold
+            for (const stringKey of Object.keys(dirThresholds)) {
+              const typedDirThresholds = dirThresholds as Record<string, number>;
+              const metric = dirSummary[stringKey];
+              const threshold = typedDirThresholds[stringKey];
+
+              if (metric && threshold !== undefined && metric.pct < threshold) {
+                failures.push(`${dir} ${stringKey}: ${metric.pct.toFixed(1)}% < ${threshold}%`);
+              }
+            }
+          }
+
+          if (failures.length > 0) {
+            // Attach coverage JSON for CI systems
+            testInfo.attachments.create("coverage-json", {
+              body: JSON.stringify(allCoverage),
+              contentType: "application/json",
+            });
+            throw new Error("Coverage thresholds not met:\n" + failures.join("\n"));
+          } else {
+            console.log("✅ All coverage thresholds met!");
+          }
+        },
+      },
+    ],
   ],
+
+  /* Add globalTeardown property */
+  globalTeardown: resolve(__dirname, "./global-teardown.ts"),
+
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   outputDir: "test-results",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

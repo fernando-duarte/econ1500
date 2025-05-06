@@ -1,23 +1,12 @@
 import { chromium } from "@playwright/test";
 import { _authenticateAndVerify, setupBasicTest } from "./helpers";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-import { dirname } from "path";
-
-// Get the directory name of the current module
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const rootDir = path.join(__dirname, "../..");
+import { generateAuthFile } from "./generate-auth-file";
 
 async function setupAuthState() {
   console.warn("Setting up authentication state for E2E tests...");
 
-  // Create the auth directory if it doesn't exist
-  const authDir = path.join(rootDir, "playwright", ".auth");
-  if (!fs.existsSync(authDir)) {
-    fs.mkdirSync(authDir, { recursive: true });
-  }
+  // Generate the auth file first
+  await generateAuthFile();
 
   // Launch browser and create a new context
   const browser = await chromium.launch();
@@ -32,15 +21,15 @@ async function setupAuthState() {
 
   // Setup test and authenticate user
   await setupBasicTest(page, context, { startUrl: `${baseURL}/` });
-  await _authenticateAndVerify(page, context, "Aidan Wang", {
-    storeAuth: true,
-    expectedRedirect: /\/game/,
-  });
+
+  // Authenticate with the mock approach
+  const username = process.env.TEST_USERNAME || "Aidan Wang";
+  await _authenticateAndVerify(page, context, username);
 
   // Close browser
   await browser.close();
 
-  console.warn("Authentication state successfully created at playwright/.auth/user.json");
+  console.warn("Authentication state setup complete");
 }
 
 // Run the setup

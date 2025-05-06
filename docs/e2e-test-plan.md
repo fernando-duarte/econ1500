@@ -131,4 +131,3 @@ This document outlines a comprehensive end-to-end testing strategy for the ECON1
 - Create helper functions for common operations like login, form filling
 - Use Playwright's custom fixtures for repeatable setup
 - Consider page object models for complex interfaces
-
