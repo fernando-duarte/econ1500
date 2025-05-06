@@ -7,6 +7,7 @@ import { RadioGroup } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { growthModel } from "@/lib/constants";
 import type { Controls } from "@/lib/game/types";
+import { useEffect, useRef } from "react";
 
 const schema = z.object({
   savingRate: z.number().min(0.0001).max(0.9999),
@@ -17,12 +18,48 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-export function Controls({ onSubmit }: { onSubmit: (c: Controls) => void }) {
+export function Controls({
+  onSubmit,
+  onChange,
+}: {
+  onSubmit: (c: Controls) => void;
+  onChange?: (c: Controls) => void;
+}) {
   const { control, handleSubmit, watch, formState } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { savingRate: 0.1, exchangePolicy: "1.0" },
   });
   const live = watch();
+
+  // Use refs to keep track of previous values to avoid unnecessary updates
+  const prevValuesRef = useRef({
+    savingRate: 0.1,
+    exchangePolicy: "1.0",
+  });
+
+  // Call onChange only when values actually change
+  useEffect(() => {
+    const currentSavingRate = live.savingRate;
+    const currentExchangePolicy = live.exchangePolicy;
+
+    if (
+      onChange &&
+      (prevValuesRef.current.savingRate !== currentSavingRate ||
+        prevValuesRef.current.exchangePolicy !== currentExchangePolicy)
+    ) {
+      // Update the previous values ref
+      prevValuesRef.current = {
+        savingRate: currentSavingRate,
+        exchangePolicy: currentExchangePolicy,
+      };
+
+      // Call onChange with the new values
+      onChange({
+        savingRate: currentSavingRate,
+        exchangePolicy: parseFloat(currentExchangePolicy) as 0.8 | 1.0 | 1.2,
+      });
+    }
+  }, [live, onChange]);
 
   return (
     <form

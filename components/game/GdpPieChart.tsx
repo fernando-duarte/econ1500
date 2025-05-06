@@ -173,19 +173,31 @@ export function GdpPieChart({ data }: { data: State }) {
     const color = (payload?.color || "#000") as string;
 
     const RADIAN = Math.PI / 180;
-    // Positioning label outside the pie
-    const radius = outerRadius * 1.4;
+    // Reducing the radius multiplier to cut the distance in half
+    // Changed from 1.4 to 1.2 to position labels closer to the pie
+    const radius = outerRadius * 1.2;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
     // Calculate text anchor based on angle
     const textAnchor = x > cx ? "start" : "end";
 
+    // Additional logic to prevent labels from being cut off
+    // If the label is on the top or bottom edge, adjust vertical position
+    let adjustedY = y;
+    if (y < cy && y - 10 < 0) {
+      // Top edge: shift down
+      adjustedY = 15;
+    } else if (y > cy && y + 10 > 250) {
+      // Bottom edge: shift up
+      adjustedY = 235;
+    }
+
     return (
       <g className="select-none">
         <text
           x={x}
-          y={y}
+          y={adjustedY}
           fill={color}
           textAnchor={textAnchor}
           dominantBaseline="central"
@@ -252,14 +264,18 @@ export function GdpPieChart({ data }: { data: State }) {
             style={{ outline: "none" }}
           >
             <ResponsiveContainer width="100%" height="100%" className="select-none">
-              <PieChart className="select-none" style={{ outline: "none" }}>
+              <PieChart
+                className="select-none"
+                style={{ outline: "none" }}
+                margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+              >
                 <Pie
                   activeIndex={activeIndex}
                   activeShape={renderActiveShape}
                   data={gdpComponents}
                   cx="50%"
                   cy="50%"
-                  labelLine={true}
+                  labelLine={false}
                   outerRadius={90}
                   fill="#8884d8"
                   dataKey="value"

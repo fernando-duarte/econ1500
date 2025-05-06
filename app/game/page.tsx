@@ -25,7 +25,8 @@ export default function GamePage() {
     typeof window !== "undefined" ? localStorage.getItem("lastUsername") || "User" : "User";
 
   const [history, setHistory] = useState([growthModel.initialState]);
-  const [lastControls, setLastControls] = useState<ControlsType>({
+  // State for live controls to track real-time changes
+  const [liveControls, setLiveControls] = useState<ControlsType>({
     savingRate: 0.1,
     exchangePolicy: 1.0,
   });
@@ -47,9 +48,10 @@ export default function GamePage() {
   const prev = history.length > 0 ? history[history.length - 1] : growthModel.initialState;
   const exogIndex = Math.min(history.length - 1, growthModel.exogenous.length - 1);
   const exog = growthModel.exogenous[exogIndex] || growthModel.exogenous[0];
+  // Use liveControls for the preview calculation to update in real-time
   const preview = runRound(
     prev as import("@/lib/game/types").State,
-    lastControls,
+    liveControls,
     exog as import("@/lib/game/types").ExogRow
   );
 
@@ -58,8 +60,13 @@ export default function GamePage() {
     const socket = getSocket();
     const sessionId = `sess_${socket.id}`;
 
-    setLastControls(controls);
+    setLiveControls(controls); // Update live controls on submit
     socket.emit("submit-round", { sessionId, controls });
+  }
+
+  // Handle real-time control changes
+  function handleControlChange(controls: ControlsType) {
+    setLiveControls(controls);
   }
 
   return (
@@ -84,7 +91,7 @@ export default function GamePage() {
 
                 {/* 2. Controls */}
                 <div className="mt-8">
-                  <Controls onSubmit={handleSubmit} />
+                  <Controls onSubmit={handleSubmit} onChange={handleControlChange} />
                 </div>
               </div>
 
