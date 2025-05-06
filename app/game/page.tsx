@@ -2,112 +2,43 @@
  * Game Page
  *
  * Main game interface that displays after successful authentication.
- * Provides user information and logout functionality.
  */
 "use client";
 
-import { useCallback, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardContent, CardTitle, CardFooter } from "@/components/ui/card";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { Loader2 } from "lucide-react";
-import { MainNavigation } from "@/components/ui/main-navigation";
-import { UserInfo } from "@/components/ui/UserInfo";
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { Container } from "@/components/ui/container";
 import { SkipLink } from "@/components/ui/skip-link";
+import { AuthenticatedLayout } from "@/components/layout/AuthenticatedLayout";
 
 export default function GamePage() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [logoutError, setLogoutError] = useState<string | null>(null);
-  // Get username from localStorage for UserInfo component
+  // Get username from localStorage for display
   const username =
     typeof window !== "undefined" ? localStorage.getItem("lastUsername") || "User" : "User";
 
-  const handleLogout = useCallback(async () => {
-    setLogoutError(null);
-    setIsLoggingOut(true);
-
-    try {
-      const response = await fetch("/api/auth/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "same-origin",
-        cache: "no-store",
-      });
-
-      if (!response.ok) {
-        throw new Error("Logout failed");
-      }
-
-      // Clear localStorage
-      localStorage.removeItem("lastUsername");
-      localStorage.removeItem("tokenExpiry");
-
-      // Clear all queries from the cache
-      await queryClient.clear();
-
-      // Navigate to home and refresh router cache
-      router.replace("/");
-      router.refresh();
-
-      // Wait for the redirect to complete
-      await new Promise((resolve) => setTimeout(resolve, 500));
-    } catch (err: unknown) {
-      console.error("Logout failed:", err);
-      setLogoutError(err instanceof Error ? err.message : String(err));
-    } finally {
-      setIsLoggingOut(false);
-    }
-  }, [router, queryClient]);
-
   return (
-    <Container
-      as="main"
-      className="flex min-h-screen flex-col items-center justify-center px-4 py-12"
-    >
-      <SkipLink href="#game-interface">Skip to game interface</SkipLink>
+    <AuthenticatedLayout>
+      <Container className="flex flex-col items-center justify-center px-4">
+        <SkipLink href="#game-interface">Skip to game interface</SkipLink>
 
-      <MainNavigation />
-
-      <Card
-        id="game-interface"
-        className="w-full max-w-md shadow-lg focus-within:outline-none"
-        tabIndex={-1}
-      >
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-center text-2xl font-bold">Game Interface</CardTitle>
-          <div className="flex justify-center">
-            <UserInfo user={{ name: username }} />
-          </div>
-        </CardHeader>
-        <CardContent>
-          {logoutError && (
-            <Alert variant="destructive" role="alert" className="mb-4">
-              <AlertTitle>Logout Failed</AlertTitle>
-              <AlertDescription>{logoutError}</AlertDescription>
-            </Alert>
-          )}
-        </CardContent>
-        <CardFooter className="flex justify-center">
-          <Button
-            variant="destructive"
-            onClick={handleLogout}
-            disabled={isLoggingOut}
-            className="focus-visible:ring-ring w-32 focus-visible:ring-2 focus-visible:ring-offset-2"
-            aria-busy={isLoggingOut}
-            data-testid="logout-button"
-          >
-            {isLoggingOut && <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />}
-            Logout
-          </Button>
-        </CardFooter>
-      </Card>
-    </Container>
+        <Card
+          id="game-interface"
+          className="w-full max-w-md shadow-lg focus-within:outline-none"
+          tabIndex={-1}
+        >
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-center text-2xl font-bold">Game Interface</CardTitle>
+            <div className="text-center">
+              <p>Welcome, {username}!</p>
+              <p className="text-muted-foreground mt-4 text-sm">
+                This is the main game interface where gameplay will be implemented.
+              </p>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-center">Game content will appear here.</p>
+          </CardContent>
+        </Card>
+      </Container>
+    </AuthenticatedLayout>
   );
 }

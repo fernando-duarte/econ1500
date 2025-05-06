@@ -11,11 +11,16 @@
 !.yarn/versions
 
 # testing
-/coverage
-/coverage-reports/
 /test-results/
 /playwright-report/
 /.nyc_output/
+
+# Coverage reports
+.v8-coverage/
+monocart-report/
+*.lcov
+coverage.json
+raw-coverage.json
 
 # next.js
 /.next/
@@ -107,9 +112,6 @@ Icon
 
 # Local storybook builds
 /storybook-static/
-
-# Test reports
-monocart-report/
 
 # Backup files
 /backups/

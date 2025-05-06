@@ -1,4 +1,4 @@
-import { BrowserContext, expect, Locator, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 import { getCombobox, getStudentOption } from "./selectors";
 
 // Async pipeline helper: runs each async step in sequence
@@ -41,15 +41,6 @@ export const clickWhenEnabled = async (
     }
   }
 };
-
-/**
- * Safe stop tracing (ignores errors)
- */
-export async function stopTracingSafe(context: BrowserContext, fileName: string) {
-  try {
-    await context.tracing.stop({ path: `test-results/traces/${fileName}.zip` });
-  } catch {}
-}
 
 /**
  * Primitive actions

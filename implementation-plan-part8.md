@@ -157,13 +157,6 @@ const config = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/$1",
   },
-  collectCoverageFrom: [
-    "app/**/*.{ts,tsx}",
-    "components/**/*.{ts,tsx}",
-    "lib/**/*.{ts,tsx}",
-    "!**/*.d.ts",
-    "!**/node_modules/**",
-  ],
 };
 
 export default createJestConfig(config);
@@ -174,7 +167,6 @@ export default createJestConfig(config);
 - Set up Jest with Next.js integration
 - Configure JSDOM environment for component testing
 - Add path mapping for cleaner imports
-- Set up coverage reporting
 - Include custom setup file for test environment
 - Configure file matching patterns for tests
 

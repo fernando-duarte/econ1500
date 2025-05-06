@@ -86,48 +86,57 @@ Scripts in `package.json` reference these configurations.
 
 > **Note:** For backward compatibility, some original configuration files are still present but will be deprecated in future updates.
 
-### Testing and Coverage
+### Testing
 
 This project uses:
 
 - **Playwright**: For end-to-end testing
-- **Monocart Reporter**: For test coverage analysis
 
-#### Running Tests with Coverage
+#### Running Tests
 
 ```bash
-# Run all tests with coverage
-npm run test:coverage
-
-# Run specific tests with coverage
-npm run test:file -- tests/your-test-file.spec.ts
-
-# Run tests with UI mode
+# Run all tests
 npm run test:e2e
+
+# Run a specific test file
+npm run test:e2e tests/e2e/auth.spec.ts
+
+# Generate authentication test file
+npm run test:auth-generate
+
+# Set up authentication with browser session
+npm run test:auth-setup
 ```
 
 #### Test Suite Overview
 
-The test suite includes end-to-end tests for validating application functionality.
+The test suite includes end-to-end tests for validating application functionality including authentication, form validation, and user interactions.
 
-#### Viewing Coverage Reports
+#### Test Artifacts and Coverage
 
-```bash
-# View HTML coverage report in browser
-npm run coverage:show
-```
+This project follows these best practices for test artifacts:
 
-#### Cleaning Coverage Data
+- **Committed to version control**:
 
-```bash
-# Clean up coverage data and reports
-npm run clean:test
-```
+  - Test code and configuration files
+  - CI/CD workflow definitions
+  - Coverage threshold configurations
 
-#### Coverage Implementation Details
+- **Generated locally, not committed**:
+  - Test results and screenshots (`/test-results/`)
+  - Coverage reports (`/monocart-report/`, `.v8-coverage/`)
+  - Authentication state files (generated at runtime)
+  - HTML reports and LCOV files
 
-- Coverage is only collected in Chromium browsers (not Firefox or WebKit)
-- Both JavaScript and CSS coverage are collected automatically
+The `.gitignore` file is configured to exclude generated test artifacts while keeping essential test configuration.
+
+#### Authentication for Tests
+
+For tests requiring authentication:
+
+- Use `npm run test:auth-generate` to create authentication state files
+- In CI environments, authentication files are generated during test setup
+- Use environment variable `TEST_USERNAME` to customize the test user
 
 ### Environment Variables
 
