@@ -75,11 +75,11 @@ export default function GamePage() {
           </CardHeader>
           <CardContent>
             {/* Game UI */}
-            {/* 1. Controls */}
-            <Controls onSubmit={handleSubmit} />
-
-            {/* 2. Dashboard */}
+            {/* 1. Dashboard with state variables */}
             {prev && preview && <Dashboard prev={prev} preview={preview} />}
+
+            {/* 2. Controls */}
+            <Controls onSubmit={handleSubmit} />
 
             {/* 3. History */}
             <History data={history} />
