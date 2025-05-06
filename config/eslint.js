@@ -58,6 +58,7 @@ const eslintConfig = [
       // Test results
       "test-results/",
       "playwright-report/",
+      "monocart-report/",
 
       // Editor-specific files
       ".idea/",
