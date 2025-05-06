@@ -11,6 +11,7 @@
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
     "noFallthroughCasesInSwitch": true,
+    "allowJs": true,
     "paths": {
       "@/*": ["./*"]
     }
