@@ -1,3 +1,104 @@
+# Concatenated Files
+
+## Table of Contents
+
+1. [/app/game/page.tsx](#appgamepagetsx)
+2. [/lib/constants.ts](#libconstantsts)
+3. [/lib/growth-model-and-data.md](#libgrowth-model-and-datamd)
+4. [/lib/socket/client.ts](#libsocketclientts)
+5. [/lib/socket/index.ts](#libsocketindexts)
+6. [/app/api/socket.ts](#appapisocketts) (File not found)
+
+---
+
+<a id="appgamepagetsx"></a>
+
+## /app/game/page.tsx
+
+```tsx
+/**
+ * Game Page
+ *
+ * Main game interface that displays after successful authentication.
+ */
+"use client";
+
+import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
+import { Container } from "@/components/ui/container";
+import { SkipLink } from "@/components/ui/skip-link";
+import { AuthenticatedLayout } from "@/components/layout/AuthenticatedLayout";
+
+export default function GamePage() {
+  // Get username from localStorage for display
+  const username =
+    typeof window !== "undefined" ? localStorage.getItem("lastUsername") || "User" : "User";
+
+  return (
+    <AuthenticatedLayout>
+      <Container className="flex flex-col items-center justify-center px-4">
+        <SkipLink href="#game-interface">Skip to game interface</SkipLink>
+
+        <Card
+          id="game-interface"
+          className="w-full max-w-md shadow-lg focus-within:outline-none"
+          tabIndex={-1}
+        >
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-center text-2xl font-bold">Game Interface</CardTitle>
+            <div className="text-center">
+              <p>Welcome, {username}!</p>
+              <p className="mt-4 text-sm text-muted-foreground">
+                This is the main game interface where gameplay will be implemented.
+              </p>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-center">Game content will appear here.</p>
+          </CardContent>
+        </Card>
+      </Container>
+    </AuthenticatedLayout>
+  );
+}
+```
+
+---
+
+<a id="libconstantsts"></a>
+
+## /lib/constants.ts
+
+```ts
+/**
+ * Application constants
+ *
+ * This file contains constants used throughout the application,
+ * including external URLs and UTM tracking parameters.
+ */
+
+// Campaign UTM parameters
+export const UTM_PARAMS = {
+  CREATE_NEXT_APP:
+    "utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app",
+};
+
+// External URLs
+export const EXTERNAL_URLS = {
+  VERCEL_DEPLOY: `https://vercel.com/new?${UTM_PARAMS.CREATE_NEXT_APP}`,
+  NEXTJS_DOCS: `https://nextjs.org/docs?${UTM_PARAMS.CREATE_NEXT_APP}`,
+  NEXTJS_LEARN: `https://nextjs.org/learn?${UTM_PARAMS.CREATE_NEXT_APP}`,
+  VERCEL_TEMPLATES: `https://vercel.com/templates?framework=next.js&${UTM_PARAMS.CREATE_NEXT_APP}`,
+  NEXTJS_HOME: `https://nextjs.org?${UTM_PARAMS.CREATE_NEXT_APP}`,
+};
+```
+
+---
+
+<a id="libgrowth-model-and-datamd"></a>
+
+## /lib/growth-model-and-data.md
+
+```md
 # Open-Economy Growth Model for China (1980–2025)
 
 ## Variables
@@ -320,10 +421,10 @@ Year & Exports & Imports & GDP & Capital Stock & Labor Force & Human Capital & T
 ### Economist Pun Themes
 
 - **The Keynesian Knights**
-- **Solow’s Stars**
+- **Solow's Stars**
 - **The Samuelson Solvers**
-- **Arrow’s Archers**
-- **Pigou’s Taxers**
+- **Arrow's Archers**
+- **Pigou's Taxers**
 
 ## Brainstorming List
 
@@ -444,3 +545,33 @@ Year & Exports & Imports & GDP & Capital Stock & Labor Force & Human Capital & T
 98. **Krugman's Crusaders**
 99. **Sen's Sentinels**
 100.  **Thaler's Titans**
+```
+
+---
+
+<a id="libsocketclientts"></a>
+
+## /lib/socket/client.ts
+
+```ts
+// Empty file for now - will be implemented in subsequent steps
+```
+
+---
+
+<a id="libsocketindexts"></a>
+
+## /lib/socket/index.ts
+
+```ts
+export * from "./types";
+// Will export from client.ts in later implementation steps
+```
+
+---
+
+<a id="appapisocketts"></a>
+
+## /app/api/socket.ts
+
+**Note:** This file was not found in the workspace.

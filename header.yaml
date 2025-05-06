@@ -1,0 +1,11 @@
+---
+header-includes:
+  - \usepackage{pdflscape}
+  - \usepackage{lscape}
+  - \usepackage{booktabs}
+  - \usepackage[margin=1in]{geometry}
+  - \usepackage{amsmath}
+  - \usepackage{hyperref}
+  - \hypersetup{colorlinks=true, linkcolor=blue, urlcolor=cyan, citecolor=magenta}
+---
+

@@ -1,1 +1,16 @@
-// Empty file for now - will be implemented in subsequent steps
+// lib/socket/client.ts
+
+import { io, Socket } from "socket.io-client";
+
+let socket: Socket;
+
+/**
+ * Returns a singleton Socket.IO client.
+ * Emits no actions until you call join/submit-round.
+ */
+export function getSocket(): Socket {
+  if (!socket) {
+    socket = io();
+  }
+  return socket;
+}
