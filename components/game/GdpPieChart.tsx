@@ -6,7 +6,6 @@ import {
   ResponsiveContainer,
   Tooltip as RechartsTooltip,
   Sector,
-  PieProps,
 } from "recharts";
 import type { State } from "@/lib/game/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -65,7 +64,7 @@ type LabelProps = {
   value: number;
 };
 
-const COLORS = ["#0088FE", "#00C49F", "#FF8042"];
+const COLORS = ["#0088FE", "#00C49F", "#FF8042"] as const;
 
 export function GdpPieChart({ data }: { data: State }) {
   const [activeIndex, setActiveIndex] = useState<number[]>([]);
@@ -129,25 +128,11 @@ export function GdpPieChart({ data }: { data: State }) {
     if (active && payload && payload.length > 0 && payload[0]?.payload) {
       const item = payload[0].payload;
 
-      // Determine position based on which segment
-      // Use nullish coalescing to provide a default if index is undefined
-      const index = item.index ?? 0;
-      let tooltipStyle = {};
-
-      // Position tooltips differently for each segment
-      if (index === 0) { // Consumption
-        tooltipStyle = { transform: 'translate(-40px, -120px)' };
-      } else if (index === 1) { // Investment
-        tooltipStyle = { transform: 'translate(80px, -20px)' };
-      } else { // Net Exports
-        tooltipStyle = { transform: 'translate(-40px, 80px)' };
-      }
+      // Always use default positioning
+      const tooltipStyle = {};
 
       return (
-        <div
-          className="bg-white p-2 rounded-md shadow-md select-none"
-          style={tooltipStyle}
-        >
+        <div className="rounded-md bg-white p-2 shadow-md select-none" style={tooltipStyle}>
           <p className="text-sm font-semibold">{item.name}</p>
           <p className="text-xs">Value: {item.value.toFixed(2)} billions USD</p>
           <p className="text-xs">Share of GDP: {item.percentage}</p>
@@ -158,8 +143,8 @@ export function GdpPieChart({ data }: { data: State }) {
   };
 
   // The renderActiveShape prop for Pie requires a specific interface
-  const renderActiveShape = (props: SectorProps) => {
-    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
+  const renderActiveShape = (props: unknown) => {
+    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props as SectorProps;
 
     return (
       <g>
@@ -289,24 +274,7 @@ export function GdpPieChart({ data }: { data: State }) {
                     <Cell key={`cell-${index}`} fill={entry.color} className="select-none" />
                   ))}
                 </Pie>
-                <RechartsTooltip
-                  content={<CustomTooltip />}
-                  active={activeIndex.length > 0}
-                  cursor={false}
-                  offset={50}
-                  wrapperStyle={{
-                    visibility: activeIndex.length > 0 ? 'visible' : 'hidden',
-                    position: 'absolute',
-                    zIndex: 1000
-                  }}
-                  payload={
-                    activeIndex.length > 0 &&
-                      activeIndex[0] !== undefined &&
-                      gdpComponents[activeIndex[0]]
-                      ? [{ payload: gdpComponents[activeIndex[0]] }]
-                      : []
-                  }
-                />
+                <RechartsTooltip content={<CustomTooltip />} />
               </PieChart>
             </ResponsiveContainer>
           </div>

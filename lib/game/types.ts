@@ -1,6 +1,7 @@
 // lib/game/types.ts
 
-import type { growthModel } from "../constants";
+import { growthModel } from "../constants";
+import type { State as GrowthState, ExogRow as GrowthExogRow } from "../constants";
 
 /** Student‐picked controls each round */
 export interface Controls {
@@ -11,6 +12,6 @@ export interface Controls {
 }
 
 /** Endogenous state at each period */
-export type State = growthModel.State;
+export type State = GrowthState;
 /** Exogenous variables row */
-export type ExogRow = growthModel.ExogRow;
+export type ExogRow = GrowthExogRow;
