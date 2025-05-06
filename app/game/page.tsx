@@ -80,7 +80,7 @@ export default function GamePage() {
               {/* Left column: Dashboard and Controls */}
               <div className="flex-1">
                 {/* 1. Dashboard with state variables */}
-                <div>{prev && preview && <Dashboard prev={prev} preview={preview} />}</div>
+                <div>{prev && <Dashboard prev={prev} />}</div>
 
                 {/* 2. Controls */}
                 <div className="mt-8">
