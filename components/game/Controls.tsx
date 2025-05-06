@@ -61,6 +61,14 @@ export function Controls({
     }
   }, [live, onChange]);
 
+  // Helper function to get the label for the current exchange policy
+  const getCurrentExchangePolicyLabel = () => {
+    const option = growthModel.EXCHANGE_OPTIONS.find(
+      (o) => o.value.toFixed(1) === live.exchangePolicy
+    );
+    return option ? option.label : "Market (×1.0)";
+  };
+
   return (
     <form
       onSubmit={handleSubmit((v) =>
@@ -88,7 +96,7 @@ export function Controls({
         />
       </div>
       <div className="mb-6">
-        <label className="mb-2 block">Exchange Policy</label>
+        <label className="mb-2 block">Exchange Policy: {getCurrentExchangePolicyLabel()}</label>
         <Controller
           name="exchangePolicy"
           control={control}

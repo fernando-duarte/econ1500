@@ -104,7 +104,7 @@ export function GdpPieChart({ data }: { data: State }) {
       shortName: "NX",
       value: NX,
       percentage: formatPercentage(NX),
-      color: COLORS[2],
+      color: NX < 0 ? `${COLORS[2]}80` : COLORS[2],
       index: 2,
     },
   ];
@@ -127,6 +127,7 @@ export function GdpPieChart({ data }: { data: State }) {
   }) => {
     if (active && payload && payload.length > 0 && payload[0]?.payload) {
       const item = payload[0].payload;
+      const isNegative = item.name === "Net Exports (NX)" && item.value < 0;
 
       // Always use default positioning
       const tooltipStyle = {};
@@ -134,7 +135,9 @@ export function GdpPieChart({ data }: { data: State }) {
       return (
         <div className="rounded-md bg-white p-2 shadow-md select-none" style={tooltipStyle}>
           <p className="text-sm font-semibold">{item.name}</p>
-          <p className="text-xs">Value: {item.value.toFixed(2)} billions USD</p>
+          <p className="text-xs">
+            Value: {item.value.toFixed(2)} billions USD {isNegative && "(negative)"}
+          </p>
           <p className="text-xs">Share of GDP: {item.percentage}</p>
         </div>
       );
@@ -170,7 +173,13 @@ export function GdpPieChart({ data }: { data: State }) {
     // Use explicit type assertions to ensure we get string types
     const shortName = (payload?.shortName || "") as string;
     const percentage = (payload?.percentage || "0%") as string;
-    const color = (payload?.color || "#000") as string;
+
+    // Always use the original, non-transparent color for the label
+    // Get the original color from COLORS array based on index instead of using potentially transparent color
+    const index = (payload?.index || 0) as number;
+    const color = COLORS[index] || "#000";
+
+    // We don't need the value or isNegative check anymore since we removed the label indicator
 
     const RADIAN = Math.PI / 180;
     // Reducing the radius multiplier to cut the distance in half
@@ -257,6 +266,11 @@ export function GdpPieChart({ data }: { data: State }) {
               </PopoverContent>
             </Popover>
           </CardDescription>
+          {data.e && (
+            <div className="text-muted-foreground mt-1 text-center text-sm">
+              Exchange Rate: {data.e.toFixed(2)} CNY per USD
+            </div>
+          )}
         </CardHeader>
         <CardContent className="select-none focus:outline-none">
           <div
@@ -294,6 +308,11 @@ export function GdpPieChart({ data }: { data: State }) {
               </PieChart>
             </ResponsiveContainer>
           </div>
+          {data.NX && data.NX < 0 && (
+            <div className="text-muted-foreground mt-4 text-center text-xs">
+              Note: Translucent slice represents negative Net Exports
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

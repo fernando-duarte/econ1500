@@ -34,6 +34,17 @@ export function Dashboard({ prev }: { prev: State }) {
           </div>
         </Card>
       </div>
+
+      {/* Exchange Rate Box */}
+      {prev.e && (
+        <Card className="relative flex flex-col items-center justify-center p-4">
+          <div className="text-2xl font-semibold">{prev.e.toFixed(2)}</div>
+          <div className="text-muted-foreground flex flex-col items-center text-xs">
+            <span>Exchange Rate</span>
+            <span className="text-xs">(CNY per USD)</span>
+          </div>
+        </Card>
+      )}
     </div>
   );
 }
