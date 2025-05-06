@@ -39,13 +39,17 @@ export function Dashboard({ prev, preview }: { prev: State; preview: State }) {
       <div className="grid grid-cols-2 gap-4">
         <div className="card p-4">
           <h4>Last Period ({prev.year})</h4>
+          <p>Y: {prev.Y?.toFixed(2)}</p>
           <p>C: {prev.C?.toFixed(2)}</p>
           <p>I: {prev.I?.toFixed(2)}</p>
+          <p>NX: {prev.NX?.toFixed(2)}</p>
         </div>
         <div className="card p-4">
           <h4>Preview</h4>
+          <p>Y: {preview.Y?.toFixed(2)}</p>
           <p>C: {preview.C?.toFixed(2)}</p>
           <p>I: {preview.I?.toFixed(2)}</p>
+          <p>NX: {preview.NX?.toFixed(2)}</p>
         </div>
       </div>
     </div>

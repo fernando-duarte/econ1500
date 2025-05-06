@@ -34,7 +34,7 @@ export function consumption(Y: number, s: number): number {
   return (1 - s) * Y;
 }
 export function investment(Y: number, s: number, NX: number): number {
-  return s * Y + NX;
+  return s * Y - NX;
 }
 export function nominalE(mult: number, tildeE: number): number {
   return mult * tildeE;
@@ -57,6 +57,7 @@ export function runRound(prev: State, ctrl: Controls, exog: ExogRow): State {
     K: nextCapital(prev.K, I),
     L: nextLabor(prev.L),
     A: nextTFP(prev.A, opp, exog.fdiRatio),
+    Y,
     X,
     M,
     NX,

@@ -82,6 +82,7 @@ export namespace growthModel {
     X?: number;
     M?: number;
     NX?: number;
+    Y?: number;
     openness?: number;
     C?: number;
     I?: number;

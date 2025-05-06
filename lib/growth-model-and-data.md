@@ -128,11 +128,14 @@ Values for 2025 are latest available:
     NX_t = X_t - M_t
   $$
 
+  - **Saving:**  
+    $$S_t = Y_t - C_t = I_t + NX_t$$
+
 - **Consumption:**  
   $$C_t = (1-s)\,Y_t$$
 
 - **Investment:**  
-  $$I_t = s\,Y_t + NX_t$$
+  $$I_t = s\,Y_t - NX_t$$
 
 - **Openness ratio:**  
   $$openness_t \;=\; \frac{X_t + M_t}{Y_t}$$
@@ -185,7 +188,7 @@ Rounds/Periods correspond to (t = 0) → 1980, (t = 1) → 1985, ... . For examp
     $$ C_t = (1-s) Y_t $$
 
 11. Compute investment:
-    $$ I_t = s Y_t + NX_t $$
+    $$ I_t = s Y_t - NX_t $$
 
 ### Compute next period's variable values
 
