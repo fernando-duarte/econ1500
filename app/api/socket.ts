@@ -5,6 +5,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { growthModel } from "../../lib/constants";
 import { runRound } from "../../lib/game/engine";
 import type { Controls, State } from "../../lib/game/types";
+import type { Server as HttpServer } from "http";
 
 const sessions: Record<string, State[]> = {};
 
@@ -22,8 +23,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       : undefined;
 
   if (server && !server.io) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const io = new Server(server as any); // Need 'any' for Server constructor
+    // Use a more specific type that matches socket.io's expected server type
+    const httpServer = server as unknown as HttpServer;
+    const io = new Server(httpServer);
     server.io = io;
 
     io.on("connection", (socket) => {

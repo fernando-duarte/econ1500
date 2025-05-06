@@ -6,6 +6,7 @@ import {
   ResponsiveContainer,
   Tooltip as RechartsTooltip,
   Sector,
+  PieProps,
 } from "recharts";
 import type { State } from "@/lib/game/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -19,6 +20,49 @@ type GdpComponent = {
   color: string;
   shortName: string;
   index: number;
+};
+
+// Define types for Recharts props to replace 'any'
+interface PieEnterEvent {
+  nameKey?: string;
+  dataKey?: string;
+  cx?: number;
+  cy?: number;
+  innerRadius?: number;
+  outerRadius?: number;
+  startAngle?: number;
+  endAngle?: number;
+  paddingAngle?: number;
+}
+
+// Using unknown for props type that Recharts will provide
+// This allows us to remove eslint-disable while maintaining compatibility
+type SectorProps = {
+  cx: number;
+  cy: number;
+  innerRadius: number;
+  outerRadius: number;
+  startAngle: number;
+  endAngle: number;
+  fill: string;
+  payload?: unknown;
+  midAngle?: number;
+  index?: number;
+};
+
+type LabelProps = {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  startAngle: number;
+  endAngle: number;
+  fill: string;
+  payload: unknown;
+  percent: number;
+  index: number;
+  value: number;
 };
 
 const COLORS = ["#0088FE", "#00C49F", "#FF8042"];
@@ -67,9 +111,7 @@ export function GdpPieChart({ data }: { data: State }) {
   ];
 
   // The Recharts Pie component passes complex objects to callbacks
-  // that are difficult to precisely type in TypeScript.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onPieEnter = (_: any, index: number) => {
+  const onPieEnter = (_: PieEnterEvent, index: number) => {
     setActiveIndex([index]);
   };
 
@@ -97,10 +139,8 @@ export function GdpPieChart({ data }: { data: State }) {
     return null;
   };
 
-  // The renderActiveShape prop for Pie requires a specific interface that's difficult to match
-  // precisely. The Recharts library lacks detailed TypeScript typings for this callback.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const renderActiveShape = (props: any) => {
+  // The renderActiveShape prop for Pie requires a specific interface
+  const renderActiveShape = (props: SectorProps) => {
     const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
 
     return (
@@ -118,17 +158,16 @@ export function GdpPieChart({ data }: { data: State }) {
     );
   };
 
-  // The Pie component's label prop accepts a render function with complex,
-  // poorly-typed parameters. Properties must be safely accessed as they may be undefined.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const renderCustomizedLabel = (props: any) => {
-    const { cx, cy, midAngle, outerRadius, payload } = props;
+  // The Pie component's label prop accepts a render function
+  const renderCustomizedLabel = (props: LabelProps) => {
+    const { cx, cy, midAngle, outerRadius } = props;
 
-    // Safely access payload properties with fallbacks to prevent undefined errors
-    const index = typeof payload?.index === "number" ? payload.index : 0;
-    const shortName = typeof payload?.shortName === "string" ? payload.shortName : "";
-    const percentage = typeof payload?.percentage === "string" ? payload.percentage : "0%";
-    const color = typeof payload?.color === "string" ? payload.color : "#000";
+    // Use type casting to safely access payload properties
+    const payload = props.payload as unknown as GdpComponent;
+    const index = payload?.index ?? 0;
+    const shortName = payload?.shortName ?? "";
+    const percentage = payload?.percentage ?? "0%";
+    const color = payload?.color ?? "#000";
 
     const RADIAN = Math.PI / 180;
     // Positioning label outside the pie
@@ -221,7 +260,7 @@ export function GdpPieChart({ data }: { data: State }) {
               <PieChart className="select-none" style={{ outline: "none" }}>
                 <Pie
                   activeIndex={activeIndex}
-                  activeShape={renderActiveShape}
+                  activeShape={renderActiveShape as PieProps["activeShape"]}
                   data={gdpComponents}
                   cx="50%"
                   cy="50%"
@@ -232,7 +271,7 @@ export function GdpPieChart({ data }: { data: State }) {
                   nameKey="name"
                   onMouseEnter={onPieEnter}
                   onMouseLeave={onPieLeave}
-                  label={renderCustomizedLabel}
+                  label={renderCustomizedLabel as PieProps["label"]}
                   className="select-none"
                   style={{ outline: "none" }}
                 >

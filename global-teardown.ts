@@ -23,8 +23,20 @@ interface MockTestInfo {
   // Add any other required properties that are used
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type CoverageEntry = any;
+// Define more specific types for Coverage entries
+interface CoverageFunction {
+  functionName: string;
+  ranges: { start: number; end: number }[];
+  isBlockCoverage: boolean;
+}
+
+interface CoverageEntry {
+  url: string;
+  source?: string;
+  functions: CoverageFunction[];
+  result?: unknown;
+  [key: string]: unknown;
+}
 
 /**
  * Processes V8 coverage files and generates a coverage report
@@ -61,7 +73,7 @@ const globalTeardown = async (config: { rootDir: string }) => {
   const processFile = async (file: string): Promise<CoverageEntry[]> => {
     const fp = path.join(dir, file);
     try {
-      const raw = JSON.parse(fs.readFileSync(fp, "utf8"));
+      const raw = JSON.parse(fs.readFileSync(fp, "utf8")) as { result: CoverageEntry[] };
 
       // Debug: log all URLs before filtering
       console.log(`Found ${raw.result.length} entries in ${file}`);
@@ -139,7 +151,7 @@ const globalTeardown = async (config: { rootDir: string }) => {
             return null;
           }
         })
-        .filter(Boolean); // Remove nulls
+        .filter(Boolean as unknown as <T>(x: T | null) => x is T); // Remove nulls
 
       console.log(`  Final entries after file check: ${entries.length}`);
       return entries;
@@ -190,10 +202,11 @@ const globalTeardown = async (config: { rootDir: string }) => {
       },
     };
 
-    // Use as any to bypass the type checking for the mock object
-    // This is acceptable here as we know the mock implements the required interface
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await addCoverageReport(allEntries, mockTestInfo as any);
+    // We need to use type assertion since monocart-reporter's TestInfo type
+    // isn't fully compatible with our simplified MockTestInfo
+    type ReportFunction = typeof addCoverageReport;
+    type TestInfoParam = Parameters<ReportFunction>[1];
+    await addCoverageReport(allEntries, mockTestInfo as unknown as TestInfoParam);
     console.log("✅ Coverage report generated successfully!");
 
     // Write raw coverage data for debugging
@@ -279,12 +292,10 @@ const globalTeardown = async (config: { rootDir: string }) => {
     console.log("✅ HTML report generated at ./monocart-report/index.html");
   } catch (error: unknown) {
     if (error instanceof Error) {
-      console.error("❌ Failed to generate coverage report:", error.message);
-      console.error(error.stack); // Add stack trace for better debugging
+      console.error("Failed to generate coverage report:", error.message);
     } else {
-      console.error("❌ Failed to generate coverage report: Unknown error");
+      console.error("Failed to generate coverage report:", error);
     }
-    // Don't exit with error in Phase 1 to avoid blocking workflow
   }
 };
 
