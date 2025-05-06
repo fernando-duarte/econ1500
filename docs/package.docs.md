@@ -110,7 +110,7 @@
 
 ### Development Dependencies
 
-- `@babel/plugin-proposal-class-properties`: Babel plugin for class properties
+- `@babel/plugin-transform-class-properties`: Babel plugin for class properties transformation
 - `@babel/plugin-proposal-decorators`: Babel plugin for decorators
 - `@babel/plugin-transform-runtime`: Babel plugin for runtime transformation
 - `@babel/preset-env`: Babel preset for environment targeting
