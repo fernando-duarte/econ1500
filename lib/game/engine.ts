@@ -61,15 +61,20 @@ export function runRound(prev: State, ctrl: Controls, exog: ExogRow): State {
   // ---- ZOD VALIDATION ----
   const validationInput = {
     K: calculatedK,
-    L: nextLabor(prev.L), // Assuming L is also part of economicValuesSchema and needs validation
-    // A: calculatedA, // Assuming A is also part of economicValuesSchema and needs validation
+    L: nextLabor(prev.L),
+    A: calculatedA,
     Y: calculatedY,
     X: calculatedX,
     M: calculatedM,
     NX: calculatedNX,
-    openness: opp, // Add opp to validation input
+    openness: opp,
     C: calculatedC,
     I: calculatedI,
+    e: e,
+    e_tilde: exog.tildeE,
+    fdi_ratio: exog.fdiRatio,
+    Y_star: exog.Ystar,
+    H: exog.H,
   };
 
   // Attempt to parse all values. Note: L and A are included here assuming they are in the schema.
@@ -99,18 +104,18 @@ export function runRound(prev: State, ctrl: Controls, exog: ExogRow): State {
   // ---- END ZOD VALIDATION ----
 
   // Use validated data
-  const { K, L, Y, X, M, NX, openness, C, I } = validationResult.data; // Add openness here
+  const { K, L, Y, X, M, NX, openness, C, I, A } = validationResult.data;
 
   return {
     year: exog.year,
     K,
-    L, // Assuming L is validated and returned by the schema
-    A: calculatedA, // A is not in economicValuesSchema yet, so pass through
+    L,
+    A,
     Y,
     X,
     M,
     NX,
-    openness, // Use validated openness
+    openness,
     C,
     I,
     e,
