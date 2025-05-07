@@ -31,7 +31,7 @@ const RadioGroupItem = React.forwardRef<
           <div className="h-2.5 w-2.5 rounded-full bg-current" />
         </RadioGroupPrimitive.Indicator>
       </RadioGroupPrimitive.Item>
-      {children && <span className="text-sm">{children}</span>}
+      {children && <span className="">{children}</span>}
     </div>
   );
 });

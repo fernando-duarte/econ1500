@@ -62,12 +62,12 @@ export function Controls({
   }, [live, onChange]);
 
   // Helper function to get the label for the current exchange policy
-  const getCurrentExchangePolicyLabel = () => {
-    const option = growthModel.EXCHANGE_OPTIONS.find(
-      (o) => o.value.toFixed(1) === live.exchangePolicy
-    );
-    return option ? option.label : "Market (×1.0)";
-  };
+  // const getCurrentExchangePolicyLabel = () => {
+  //   const option = growthModel.EXCHANGE_OPTIONS.find(
+  //     (o) => o.value.toFixed(1) === live.exchangePolicy
+  //   );
+  //   return option ? option.label : "Market (×1.0)";
+  // };
 
   return (
     <form
@@ -80,7 +80,7 @@ export function Controls({
       className="space-y-6 rounded border p-4"
     >
       <div className="mb-4">
-        <label className="mb-2 block">Saving Rate: {live.savingRate.toFixed(2)}</label>
+        <label className="mb-2 block text-lg">Saving Rate: {live.savingRate.toFixed(2)}</label>
         <Controller
           name="savingRate"
           control={control}
@@ -95,8 +95,12 @@ export function Controls({
           )}
         />
       </div>
+
+      {/* Separator added here */}
+      <hr className="my-4" />
+
       <div className="mb-6">
-        <label className="mb-2 block">Exchange Policy: {getCurrentExchangePolicyLabel()}</label>
+        <label className="mb-2 block text-lg">Exchange Rate:</label>
         <Controller
           name="exchangePolicy"
           control={control}
@@ -107,17 +111,23 @@ export function Controls({
               className="flex space-x-6"
             >
               {growthModel.EXCHANGE_OPTIONS.map((o) => (
-                <RadioGroup.Item key={o.value} value={o.value.toFixed(1)}>
-                  {o.label}
+                <RadioGroup.Item key={o.value} value={o.value.toFixed(1)} className="text-xl">
+                  {o.label.split(" (")[0]}
                 </RadioGroup.Item>
               ))}
             </RadioGroup>
           )}
         />
       </div>
-      <Button type="submit" disabled={!formState.isValid}>
-        Submit Round
-      </Button>
+
+      {/* Separator added here */}
+      <hr className="my-4" />
+
+      <div className="flex justify-center">
+        <Button type="submit" disabled={!formState.isValid} className="text-lg">
+          Submit
+        </Button>
+      </div>
     </form>
   );
 }
