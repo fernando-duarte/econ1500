@@ -109,13 +109,13 @@ export default function GamePage() {
                 </div>
               </div>
 
-              {/* Right column: GDP Composition Pie Chart */}
-              <div className="flex-1">{preview && <GdpPieChart data={preview} />}</div>
-            </div>
-
-            {/* 4. History */}
-            <div className="mt-8">
-              <History data={history} />
+              {/* Right column: GDP Composition Pie Chart and History */}
+              <div className="flex-1">
+                {preview && <GdpPieChart data={preview} />}
+                <div className="mt-8">
+                  <History data={history} />
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
