@@ -2,12 +2,12 @@
 import type { State } from "@/lib/game/types";
 import { Card } from "@/components/ui/card";
 import { NumericFormat } from "react-number-format";
-import { formatEconomicValue } from "@/lib/utils/formatting";
+import { formatEconomicValue, formatPopulationValue } from "@/lib/utils/formatting";
 
 export function Dashboard({ prev }: { prev: State }) {
   const formattedK = formatEconomicValue(prev.K, { unitStyle: "long" });
   const formattedA = prev.A; // Assuming A doesn't need complex formatting for now, but could use formatEconomicValue if units make sense
-  const formattedL = prev.L; // Assuming L doesn't need complex formatting
+  const formattedL = formatPopulationValue(prev.L);
 
   return (
     <div className="space-y-6">
@@ -25,7 +25,7 @@ export function Dashboard({ prev }: { prev: State }) {
                 fixedDecimalScale
                 className="text-2xl font-semibold"
               />
-              <div className="text-muted-foreground mt-auto flex flex-col items-center pb-1 text-xs sm:text-sm">
+              <div className="text-muted-foreground flex flex-col items-center pb-1 text-sm sm:text-base">
                 <span>Capital</span>
                 <span className="text-xs">({formattedK.displayUnit})</span>
               </div>
@@ -33,7 +33,7 @@ export function Dashboard({ prev }: { prev: State }) {
           ) : (
             <>
               <div className="text-2xl font-semibold">N/A</div>
-              <div className="text-muted-foreground mt-auto flex flex-col items-center pb-1 text-xs sm:text-sm">
+              <div className="text-muted-foreground flex flex-col items-center pb-1 text-sm sm:text-base">
                 <span>Capital</span>
                 <span className="text-xs">(billions USD)</span>
               </div>
@@ -44,7 +44,7 @@ export function Dashboard({ prev }: { prev: State }) {
         {/* Productivity Box */}
         <Card className="relative flex aspect-square flex-1 flex-col items-center justify-center p-2">
           <div className="text-2xl font-semibold">{formattedA.toFixed(3)}</div>
-          <div className="text-muted-foreground mt-auto flex flex-col items-center pb-1 text-xs sm:text-sm">
+          <div className="text-muted-foreground flex flex-col items-center pb-1 text-sm sm:text-base">
             <span>Productivity</span>
             <span className="text-xs">(Index, 2017 = 1)</span>
           </div>
@@ -52,11 +52,30 @@ export function Dashboard({ prev }: { prev: State }) {
 
         {/* Population Box */}
         <Card className="relative flex aspect-square flex-1 flex-col items-center justify-center p-2">
-          <div className="text-2xl font-semibold">{formattedL.toFixed(2)}</div>
-          <div className="text-muted-foreground mt-auto flex flex-col items-center pb-1 text-xs sm:text-sm">
-            <span>Population</span>
-            <span className="text-xs">(millions)</span>
-          </div>
+          {formattedL ? (
+            <>
+              <NumericFormat
+                value={parseFloat(formattedL.displayValue.replace(/,/g, ""))}
+                displayType="text"
+                thousandSeparator=","
+                decimalScale={(formattedL.displayValue.split(".")[1] || "").length}
+                fixedDecimalScale
+                className="text-2xl font-semibold"
+              />
+              <div className="text-muted-foreground flex flex-col items-center pb-1 text-sm sm:text-base">
+                <span>Labor Force</span>
+                <span className="text-xs">({formattedL.displayUnit})</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="text-2xl font-semibold">N/A</div>
+              <div className="text-muted-foreground flex flex-col items-center pb-1 text-sm sm:text-base">
+                <span>Labor Force</span>
+                <span className="text-xs">(millions)</span>
+              </div>
+            </>
+          )}
         </Card>
       </div>
 
@@ -70,7 +89,7 @@ export function Dashboard({ prev }: { prev: State }) {
             fixedDecimalScale
             className="text-2xl font-semibold"
           />
-          <div className="text-muted-foreground flex flex-col items-center text-sm">
+          <div className="text-muted-foreground flex flex-col items-center text-base">
             <span>Exchange Rate</span>
             <span className="text-sm">(CNY per USD)</span>
           </div>

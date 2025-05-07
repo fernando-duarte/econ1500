@@ -109,3 +109,78 @@ export function formatEconomicValue(
 // console.log(formatEconomicValue(1.9, { unitStyle: 'long' }));     // Long: 1.9 billions USD
 // console.log(formatEconomicValue(0.0019, { unitStyle: 'long' }));  // Long: 1.9 millions USD
 // console.log(formatEconomicValue(1900, { unitStyle: 'long' }));    // Long: 1.9 trillions USD
+
+interface FormattedPopulationValue {
+  value: number; // Original value in millions
+  unitBase: "million" | "billion" | "trillion";
+  displayValue: string; // The number part, formatted
+  displayUnit: string; // e.g., "million", "billions"
+  fullString: string; // e.g., "123.4 million"
+}
+
+/**
+ * Formats a population value (assumed to be in millions)
+ * for display with appropriate unit scaling (millions, billions, trillions)
+ * and adaptive precision (0 or 1 decimal place).
+ *
+ * @param valueInMillions The numeric value in millions.
+ * @returns A FormattedPopulationValue object or null.
+ */
+export function formatPopulationValue(
+  valueInMillions: number | undefined | null
+): FormattedPopulationValue | null {
+  if (valueInMillions === undefined || valueInMillions === null || !isFinite(valueInMillions)) {
+    return null;
+  }
+
+  let scaledValue: number;
+  let unitBase: FormattedPopulationValue["unitBase"];
+  let unitSingular: string;
+  let unitPlural: string;
+
+  if (Math.abs(valueInMillions) >= 1000000) {
+    // 1,000,000 million = 1 trillion
+    scaledValue = valueInMillions / 1000000;
+    unitBase = "trillion";
+    unitSingular = "trillion";
+    unitPlural = "trillions";
+  } else if (Math.abs(valueInMillions) >= 1000) {
+    // 1,000 million = 1 billion
+    scaledValue = valueInMillions / 1000;
+    unitBase = "billion";
+    unitSingular = "billion";
+    unitPlural = "billions";
+  } else {
+    scaledValue = valueInMillions;
+    unitBase = "million";
+    unitSingular = "million";
+    unitPlural = "millions";
+  }
+
+  // Determine fraction digits: 0 if integer part is >= 100 or value is 0 or whole number, else 1
+  const integerPartOfScaledValue = Math.floor(Math.abs(scaledValue));
+  const fractionDigits =
+    integerPartOfScaledValue >= 100 ||
+    scaledValue === 0 ||
+    integerPartOfScaledValue === Math.abs(scaledValue)
+      ? 0
+      : 1;
+
+  const formatter = new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+    useGrouping: true,
+  });
+
+  const formattedNumberString = formatter.format(scaledValue);
+  const displayUnitLabel =
+    Math.abs(parseFloat(formattedNumberString.replace(/,/g, ""))) === 1 ? unitSingular : unitPlural;
+
+  return {
+    value: valueInMillions, // Original value in millions
+    unitBase,
+    displayValue: formattedNumberString,
+    displayUnit: displayUnitLabel,
+    fullString: `${formattedNumberString} ${displayUnitLabel}`,
+  };
+}

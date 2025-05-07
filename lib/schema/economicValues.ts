@@ -2,6 +2,8 @@ import { z } from "zod";
 
 /** The maximum allowable value for most economic indicators to prevent overflow/absurd scenarios. */
 export const MAX_ECONOMIC_VALUE = 1e15;
+/** The maximum allowable value for population (in millions) */
+export const MAX_POPULATION_VALUE_MILLIONS = 10000000; // Represents 10 trillion people
 
 /**
  * Defines the validation schema for core economic variables in the game state.
@@ -15,8 +17,13 @@ export const economicValuesSchema = z.object({
     .max(MAX_ECONOMIC_VALUE, {
       message: `Capital (K) exceeds maximum allowed value of ${MAX_ECONOMIC_VALUE}.`,
     }),
+  L: z
+    .number()
+    .positive({ message: "Labor (L) must be a positive number." })
+    .max(MAX_POPULATION_VALUE_MILLIONS, {
+      message: `Labor (L) exceeds maximum allowed value of ${MAX_POPULATION_VALUE_MILLIONS} millions.`,
+    }),
   // Future variables to be added here for validation:
-  // L: z.number().positive({ message: "Labor (L) must be a positive number." }),
   // A: z.number().positive({ message: "Technology (A) must be a positive number." }),
   // Y: z.number().nonnegative({ message: "Output (Y) cannot be negative." }),
   // X: z.number().nonnegative({ message: "Exports (X) cannot be negative." }),
