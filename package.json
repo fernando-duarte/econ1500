@@ -48,7 +48,7 @@
     "*.{ts,tsx}": [
       "eslint --config ./config/eslint.js --fix",
       "prettier --config ./config/prettier.js --write",
-      "bash -c 'files=(); for f in \"$@\"; do [[ \"$f\" != *coverage-fixtures.ts ]] && files+=(\"$f\"); done; [ ${#files[@]} -gt 0 ] && tsc --skipLibCheck --noEmit ${files[@]} || echo \"No files to type-check\"'"
+      "bash -c 'files=(); for f in \"$@\"; do [[ \"$f\" != *coverage-fixtures.ts ]] && files+=(\"$f\"); done; [ ${#files[@]} -gt 0 ] && tsc --noEmit ${files[@]} || echo \"No files to type-check\"''"
     ],
     "*.{js,jsx}": [
       "eslint --config ./config/eslint.js --fix",
