@@ -26,7 +26,10 @@ export const economicValuesSchema = z.object({
       message: `Labor (L) exceeds maximum allowed value of ${MAX_POPULATION_VALUE_MILLIONS} millions.`,
     }),
   // Future variables to be added here for validation:
-  // A: z.number().positive({ message: "Technology (A) must be a positive number." }),
+  A: z
+    .number()
+    .positive({ message: "Total Factor Productivity (A) must be a positive number." })
+    .max(10_000, { message: "Total Factor Productivity (A) cannot exceed 10,000." }),
   Y: z
     .number()
     .nonnegative({ message: "Output (Y) cannot be negative." })
@@ -71,7 +74,30 @@ export const economicValuesSchema = z.object({
     .max(MAX_ECONOMIC_VALUE, {
       message: `Investment (I) exceeds maximum allowed value of ${MAX_ECONOMIC_VALUE}.`,
     }),
-  // e: z.number().positive({ message: "Exchange Rate (e) must be a positive number." }),
+  e: z
+    .number()
+    .positive({ message: "Nominal Exchange Rate (e) must be a positive number." })
+    .max(10_000, { message: "Nominal Exchange Rate (e) cannot exceed 10,000 CNY per USD." }),
+  e_tilde: z
+    .number()
+    .positive({
+      message: "Counterfactual Nominal Exchange Rate (e_tilde) must be a positive number.",
+    })
+    .max(10_000, {
+      message: "Counterfactual Nominal Exchange Rate (e_tilde) cannot exceed 10,000 CNY per USD.",
+    }),
+  fdi_ratio: z
+    .number()
+    .nonnegative({ message: "FDI Ratio (fdi_ratio) must be a non-negative number." })
+    .max(5, { message: "FDI Ratio (fdi_ratio) cannot exceed 5 (i.e., FDI 500% of GDP)." }),
+  Y_star: z
+    .number()
+    .positive({ message: "Foreign Income Index (Y_star) must be a positive number." })
+    .max(1_000_000, { message: "Foreign Income Index (Y_star) cannot exceed 1,000,000." }),
+  H: z
+    .number()
+    .positive({ message: "Human Capital Index (H) must be a positive number." })
+    .max(1_000, { message: "Human Capital Index (H) cannot exceed 1,000." }),
   // year: z.number().int().positive({ message: "Year must be a positive integer." }),
 });
 
