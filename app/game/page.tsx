@@ -21,8 +21,8 @@ import type { Controls as ControlsType } from "@/lib/game/types";
 
 export default function GamePage() {
   // Get username from localStorage for display
-  const username =
-    typeof window !== "undefined" ? localStorage.getItem("lastUsername") || "User" : "User";
+  // const username =
+  //   typeof window !== "undefined" ? localStorage.getItem("lastUsername") || "User" : "User";
 
   const [history, setHistory] = useState([growthModel.initialState]);
   // State for live controls to track real-time changes
@@ -30,6 +30,11 @@ export default function GamePage() {
     savingRate: 0.1,
     exchangePolicy: 1.0,
   });
+
+  // Calculate current round and year
+  const currentRound = history.length;
+  const totalRounds = 10; // (2025 - 1980) / 5 + 1
+  const currentYear = 1980 + (currentRound - 1) * 5;
 
   // Socket setup
   useEffect(() => {
@@ -76,9 +81,11 @@ export default function GamePage() {
 
         <Card id="game-interface" className="w-full max-w-5xl shadow-lg">
           <CardHeader>
-            <CardTitle className="text-center text-2xl">Game Interface</CardTitle>
+            <CardTitle className="text-center text-2xl">Year: {currentYear}</CardTitle>
             <div className="text-center">
-              <p>Welcome, {username}!</p>
+              <p>
+                Round {currentRound}/{totalRounds}
+              </p>
             </div>
           </CardHeader>
           <CardContent>
