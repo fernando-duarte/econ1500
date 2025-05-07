@@ -64,9 +64,6 @@ export const growthModel = {
   X0: 18.1,
   M0: 14.5,
   Y0: 191.15,
-  K0: 2050.1,
-  L0: 428.3,
-  A0: 0.203,
 
   // 3. Exchange‐rate policy options
   EXCHANGE_OPTIONS: [
@@ -92,8 +89,8 @@ export const growthModel = {
   // 5. Initial state (1980)
   initialState: {
     year: 1980,
-    K: 2050.1, // K0
-    L: 428.3, // L0
-    A: 0.203, // A0
+    K: 2050.1,
+    L: 428.3,
+    A: 0.832,
   } as State,
 };
