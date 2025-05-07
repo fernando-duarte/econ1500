@@ -51,7 +51,7 @@ test.describe("Game Controls Interface", () => {
 
   test("should allow changing exchange policy selection", async ({ page }) => {
     // Wait for the RadioGroup to be visible
-    await page.locator(".space-y-6").waitFor();
+    await page.locator("form.space-y-6").waitFor();
 
     // Select "Undervalued (×1.2)" by clicking on the text
     await page.locator('text="Undervalued (×1.2)"').click();
