@@ -108,14 +108,14 @@ app.prepare().then(() => {
         try {
           const next = runRound(prev, controls, exog);
           console.log(
-            `[SERVER] runRound completed for session ${sessionId}. Next state year: ${next.year}`
+            `[SERVER] runRound completed for session ${sessionId}. Next state year: ${next.year}, A: ${next.A}, type: ${typeof next.A}`
           );
 
           history.push(next);
           console.log(
-            `[SERVER] Emitting 'state' to room ${sessionId}. New history length: ${history.length}.`
+            `[SERVER] Emitting 'state' to room ${sessionId}. Most recent state (next) A: ${next.A}, type: ${typeof next.A}, JSON.stringify(next.A): ${JSON.stringify(next.A)}. New history length: ${history.length}.`
           );
-          // Emitting the updated history to all clients in the session room
+          console.log(`[SERVER] History to be emitted for ${sessionId}:`, JSON.stringify(history, null, 2));
           io.to(sessionId).emit("state", history);
         } catch (error) {
           console.error(

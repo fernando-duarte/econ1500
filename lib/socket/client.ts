@@ -10,7 +10,7 @@ let socket: Socket;
  */
 export function getSocket(): Socket {
   if (!socket) {
-    socket = io();
+    socket = io({ path: "/api/socket_io" });
   }
   return socket;
 }
