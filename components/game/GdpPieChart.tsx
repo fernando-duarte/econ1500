@@ -11,6 +11,7 @@ import type { State } from "@/lib/game/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useState } from "react";
+import { formatEconomicValue } from "@/lib/utils/formatting";
 
 type GdpComponent = {
   name: string;
@@ -129,15 +130,19 @@ export function GdpPieChart({ data }: { data: State }) {
       const item = payload[0].payload;
       const isNegative = item.name === "Net Exports (NX)" && item.value < 0;
 
+      // Format the value using formatEconomicValue
+      const formattedValue = formatEconomicValue(item.value, { unitStyle: "short" });
+      const displayValueString = formattedValue
+        ? `${formattedValue.fullString}${isNegative && !formattedValue.fullString.includes("(negative)") ? " (negative)" : ""}`
+        : "N/A";
+
       // Always use default positioning
       const tooltipStyle = {};
 
       return (
         <div className="rounded-md bg-white p-2 shadow-md select-none" style={tooltipStyle}>
           <p className="text-sm font-semibold">{item.name}</p>
-          <p className="text-xs">
-            Value: {item.value.toFixed(2)} billions USD {isNegative && "(negative)"}
-          </p>
+          <p className="text-xs">Value: {displayValueString}</p>
           <p className="text-xs">Share of GDP: {item.percentage}</p>
         </div>
       );

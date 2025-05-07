@@ -48,44 +48,69 @@ export function nominalE(mult: number, tildeE: number): number {
 export function runRound(prev: State, ctrl: Controls, exog: ExogRow): State {
   const baseExog = exogenous[0] as ExogRow;
   const e = nominalE(ctrl.exchangePolicy, exog.tildeE);
-  const Y = prod(prev.A, prev.K, prev.L, exog.H);
-  const X = calcExports(e, nominalE(1, baseExog.tildeE), exog.Ystar, baseExog.Ystar);
-  const M = calcImports(e, nominalE(1, baseExog.tildeE), Y);
-  const NX = netExports(X, M);
-  const opp = opennessRatio(X, M, Y);
-  const C = consumption(Y, ctrl.savingRate);
-  const I = investment(Y, ctrl.savingRate, NX);
+  const calculatedY = prod(prev.A, prev.K, prev.L, exog.H);
+  const calculatedX = calcExports(e, nominalE(1, baseExog.tildeE), exog.Ystar, baseExog.Ystar);
+  const calculatedM = calcImports(e, nominalE(1, baseExog.tildeE), calculatedY);
+  const calculatedNX = netExports(calculatedX, calculatedM);
+  const opp = opennessRatio(calculatedX, calculatedM, calculatedY);
+  const calculatedC = consumption(calculatedY, ctrl.savingRate);
+  const calculatedI = investment(calculatedY, ctrl.savingRate, calculatedNX);
   const calculatedA = nextTFP(prev.A, opp, exog.fdiRatio);
-  const calculatedK = nextCapital(prev.K, I);
+  const calculatedK = nextCapital(prev.K, calculatedI);
 
-  // ---- ZOD VALIDATION FOR K ----
-  const validationInput = { K: calculatedK };
+  // ---- ZOD VALIDATION ----
+  const validationInput = {
+    K: calculatedK,
+    L: nextLabor(prev.L), // Assuming L is also part of economicValuesSchema and needs validation
+    // A: calculatedA, // Assuming A is also part of economicValuesSchema and needs validation
+    Y: calculatedY,
+    X: calculatedX,
+    M: calculatedM,
+    NX: calculatedNX,
+    openness: opp, // Add opp to validation input
+    C: calculatedC,
+    I: calculatedI,
+  };
+
+  // Attempt to parse all values. Note: L and A are included here assuming they are in the schema.
+  // If L or A have separate validation or no validation, they should be handled differently.
   const validationResult = economicValuesSchema.safeParse(validationInput);
 
   if (!validationResult.success) {
-    const errors = validationResult.error.flatten().fieldErrors;
-    if (errors.K) {
-      const errorMessage = `Invalid calculated Capital (K): ${errors.K.join(", ")}. Value: ${calculatedK}`;
-      console.error(`Validation Error for K in year ${exog.year}: ${errorMessage}`);
-      throw new Error(errorMessage);
-    } else {
-      const fullErrorMessage = `Economic values validation failed for year ${exog.year}.`;
-      console.error(fullErrorMessage, validationResult.error.format());
-      throw new Error(fullErrorMessage);
-    }
+    // Consolidate error reporting for any field
+    const flatErrors = validationResult.error.flatten().fieldErrors;
+    const errorMessages = Object.entries(flatErrors)
+      .map(([field, messages]) => {
+        if (messages) {
+          // Access the original calculated value for the error message
+          // Ensure that 'field' is a key in 'validationInput'
+          const value = validationInput[field as keyof typeof validationInput];
+          return `${field}: ${messages.join(", ")} (Value: ${value})`;
+        }
+        return null;
+      })
+      .filter(Boolean)
+      .join("; ");
+
+    const errorMessage = `Economic values validation failed for year ${exog.year}: ${errorMessages}`;
+    console.error(errorMessage, validationResult.error.format());
+    throw new Error(errorMessage);
   }
   // ---- END ZOD VALIDATION ----
 
+  // Use validated data
+  const { K, L, Y, X, M, NX, openness, C, I } = validationResult.data; // Add openness here
+
   return {
     year: exog.year,
-    K: validationResult.data.K,
-    L: nextLabor(prev.L),
-    A: calculatedA,
+    K,
+    L, // Assuming L is validated and returned by the schema
+    A: calculatedA, // A is not in economicValuesSchema yet, so pass through
     Y,
     X,
     M,
     NX,
-    openness: opp,
+    openness, // Use validated openness
     C,
     I,
     e,
