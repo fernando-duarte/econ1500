@@ -92,12 +92,19 @@ export default function GamePage() {
             {/* Game UI */}
             <div className="flex flex-col gap-8 md:flex-row">
               {/* Left column: Dashboard and Controls */}
-              <div className="flex-1">
+              <div className="flex flex-1 flex-col gap-8">
                 {/* 1. Dashboard with state variables */}
-                <div>{prev && <Dashboard prev={prev} />}</div>
+                <div>
+                  <CardTitle className="mb-4 text-xl">Current Values:</CardTitle>
+                  {prev && <Dashboard prev={prev} />}
+                </div>
 
                 {/* 2. Controls */}
-                <div className="mt-8">
+                <div>
+                  <CardTitle className="mb-4 text-xl">
+                    Make your policy choices for the next five years ({currentYear} to{" "}
+                    {currentYear + 4}):
+                  </CardTitle>
                   <Controls onSubmit={handleSubmit} onChange={handleControlChange} />
                 </div>
               </div>
