@@ -45,13 +45,19 @@ export default function GamePage() {
 
     const handleConnect = () => {
       currentSessionId = `sess_${socket.id}`;
-      console.log(`[CLIENT] Connected to socket server with ID: ${socket.id}. Attempting to join session: ${currentSessionId}`);
+      console.log(
+        `[CLIENT] Connected to socket server with ID: ${socket.id}. Attempting to join session: ${currentSessionId}`
+      );
       socket.emit("join", currentSessionId);
 
       // Remove previous listener if any (e.g., on reconnect) to avoid duplicates
       socket.off("state");
-      socket.on("state", (h: State[]) => { // Assuming State[] is the correct type from your project
-        console.log(`[CLIENT] Received 'state' event for session ${currentSessionId}. New history:`, h);
+      socket.on("state", (h: State[]) => {
+        // Assuming State[] is the correct type from your project
+        console.log(
+          `[CLIENT] Received 'state' event for session ${currentSessionId}. New history:`,
+          h
+        );
         // Detailed logging for each state in the received history
         if (Array.isArray(h)) {
           h.forEach((stateItem, index) => {
@@ -59,7 +65,9 @@ export default function GamePage() {
               `[CLIENT] History item ${index}: Year: ${stateItem.year}, A: ${stateItem.A}, Type of A: ${typeof stateItem.A}`
             );
             if (stateItem.A === null) {
-              console.error(`[CLIENT] CRITICAL: stateItem.A is null for year ${stateItem.year} at index ${index} in received history!`);
+              console.error(
+                `[CLIENT] CRITICAL: stateItem.A is null for year ${stateItem.year} at index ${index} in received history!`
+              );
             }
           });
         }
@@ -68,7 +76,10 @@ export default function GamePage() {
     };
 
     const handleDisconnect = (reason: string) => {
-      console.warn(`[CLIENT] Socket disconnected from session ${currentSessionId}. Reason:`, reason);
+      console.warn(
+        `[CLIENT] Socket disconnected from session ${currentSessionId}. Reason:`,
+        reason
+      );
       // No need to setHistory([]) here, as the server might retain the session
     };
 
@@ -84,12 +95,16 @@ export default function GamePage() {
     // If socket is already connected when this effect runs, manually trigger connect handling.
     // This can happen with fast connections or if getSocket() reuses an active connection.
     if (socket.connected) {
-      console.log("[CLIENT] Socket already connected on useEffect mount. Manually triggering connect handler.");
+      console.log(
+        "[CLIENT] Socket already connected on useEffect mount. Manually triggering connect handler."
+      );
       handleConnect();
     }
 
     return () => {
-      console.log(`[CLIENT] Cleaning up GamePage useEffect. Socket ID was: ${socket.id}, Session ID was: ${currentSessionId}`);
+      console.log(
+        `[CLIENT] Cleaning up GamePage useEffect. Socket ID was: ${socket.id}, Session ID was: ${currentSessionId}`
+      );
       socket.off("connect", handleConnect);
       socket.off("disconnect", handleDisconnect);
       socket.off("connect_error", handleConnectError);
@@ -121,7 +136,10 @@ export default function GamePage() {
     // or ensure the server can handle new socket.id for an existing logical session.
     // For now, we'll use the current socket.id, assuming the server handles session continuity or it's a fresh session.
     const submissionSessionId = `sess_${socket.id}`;
-    console.log(`[CLIENT] handleSubmit called. Emitting 'submit-round'. SessionId: ${submissionSessionId}, Controls:`, controls);
+    console.log(
+      `[CLIENT] handleSubmit called. Emitting 'submit-round'. SessionId: ${submissionSessionId}, Controls:`,
+      controls
+    );
     setLiveControls(controls); // Update live controls on submit
     socket.emit("submit-round", { sessionId: submissionSessionId, controls });
   }

@@ -88,7 +88,7 @@ const eslintConfig = [
     ],
   },
   // Use the same configuration as in .eslintrc.json
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
 
   // Keep the utility scripts exception
   {

@@ -92,8 +92,8 @@ export function runRound(prev: State, ctrl: Controls, exog: ExogRow): State {
   };
 }
 
-// The following commented-out block uses types (RecursiveState, ExogenousVariables) 
-// that are not currently defined in lib/game/types.ts. 
+// The following commented-out block uses types (RecursiveState, ExogenousVariables)
+// that are not currently defined in lib/game/types.ts.
 // It is preserved here for reference if those types are defined in the future.
 /*
 Example structure if you need a simulateRecursive that uses ExogenousVariables

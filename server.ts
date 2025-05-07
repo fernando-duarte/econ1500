@@ -115,7 +115,10 @@ app.prepare().then(() => {
           console.log(
             `[SERVER] Emitting 'state' to room ${sessionId}. Most recent state (next) A: ${next.A}, type: ${typeof next.A}, JSON.stringify(next.A): ${JSON.stringify(next.A)}. New history length: ${history.length}.`
           );
-          console.log(`[SERVER] History to be emitted for ${sessionId}:`, JSON.stringify(history, null, 2));
+          console.log(
+            `[SERVER] History to be emitted for ${sessionId}:`,
+            JSON.stringify(history, null, 2)
+          );
           io.to(sessionId).emit("state", history);
         } catch (error) {
           console.error(
