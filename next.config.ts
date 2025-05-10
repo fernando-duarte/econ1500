@@ -63,10 +63,10 @@ const nextConfig: NextConfig = {
     },
   ],
   // Configure webpack for full source maps in development
-  webpack: (config, { dev }) => {
-    // Enable full source maps for development mode
-    if (dev) {
-      config.devtool = "source-map";
+  webpack: (config, { dev, isServer }) => {
+    // Only apply custom devtool in production
+    if (!dev) {
+      config.devtool = isServer ? false : "source-map";
     }
     return config;
   },

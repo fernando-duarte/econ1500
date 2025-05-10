@@ -114,12 +114,20 @@ export default function LoginPage() {
         }
         localStorage.setItem("lastUsername", values.username);
         await new Promise((r) => setTimeout(r, 250));
+
+        // Don't reset isSubmitting by not using try-finally pattern
+        // This keeps the loading state active during navigation
         router.push("/game");
+
+        // We intentionally don't reset the form or loading state here
+        // to keep the spinner visible during navigation
       } catch (err) {
         setError(err instanceof Error ? err.message : "An unexpected error occurred");
+        // Only reset isSubmitting on error
+        form.reset({ username: values.username });
       }
     },
-    [router]
+    [router, form]
   );
 
   return (
