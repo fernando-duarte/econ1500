@@ -45,6 +45,9 @@ export interface State {
   C?: number;
   I?: number;
   e?: number;
+  tildeE?: number;
+  savingRate?: number;
+  exchangePolicyValue?: number;
 }
 
 export const growthModel = {
@@ -92,5 +95,13 @@ export const growthModel = {
     K: 2050.1,
     L: 428.3,
     A: 0.832,
+    Y: 191.15,
+    X: 18.1,
+    M: 14.5,
+    NX: 3.6,
+    openness: 0.1705992675908972,
+    C: 123.65,
+    I: 66.15,
+    e: 0.78,
   } as State,
 };

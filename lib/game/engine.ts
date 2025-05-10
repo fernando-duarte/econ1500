@@ -29,9 +29,6 @@ export function netExports(X: number, M: number): number {
   return X - M;
 }
 export function opennessRatio(X: number, M: number, Y: number): number {
-  if (!isFinite(Y) || Y <= 0) {
-    return 0;
-  }
   return (X + M) / Y;
 }
 export function consumption(Y: number, s: number): number {
@@ -107,7 +104,7 @@ export function runRound(prev: State, ctrl: Controls, exog: ExogRow): State {
   const { K, L, Y, X, M, NX, openness, C, I, A } = validationResult.data;
 
   return {
-    year: exog.year,
+    year: prev.year + 5,
     K,
     L,
     A,
@@ -119,6 +116,9 @@ export function runRound(prev: State, ctrl: Controls, exog: ExogRow): State {
     C,
     I,
     e,
+    tildeE: exog.tildeE,
+    savingRate: ctrl.savingRate,
+    exchangePolicyValue: ctrl.exchangePolicy,
   };
 }
 

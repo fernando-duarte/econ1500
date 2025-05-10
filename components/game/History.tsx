@@ -25,6 +25,12 @@ export function History({ data }: { data: State[] }) {
             s.openness !== undefined && s.openness !== null
               ? `${(s.openness * 100).toFixed(1)}%`
               : "N/A";
+          const formattedTildeE = s.tildeE?.toFixed(2) ?? "N/A";
+          const formattedSavingRate =
+            s.savingRate !== undefined && s.savingRate !== null
+              ? `${(s.savingRate * 100).toFixed(1)}%`
+              : "N/A";
+          const formattedExchangePolicy = s.exchangePolicyValue?.toFixed(1) ?? "N/A";
 
           return (
             <li key={i}>
@@ -34,7 +40,8 @@ export function History({ data }: { data: State[] }) {
               {formattedI ? formattedI.fullString : "N/A"}, X=
               {formattedX ? formattedX.fullString : "N/A"}, M=
               {formattedM ? formattedM.fullString : "N/A"}, NX=
-              {formattedNX ? formattedNX.fullString : "N/A"}, Openness={formattedOpenness}
+              {formattedNX ? formattedNX.fullString : "N/A"}, Openness={formattedOpenness}, Policy:
+              s={formattedSavingRate}, x={formattedExchangePolicy}, Exog: tildeE={formattedTildeE}
             </li>
           );
         })}
