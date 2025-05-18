@@ -60,10 +60,10 @@ export const growthModel = {
   φ: 0.1,
 
   // 2. Trade elasticities & initial levels
-  εx: 1.5,
-  εm: 1.2,
-  μx: 1.0,
-  μm: 1.0,
+  εx: 0.902, // 1.5,
+  εm: 3.128, // 1.2,
+  μx: 0.01, // 1.0,
+  μm: 1.021, // 1.0,
   X0: 18.1,
   M0: 14.5,
   Y0: 191.15,
